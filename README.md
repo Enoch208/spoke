@@ -1,43 +1,42 @@
 # Spoke
 
-**Pay for revenue, not reach.**
+**Distribution is a network. Now everyone in it can earn.**
 
 [![CI](https://github.com/Enoch208/spoke/actions/workflows/ci.yml/badge.svg)](https://github.com/Enoch208/spoke/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-Spoke is a merchant-funded distribution network on Monad. A merchant lists a digital product and pre-funds a reward pool. Anyone can share the product with a referral link, and anyone who receives that link can buy it or share it onward with a link of their own. When a buyer completes a real onchain purchase, the contract reserves the reward from the funded pool and splits it between the nearest three people in the link chain. After a short settlement hold the merchant and each distributor claim exactly what they are owed. Before the hold ends, the merchant can refund the sale, and then nobody is paid a commission.
+Spoke is the distribution graph: an open distribution protocol on Monad. A merchant launches a campaign with public commission rules and pre-funds its rewards. Anyone can join and share it, and anyone who receives a link can buy or pass it on with a link of their own, so a product branches through people. When a real onchain purchase happens, the contract reserves the reward from the funded pool and splits it across the eligible people on that sale's path by the campaign's disclosed weights. After a settlement hold each person claims their share; before it, the merchant can refund the sale and nobody earns a commission. Settled sales then build a distributor record that travels across merchants, and the same campaigns, graphs and receipts are open to any app.
 
-Every payout can be recomputed from the public sale receipt and the campaign's terms.
+Pay for revenue, not reach.
 
 ## The rules
 
-| Rule                                   | What it means                                                                                                               |
-| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| A real sale is the only trigger        | No reward for clicks, sign-ups or recruiting.                                                                               |
-| Rewards are pre-funded                 | A purchase that the pool cannot cover reverts before the buyer pays.                                                        |
-| At most three people are paid per sale | Nearest first: 100%, or 75 / 25, or 60 / 25 / 15. The nearest person takes any rounding remainder, so no base unit is lost. |
-| Link ancestry is immutable             | A link's parent is fixed when it is created and cannot be rewritten after a purchase.                                       |
-| Refund or finalize, never both         | A pending sale is refunded by the merchant before its unlock time, or finalized by anyone after it.                         |
-| Pull payouts                           | Each party claims their own balance; the contract never pushes funds to a list of wallets.                                  |
+| Rule                                       | What it means                                                                                                                                                                                  |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A real sale is the only trigger            | No reward for clicks, sign-ups or recruiting.                                                                                                                                                  |
+| Rewards are pre-funded                     | A purchase the pool cannot cover is refused before the buyer pays.                                                                                                                             |
+| The split is a public policy               | The merchant sets the rate, the cap and the weight of each level, nearest first (for example 50 / 25 / 15 / 10). The remainder of any rounding goes to the nearest person, so no unit is lost. |
+| The graph can be deep, payouts are bounded | Links branch without limit; each sale pays a finite, disclosed number of levels.                                                                                                               |
+| Terms never change after a sale            | Every accepted sale keeps the policy it was made under.                                                                                                                                        |
+| Refund or finalize, never both             | A pending sale is refunded by the merchant before its unlock time, or finalized by anyone after it.                                                                                            |
+| Only settled sales count                   | Pending and refunded sales never reach a public profile.                                                                                                                                       |
 
 ## Status
 
-This repository is under active construction for Monad Metropolis. Built and tested so far:
+This repository is under active construction for Monad Metropolis. Built so far:
 
-- The frozen protocol interface (`packages/contracts/src/ISpokeProtocol.sol`): every function, event and error of the settlement contract, with its ABI exported to TypeScript.
-- `SpokeDemoUSD`, a 6-decimal testnet demo token with a capped faucet. It is not a stablecoin and is not redeemable for anything.
-- The reward arithmetic in TypeScript (`packages/protocol`), tested against the split and rounding vectors above.
-- An API skeleton that reports API, database, RPC and indexer health separately, and a web shell wired to Monad Testnet through wagmi.
+- The landing page (`apps/web`), with product screens drawn as clearly labelled illustrations.
+- A first protocol interface and its TypeScript ABI, a 6-decimal testnet demo token (`SpokeDemoUSD`, not a stablecoin and not redeemable), shared money and status helpers, and an API skeleton that reports API, database, RPC and indexer health separately.
 
-Not built yet: the `SpokeProtocol` contract itself, its deployment, the merchant, distributor and buyer flows, indexing and digital delivery. Deployed addresses and transaction links will be added here only once they exist.
+Not built yet: the settlement contract and its configurable payout policy, deployment, the marketplace, network explorer, checkout, claims, reputation and developer API. Deployed addresses and transaction links will be added here only once they exist.
 
 ## Layout
 
 ```
-apps/web              Next.js app: landing, campaigns, referral pages, checkout, dashboards
-apps/api              Hono API: catalog, wallet sessions, checkout intents, read model
+apps/web              Next.js app: landing, campaigns, network explorer, checkout, dashboards
+apps/api              Hono API: catalog, wallet sessions, read model, public read endpoints
 packages/contracts    Foundry: protocol interface, demo token, settlement contract, tests
-packages/protocol     Shared TypeScript: ABIs, chains, reward math, money, statuses, API schemas
+packages/protocol     Shared TypeScript: ABIs, chains, payout math, money, statuses, API schemas
 ```
 
 ## Run it
