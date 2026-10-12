@@ -1,5 +1,6 @@
 import {
   Activity01Icon,
+  Compass01Icon,
   Agreement01Icon,
   Analytics01Icon,
   Award01Icon,
@@ -39,7 +40,7 @@ import type { IconSvgElement } from "@hugeicons/react";
 import type { FeatureKey } from "@/lib/features";
 import { routes } from "@/lib/routes";
 
-export type NavArea = "earn" | "sell" | "ops" | "account" | "public";
+export type NavArea = "earn" | "sell" | "ops" | "account" | "discover";
 
 export type NavItem = {
   id: string;
@@ -58,6 +59,11 @@ const item = (
   icon: IconSvgElement,
   feature: FeatureKey | null = null,
 ): NavItem => ({ id, label, href, icon, area, feature });
+
+export const discoverNav: readonly NavItem[] = [
+  item("discover", "discover-explore", "Explore", routes.explore, Compass01Icon),
+  item("discover", "discover-distributors", "Distributors", routes.distributors, UserMultipleIcon),
+];
 
 export const earnNav: readonly NavItem[] = [
   item("earn", "earn-home", "Home", routes.earn.home, Home01Icon, "earnDashboard"),
@@ -171,6 +177,7 @@ export const accountNav: readonly NavItem[] = [
 ];
 
 export const phoneTabIds = {
+  discover: ["discover-explore", "discover-distributors", "earn-home", "sell-overview"],
   earn: ["earn-home", "earn-links", "earn-earnings", "earn-payouts"],
   sell: ["sell-overview", "sell-campaigns", "sell-sales", "sell-vault"],
   ops: ["ops-queue", "ops-moderation", "ops-audit", "ops-health"],
@@ -179,9 +186,25 @@ export const phoneTabIds = {
 export const navForArea = (area: "earn" | "sell" | "ops") =>
   area === "earn" ? earnNav : area === "sell" ? sellNav : opsNav;
 
-export const allNavItems: readonly NavItem[] = [...earnNav, ...sellNav, ...opsNav, ...accountNav];
+export const allNavItems: readonly NavItem[] = [
+  ...discoverNav,
+  ...earnNav,
+  ...sellNav,
+  ...opsNav,
+  ...accountNav,
+];
 
-export const isActiveHref = (pathname: string, href: string) =>
-  href === routes.earn.home || href === routes.sell.overview || href === routes.ops.queue
-    ? pathname === href
-    : pathname === href || pathname.startsWith(`${href}/`);
+const sectionPrefixes: Readonly<Record<string, readonly string[]>> = {
+  [routes.explore]: ["/c", "/r", "/m"],
+  [routes.distributors]: ["/u"],
+};
+
+const startsWithSegment = (pathname: string, prefix: string) =>
+  pathname === prefix || pathname.startsWith(`${prefix}/`);
+
+export const isActiveHref = (pathname: string, href: string) => {
+  if (href === routes.earn.home || href === routes.sell.overview || href === routes.ops.queue)
+    return pathname === href;
+  if (startsWithSegment(pathname, href)) return true;
+  return (sectionPrefixes[href] ?? []).some((prefix) => startsWithSegment(pathname, prefix));
+};

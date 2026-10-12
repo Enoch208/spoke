@@ -7,7 +7,7 @@ import { cx } from "@/components/ui/cx";
 import { IconButton } from "@/components/ui/icon-button";
 import { shellCopy } from "@/lib/copy";
 import { useWorkspaceStore } from "@/lib/stores/workspace";
-import { accountNav, navForArea } from "../nav";
+import { accountNav, discoverNav, navForArea, type NavItem } from "../nav";
 import { AccountChip } from "./account-chip";
 import { NavLink } from "./nav-link";
 import type { ShellArea } from "./use-area";
@@ -15,10 +15,36 @@ import { workspaceHome } from "./workspace-switcher";
 
 const bottomIds = new Set(["settings", "help"]);
 
+function NavSection({
+  label,
+  items,
+  collapsed,
+}: {
+  label: string;
+  items: readonly NavItem[];
+  collapsed: boolean;
+}) {
+  return (
+    <div className="flex flex-col gap-0.5">
+      {collapsed ? (
+        <span aria-hidden="true" className="bg-hairline mx-3 my-2 h-px" />
+      ) : (
+        <span className="text-faint px-3 pt-3 pb-1.5 text-xs font-medium">{label}</span>
+      )}
+      <ul className="flex flex-col gap-0.5" aria-label={label}>
+        {items.map((item) => (
+          <li key={item.id}>
+            <NavLink item={item} collapsed={collapsed} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 export function Sidebar({ area }: { area: ShellArea }) {
   const collapsed = useWorkspaceStore((state) => state.sidebarCollapsed);
   const toggle = useWorkspaceStore((state) => state.toggleSidebar);
-  const items = navForArea(area);
   const bottom = accountNav.filter((item) => bottomIds.has(item.id));
   return (
     <aside
@@ -43,28 +69,27 @@ export function Sidebar({ area }: { area: ShellArea }) {
         </Link>
       </div>
       <nav
-        aria-label={shellCopy.areas[area]}
-        className="no-scrollbar flex-1 overflow-y-auto px-3 pb-4"
+        aria-label={shellCopy.mainNav}
+        className="no-scrollbar flex flex-1 flex-col gap-2 overflow-y-auto px-3 pb-4"
       >
+        <NavSection label={shellCopy.areas.discover} items={discoverNav} collapsed={collapsed} />
+        <NavSection label={shellCopy.areas[area]} items={navForArea(area)} collapsed={collapsed} />
+      </nav>
+      <div className="border-hairline flex flex-col gap-2 border-t px-3 py-3">
         <ul className="flex flex-col gap-0.5">
-          {items.map((item) => (
+          {bottom.map((item) => (
             <li key={item.id}>
               <NavLink item={item} collapsed={collapsed} />
             </li>
           ))}
         </ul>
-      </nav>
-      <div className="border-hairline flex flex-col gap-0.5 border-t px-3 py-3">
-        {bottom.map((item) => (
-          <NavLink key={item.id} item={item} collapsed={collapsed} />
-        ))}
         <AccountChip compact={collapsed} />
         <IconButton
           icon={SidebarLeftIcon}
           label={collapsed ? shellCopy.expandSidebar : shellCopy.collapseSidebar}
           size="sm"
           onClick={toggle}
-          className={cx("mt-1", collapsed ? "self-center" : "self-end")}
+          className={cx(collapsed ? "self-center" : "self-end")}
         />
       </div>
     </aside>

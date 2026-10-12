@@ -5,13 +5,21 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cx } from "@/components/ui/cx";
 import { shellCopy } from "@/lib/copy";
-import { isActiveHref, navForArea, phoneTabIds } from "../nav";
+import { allNavItems, isActiveHref, phoneTabIds } from "../nav";
 import type { ShellArea } from "./use-area";
 
-export function TabBar({ area }: { area: ShellArea }) {
+export function TabBar({ area }: { area: ShellArea | "discover" }) {
   const pathname = usePathname();
   const ids: readonly string[] = phoneTabIds[area];
-  const tabs = navForArea(area).filter((item) => ids.includes(item.id));
+  const workspaceLabels: Readonly<Record<string, string>> =
+    area === "discover"
+      ? { "earn-home": shellCopy.workspaces.earn, "sell-overview": shellCopy.workspaces.sell }
+      : {};
+  const tabs = ids.flatMap((id) =>
+    allNavItems
+      .filter((item) => item.id === id)
+      .map((item) => ({ ...item, label: workspaceLabels[item.id] ?? item.label })),
+  );
   return (
     <nav
       aria-label={shellCopy.areas[area]}
@@ -26,8 +34,8 @@ export function TabBar({ area }: { area: ShellArea }) {
                 href={item.href}
                 {...(active ? { "aria-current": "page" as const } : {})}
                 className={cx(
-                  "font-ui flex h-16 flex-col items-center justify-center gap-1 text-sm",
-                  active ? "text-ink font-medium" : "text-subtle",
+                  "font-ui flex h-16 flex-col items-center justify-center gap-1 text-xs font-medium transition-colors",
+                  active ? "text-ink" : "text-subtle hover:text-ink",
                 )}
               >
                 <HugeiconsIcon icon={item.icon} size={22} strokeWidth={1.8} aria-hidden="true" />

@@ -15,6 +15,7 @@ export const common = {
   nextPage: "Next page",
   page: "Page {page}",
   showMore: "Show more",
+  loading: "Loading",
   loadingSection: "Loading {sectionName}",
   takingLonger: "Taking longer than usual.",
   steps: "Steps",

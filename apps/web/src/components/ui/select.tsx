@@ -64,7 +64,7 @@ export function Select<Value extends string>({
                 key={option.value}
                 value={option.value}
                 disabled={option.disabled ?? false}
-                className="text-ink data-[highlighted]:bg-pill data-[disabled]:text-faint relative flex min-h-10 cursor-default items-center rounded-lg py-2 pr-9 pl-3 text-base outline-none select-none"
+                className="text-ink data-[highlighted]:bg-pill data-[disabled]:text-faint relative flex min-h-10 cursor-pointer items-center rounded-lg py-2 pr-9 pl-3 text-base outline-none select-none"
               >
                 <RadixSelect.ItemText>{option.label}</RadixSelect.ItemText>
                 <RadixSelect.ItemIndicator className="absolute right-3">

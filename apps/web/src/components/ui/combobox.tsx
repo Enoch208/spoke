@@ -149,7 +149,7 @@ export function Combobox<Value extends string>({
                     choose(index);
                   }}
                   className={cx(
-                    "relative flex min-h-10 cursor-default flex-col justify-center rounded-lg py-2 pr-9 pl-3",
+                    "relative flex min-h-10 cursor-pointer flex-col justify-center rounded-lg py-2 pr-9 pl-3",
                     index === active && "bg-pill",
                     option.disabled ? "text-faint" : "text-ink",
                   )}

@@ -3,9 +3,8 @@
 import { HugeiconsIcon } from "@hugeicons/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Badge } from "@/components/ui/badge";
 import { cx } from "@/components/ui/cx";
-import { featureChipCopy } from "@/lib/copy";
+import { featureChipCopy, shellCopy } from "@/lib/copy";
 import { featureStatus } from "@/lib/features";
 import { useModeStore } from "@/lib/stores/mode";
 import { isActiveHref, type NavItem } from "../nav";
@@ -41,12 +40,18 @@ export function NavLink({
       {collapsed ? (
         <span className="sr-only">{item.label}</span>
       ) : (
-        <span className="truncate">{item.label}</span>
+        <span className="min-w-0 flex-1 truncate">{item.label}</span>
       )}
       {demoOnly && !collapsed ? (
-        <Badge tone="lilac" className="ml-auto">
-          {featureChipCopy["demo-only"].label}
-        </Badge>
+        <span
+          title={featureChipCopy["demo-only"].label}
+          className={cx(
+            "ml-auto shrink-0 rounded-full px-1.5 py-0.5 text-[11px] leading-none font-medium",
+            active ? "bg-page/15 text-page" : "bg-lilac-soft text-ink",
+          )}
+        >
+          {shellCopy.demoTag}
+        </span>
       ) : null}
     </Link>
   );

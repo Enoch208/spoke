@@ -15,8 +15,9 @@ import { useUiStore } from "@/lib/stores/ui";
 import { NotificationsBell } from "../notifications-bell";
 import { AccountChip } from "./account-chip";
 import { MenuSheet } from "./menu-sheet";
+import { SignInButton } from "./sign-in-button";
 import { TxIndicator } from "./tx-indicator";
-import type { ShellArea } from "./use-area";
+import { useViewer, type ShellArea } from "./use-area";
 import { WorkspaceSwitcher, workspaceHome } from "./workspace-switcher";
 
 function CreateButton({ area }: { area: ShellArea }) {
@@ -33,6 +34,8 @@ function CreateButton({ area }: { area: ShellArea }) {
 
 export function TopBar({ area }: { area: ShellArea }) {
   const mode = useModeStore((state) => state.mode);
+  const viewer = useViewer();
+  const signedOut = viewer === "signedOut";
   const setPaletteOpen = useUiStore((state) => state.setPaletteOpen);
   const [menuOpen, setMenuOpen] = useState(false);
   return (
@@ -74,9 +77,13 @@ export function TopBar({ area }: { area: ShellArea }) {
           <div className="lg:hidden">
             <TxIndicator compact />
           </div>
-          <NotificationsBell />
+          {signedOut || viewer === "loading" ? null : <NotificationsBell />}
           <div className="hidden lg:block">
-            <CreateButton area={area} />
+            {viewer === "loading" ? null : signedOut ? (
+              <SignInButton variant="bar" />
+            ) : (
+              <CreateButton area={area} />
+            )}
           </div>
           <div className="lg:hidden">
             <AccountChip compact />

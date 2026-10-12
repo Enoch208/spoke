@@ -17,6 +17,11 @@ export const shellCopy = {
   signedOutAccount: "Sign in",
   opsConsole: "Ops console",
   opsConsoleDemo: "Ops console · demo",
-  areas: { earn: "Earn", sell: "Sell", ops: "Ops", account: "Account" },
+  areas: { earn: "Earn", sell: "Sell", ops: "Ops", account: "Account", discover: "Discover" },
   demoOnly: "Demo only",
+  demoTag: "Demo",
+  discover: { explore: "Explore", distributors: "Distributors", demo: "Try the demo" },
+  signIn: "Sign in",
+  signInPrompt: "Sign in to share, earn and sell.",
+  close: "Close",
 } as const;

@@ -11,8 +11,26 @@ import { routes } from "@/lib/routes";
 import { useModeStore } from "@/lib/stores/mode";
 import { useSessionStore } from "@/lib/stores/session";
 import { modalRegistry } from "../modal-registry";
+import { SignInButton } from "./sign-in-button";
+import { useViewer } from "./use-area";
 
 export function AccountChip({ compact = false }: { compact?: boolean }) {
+  const viewer = useViewer();
+  if (viewer === "signedOut") return <SignInButton variant={compact ? "icon" : "sidebar"} />;
+  if (viewer === "loading")
+    return (
+      <div
+        aria-hidden="true"
+        className={cx("flex h-12 items-center gap-3 px-2", compact && "w-12 justify-center px-0")}
+      >
+        <span className="bg-pill size-8 animate-pulse rounded-full" />
+        {compact ? null : <span className="bg-pill h-3 w-24 animate-pulse rounded-full" />}
+      </div>
+    );
+  return <AccountChipMenu compact={compact} />;
+}
+
+function AccountChipMenu({ compact }: { compact: boolean }) {
   const address = useSessionStore((state) => state.address);
   const mode = useModeStore((state) => state.mode);
   const persona = useModeStore((state) => state.persona);

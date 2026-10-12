@@ -12,7 +12,7 @@ import { SignedOutGate } from "./signed-out-gate";
 import { Sidebar } from "./sidebar";
 import { TabBar } from "./tab-bar";
 import { TopBar } from "./top-bar";
-import { useShellArea } from "./use-area";
+import { useIsPublicPage, useShellArea } from "./use-area";
 
 const contentId = "app-content";
 
@@ -33,8 +33,10 @@ export function AppShell({ children }: { children: ReactNode }) {
   const mode = useModeStore((state) => state.mode);
   const status = useSessionStore((state) => state.status);
   const bootstrapped = useSessionStore((state) => state.bootstrapped);
+  const publicPage = useIsPublicPage();
   useSellWithoutBusinessRedirect(area);
-  const gated = mode === "live" && bootstrapped && status !== "signedIn" && status !== "expired";
+  const gated =
+    !publicPage && mode === "live" && bootstrapped && status !== "signedIn" && status !== "expired";
   return (
     <div className="bg-page flex min-h-dvh">
       <a
@@ -55,7 +57,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           {gated ? <SignedOutGate /> : children}
         </main>
       </div>
-      <TabBar area={area} />
+      <TabBar area={publicPage ? "discover" : area} />
       <CommandPalette />
     </div>
   );

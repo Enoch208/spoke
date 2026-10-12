@@ -66,6 +66,8 @@
   --text-h3--line-height: 1.2;
   --text-h4: 24px;
   --text-h4--line-height: 1.2;
+  --text-title: 32px;
+  --text-title--line-height: 1.15;
   --text-lead: 21px;
   --text-lead--line-height: 1.4;
   --text-base: 16px;
@@ -363,6 +365,35 @@
 
   :focus-visible {
     @apply outline-2 outline-offset-2 outline-ink;
+  }
+
+  a[href],
+  button,
+  summary,
+  select,
+  label[for],
+  input[type="checkbox"],
+  input[type="radio"],
+  input[type="range"],
+  input[type="file"],
+  input[type="color"],
+  [role="button"],
+  [role="tab"],
+  [role="option"],
+  [role="menuitem"],
+  [role="menuitemradio"],
+  [role="menuitemcheckbox"],
+  [role="switch"],
+  [role="checkbox"],
+  [role="radio"],
+  [role="link"] {
+    cursor: pointer;
+  }
+
+  :disabled,
+  [aria-disabled="true"],
+  [data-disabled] {
+    cursor: not-allowed;
   }
 
   @media (prefers-reduced-motion: reduce) {
