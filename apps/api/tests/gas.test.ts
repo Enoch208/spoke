@@ -16,7 +16,7 @@ const wallets = [2, 3, 4, 5].map((value) =>
 );
 
 describe.skipIf(!databaseUrl || !rpcUrl)("durable native gas funding on a real chain", () => {
-  const chain = createChainService(rpcUrl ?? "http://127.0.0.1:20545", 10143, null, null);
+  let chain = createChainService(rpcUrl ?? "http://127.0.0.1:20545", 10143, null, null);
   const testClient = createTestClient({
     mode: "anvil",
     transport: http(rpcUrl ?? "http://127.0.0.1:20545"),
@@ -52,6 +52,8 @@ describe.skipIf(!databaseUrl || !rpcUrl)("durable native gas funding on a real c
     vi.restoreAllMocks();
     await testClient.revert({ id: snapshot });
     snapshot = await testClient.snapshot();
+    chain = createChainService(rpcUrl ?? "http://127.0.0.1:20545", 10143, null, null);
+    services.chain = chain;
     await testClient.setBalance({ address: station.address, value: 1000n * 10n ** 18n });
     await database.store.db.execute(sql`TRUNCATE api_records`);
     for (const [index, item] of wallets.entries()) {

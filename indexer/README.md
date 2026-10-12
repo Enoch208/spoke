@@ -22,6 +22,8 @@ Set the API's `INDEXER_SOURCE=envio` and use the same database. `direct_rpc` is 
 
 Hasura is disabled; neither PostgreSQL nor an indexer query API needs a public port. HyperIndex's health and metrics server uses port 9898. When running it in a container, publish that port only on `127.0.0.1`, and place only the Spoke database and indexer on their dedicated network. Keep `ENVIO_API_TOKEN` and database credentials server-side.
 
+HyperIndex 3.14 initializes Hasura configuration even when `ENVIO_HASURA=false`. Production therefore requires the three `HASURA_GRAPHQL_*` values in `.env.example`. They point to an unused loopback port and use an unused placeholder; no Hasura server is enabled or contacted. Set `ENVIO_PG_SSL_MODE` explicitly as well. The supplied `false` is for the dedicated internal database network; use `verify-full` with a correctly configured certificate when connecting over an untrusted network.
+
 ```sh
 curl --fail http://127.0.0.1:9898/healthz
 ```

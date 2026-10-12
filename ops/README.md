@@ -1,6 +1,6 @@
 # Spoke operations
 
-The web and API bind to loopback behind Caddy. PostgreSQL runs in `spoke-db` on a dedicated internal Docker network with a loopback-only port. HyperIndex runs as an unprivileged user in `spoke-indexer`, with its metrics bound to loopback. Its separate egress network permits HyperSync access.
+The web and API bind to loopback behind Caddy. PostgreSQL runs in `spoke-db` on a dedicated internal Docker network. The host API connects to its private bridge address; no database port is exposed publicly. Keep `DATABASE_URL` aligned with the container address when recreating it. HyperIndex runs as an unprivileged user in `spoke-indexer`, with its metrics bound to loopback. Its separate egress network permits HyperSync access.
 
 Deploy a verified Git revision using a clean archive, install frozen workspace dependencies and build the web app. Keep server credentials in private environment files outside the archive. Restart only `spoke-api`, `spoke-web` and the dedicated indexer container. Retain the previous release and environment for rollback.
 
