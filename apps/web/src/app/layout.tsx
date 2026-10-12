@@ -6,11 +6,7 @@ import "./globals.css";
 import { MotionRoot } from "@/components/motion/motion-root";
 import { motionFlagScript } from "@/components/motion/motion-flag";
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import type { ReactNode } from "react";
-import { cookieToInitialState } from "wagmi";
-import { wagmiConfig } from "@/lib/wagmi";
-import { Providers } from "./providers";
 
 export const metadata: Metadata = {
   title: "Spoke · The distribution graph",
@@ -18,15 +14,14 @@ export const metadata: Metadata = {
     "Distribution is a network. Launch a product, let people share it through trusted communities, and pay only for real sales with transparent onchain rules.",
 };
 
-export default async function RootLayout({ children }: { children: ReactNode }) {
-  const initialState = cookieToInitialState(wagmiConfig, (await headers()).get("cookie"));
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: motionFlagScript }} />
       </head>
       <body>
-        <Providers initialState={initialState}>{children}</Providers>
+        {children}
         <MotionRoot />
       </body>
     </html>

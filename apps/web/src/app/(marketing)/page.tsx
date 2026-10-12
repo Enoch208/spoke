@@ -6,24 +6,18 @@ import { Proof } from "@/components/landing/proof";
 import { Questions } from "@/components/landing/questions";
 import { Rails } from "@/components/landing/rails";
 import { Showcase } from "@/components/landing/showcase";
-import { SiteFooter } from "@/components/landing/site-footer";
-import { SiteHeader } from "@/components/landing/site-header";
 
 export default function Home() {
   return (
-    <>
-      <SiteHeader />
-      <main>
-        <Hero />
-        <Showcase />
-        <Benefits />
-        <BuiltWith />
-        <Layers />
-        <Questions />
-        <Rails />
-        <Proof />
-      </main>
-      <SiteFooter />
-    </>
+    <main>
+      <Hero />
+      <Showcase />
+      <Benefits />
+      <BuiltWith />
+      <Layers />
+      <Questions />
+      <Rails />
+      <Proof />
+    </main>
   );
 }
