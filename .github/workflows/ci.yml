@@ -55,6 +55,12 @@ jobs:
           version: v1.5.1
       - name: Install locked dependencies
         run: pnpm install --frozen-lockfile
+      - name: Generate and check indexer types
+        working-directory: indexer
+        run: |
+          pnpm install --ignore-workspace --frozen-lockfile
+          pnpm codegen
+          pnpm typecheck
       - name: Typecheck
         run: pnpm typecheck
       - name: Lint
