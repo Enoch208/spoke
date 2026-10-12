@@ -1,5 +1,9 @@
 "use client";
 
+import { common } from "@/lib/copy";
+import { useClientContext } from "@/lib/client/provider";
+import { receiptHref } from "@/lib/routes";
+import { activeChain } from "@/lib/wagmi";
 import { useNow } from "@/lib/use-now";
 import Link from "next/link";
 import { earningsBuckets } from "@spoke/protocol";
@@ -24,6 +28,7 @@ const labels = {
 };
 
 export function EarningsPage() {
+  const { mode } = useClientContext();
   const now = useNow();
   const summary = useClientQuery("earnings.summary", {}, { refetchInterval: 10_000 });
   const claimable = useClientQuery("earnings.claimable", {}, { refetchInterval: 10_000 });
@@ -100,7 +105,7 @@ export function EarningsPage() {
             {conversions.data?.items.map((conversion) => (
               <Link
                 key={`${conversion.saleId}-${String(conversion.level)}`}
-                href={`/receipts/10143/${conversion.saleId}`}
+                href={receiptHref(conversion.saleId, activeChain.id)}
                 className="hover:bg-soft ease-spring -mx-3 flex flex-wrap items-center justify-between gap-3 rounded-xl px-3 py-3 transition-colors duration-[423ms]"
               >
                 <div className="min-w-0">
@@ -133,8 +138,9 @@ export function EarningsPage() {
           </div>
         </Card>
         <p className="text-subtle text-xs">
-          Indexed through block {summary.data?.indexedBlock ?? "unavailable"}. Direct balance read
-          at block {summary.data?.blockNumber ?? "unavailable"}.
+          {mode === "demo"
+            ? common.simulated
+            : `Indexed through block ${summary.data?.indexedBlock ?? "unavailable"}. Direct balance read at block ${summary.data?.blockNumber ?? "unavailable"}.`}
         </p>
       </QueryState>
     </ProductPage>

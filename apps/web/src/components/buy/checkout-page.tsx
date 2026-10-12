@@ -1,5 +1,6 @@
 "use client";
 
+import { useClientContext } from "@/lib/client/provider";
 import { formatHoldPhrase } from "@/lib/format";
 import Link from "next/link";
 import { useState } from "react";
@@ -19,6 +20,7 @@ import { FundsPanel } from "./funds-panel";
 import { BannerStack } from "../app/banners";
 
 export function CheckoutPage({ campaignId }: { campaignId: string }) {
+  const { mode } = useClientContext();
   const params = useSearchParams();
   const code = params.get("ref");
   const [direct, setDirect] = useState(false);
@@ -267,7 +269,7 @@ export function CheckoutPage({ campaignId }: { campaignId: string }) {
                     </Link>
                     .
                   </p>
-                  {quote ? (
+                  {quote && mode !== "demo" ? (
                     <p className="text-subtle mt-3 text-xs">
                       Preview read at block {quote.blockNumber} · Policy version{" "}
                       {quote.policyVersion}

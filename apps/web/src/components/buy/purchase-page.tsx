@@ -1,5 +1,6 @@
 "use client";
 
+import { receiptHref } from "@/lib/routes";
 import { useState } from "react";
 import { ProductPage, QueryState, PageLink, Stat } from "@/components/product/page";
 import { Card } from "@/components/ui/card";
@@ -38,9 +39,7 @@ export function PurchasePage({ saleId, merchant = false }: { saleId: string; mer
     <ProductPage
       title={campaign.data?.product.title ?? `Sale #${saleId}`}
       description={`Sale #${saleId} · ${campaign.data?.merchant.name ?? "Onchain purchase"}`}
-      actions={
-        <PageLink href={`/receipts/${String(activeChain.id)}/${saleId}`}>Public receipt</PageLink>
-      }
+      actions={<PageLink href={receiptHref(saleId, activeChain.id)}>Public receipt</PageLink>}
     >
       <QueryState
         pending={receipt.isPending}

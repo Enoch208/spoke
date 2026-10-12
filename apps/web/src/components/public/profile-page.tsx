@@ -1,5 +1,6 @@
 "use client";
 
+import { receiptHref } from "@/lib/routes";
 import Link from "next/link";
 import { demoToken } from "@spoke/protocol";
 import { ProductPage, QueryState, Stat, PageLink } from "@/components/product/page";
@@ -73,7 +74,7 @@ export function ProfilePage({ handle, own = false }: { handle?: string; own?: bo
                 {data.evidence.items.map((sale) => (
                   <Link
                     key={sale.saleId}
-                    href={`/receipts/${String(sale.chainId)}/${sale.saleId}`}
+                    href={receiptHref(sale.saleId, sale.chainId)}
                     className="bg-pill rounded-full px-4 py-2 text-sm"
                   >
                     Sale #{sale.saleId}

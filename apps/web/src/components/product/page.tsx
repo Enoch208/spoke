@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
+import { cx } from "@/components/ui/cx";
 import { ErrorState } from "@/components/ui/error-state";
 import { Button } from "@/components/ui/button";
 import { SkeletonCard, SkeletonRows } from "@/components/ui/skeleton";
@@ -62,7 +63,7 @@ export function PageFrame({ children }: { children: ReactNode }) {
 
 export type LoadingShape = "cards" | "rows" | "detail";
 
-function LoadingSkeleton({ shape }: { shape: LoadingShape }) {
+export function LoadingSkeleton({ shape }: { shape: LoadingShape }) {
   if (shape === "cards")
     return (
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -131,15 +132,24 @@ export function Stat({
   label,
   value,
   caption,
+  mono = true,
 }: {
   label: string;
   value: ReactNode;
   caption?: string | undefined;
+  mono?: boolean;
 }) {
   return (
     <Card>
       <p className="text-subtle text-sm">{label}</p>
-      <p className="font-mono text-ink mt-2 break-words text-2xl tabular-nums">{value}</p>
+      <div
+        className={cx(
+          "text-ink mt-2 break-words",
+          mono ? "font-mono text-2xl tabular-nums" : "font-display text-h4 font-medium",
+        )}
+      >
+        {value}
+      </div>
       {caption ? <p className="text-subtle mt-2 text-sm">{caption}</p> : null}
     </Card>
   );
@@ -150,5 +160,18 @@ export function PageLink({ href, children }: { href: string; children: ReactNode
     <Button asChild variant="secondary">
       <Link href={href}>{children}</Link>
     </Button>
+  );
+}
+
+export function PageSkeleton({ shape = "detail" }: { shape?: LoadingShape }) {
+  return (
+    <div role="status" aria-live="polite" className="w-full space-y-6">
+      <span className="sr-only">{common.loading}</span>
+      <div className="space-y-3">
+        <SkeletonCard className="h-9 w-72 rounded-xl" />
+        <SkeletonCard className="h-5 w-96 max-w-full rounded-lg" />
+      </div>
+      <LoadingSkeleton shape={shape} />
+    </div>
   );
 }

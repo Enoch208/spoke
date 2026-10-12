@@ -194,3 +194,6 @@ export const afterAuthPath = ({
   }
   return next ?? (intent ? intentHome[intent] : routes.earn.home);
 };
+
+export const receiptHref = (saleId: string, chainId: number) =>
+  routeTo.receipt(saleId.startsWith("demo-") ? "demo" : chainId, saleId);

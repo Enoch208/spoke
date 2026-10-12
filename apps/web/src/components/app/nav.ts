@@ -178,7 +178,7 @@ export const accountNav: readonly NavItem[] = [
 
 export const phoneTabIds = {
   discover: ["discover-explore", "discover-distributors", "earn-home", "sell-overview"],
-  earn: ["earn-home", "earn-links", "earn-earnings", "earn-payouts"],
+  earn: ["earn-home", "earn-opportunities", "earn-links", "earn-earnings"],
   sell: ["sell-overview", "sell-campaigns", "sell-sales", "sell-vault"],
   ops: ["ops-queue", "ops-moderation", "ops-audit", "ops-health"],
 } as const;

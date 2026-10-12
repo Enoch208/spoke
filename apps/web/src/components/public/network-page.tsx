@@ -1,5 +1,7 @@
 "use client";
 
+import { receiptHref } from "@/lib/routes";
+import { activeChain } from "@/lib/wagmi";
 import { SaleStateChip } from "@/components/product/state-chips";
 import { useState } from "react";
 import Link from "next/link";
@@ -107,7 +109,7 @@ export function NetworkPage({ campaignId }: { campaignId?: string }) {
             {graph.data?.saleMarkers.map((sale) => (
               <Link
                 key={sale.saleId}
-                href={`/receipts/10143/${sale.saleId}`}
+                href={receiptHref(sale.saleId, activeChain.id)}
                 className="bg-surface border-hairline hover:border-line ease-spring inline-flex items-center gap-2 rounded-full border py-1 pr-1 pl-3 text-sm transition-colors duration-[423ms]"
               >
                 Sale #{sale.saleId}

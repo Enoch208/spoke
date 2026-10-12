@@ -1,5 +1,7 @@
 "use client";
 
+import { common } from "@/lib/copy";
+import { useClientContext } from "@/lib/client/provider";
 import { useState } from "react";
 import { parseUnits } from "viem";
 import { ProductPage, QueryState, PageLink } from "@/components/product/page";
@@ -27,6 +29,7 @@ const proceedsLabels = {
 };
 
 export function VaultPage({ campaignId }: { campaignId?: string }) {
+  const { mode } = useClientContext();
   const vault = useClientQuery("vault.get", campaignId ? { campaignId } : {}, {
     refetchInterval: 10_000,
   });
@@ -223,8 +226,9 @@ export function VaultPage({ campaignId }: { campaignId?: string }) {
           </p>
         ) : null}
         <p className="text-subtle text-xs">
-          Contract balances read at block {vault.data?.blockNumber ?? "unavailable"} · Index through{" "}
-          {vault.data?.lastIndexedBlock ?? "unavailable"}
+          {mode === "demo"
+            ? common.simulated
+            : `Contract balances read at block ${vault.data?.blockNumber ?? "unavailable"} · Index through ${vault.data?.lastIndexedBlock ?? "unavailable"}`}
         </p>
       </QueryState>
     </ProductPage>
