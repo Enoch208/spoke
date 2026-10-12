@@ -1,23 +1,106 @@
 @import "tailwindcss";
 
 @theme {
-  --color-ink: #161a16;
-  --color-canvas: #f7f9f2;
+  --color-page: #fafafa;
+  --color-section: #fafaf9;
+  --color-ink: #1a1a1a;
+  --color-body: #535353;
+  --color-muted: #52525b;
+  --color-subtle: #71717a;
+  --color-faint: #a1a1aa;
+  --color-pill: #f0eeeb;
+  --color-soft: #f8f6f4;
   --color-surface: #ffffff;
-  --color-line: #e3e7dc;
-  --color-muted: #4f5d56;
-  --color-lime: #cbf36a;
-  --color-lavender: #d8c8fc;
-  --color-periwinkle: #a7b4f3;
-  --color-slate: #64746d;
+  --color-line: #ebe8e4;
+  --color-hairline: #f2f0ed;
 
-  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --color-lime: #b8f53e;
+  --color-lime-deep: #6f9a12;
+  --color-lime-soft: #ecfcc4;
+  --color-pink: #f484dd;
+  --color-pink-deep: #b8389f;
+  --color-pink-soft: #fde4f7;
+  --color-olive: #333724;
+  --color-olive-soft: #e7e9dc;
+  --color-lilac: #c9bbfa;
+  --color-lilac-soft: #efeaff;
+  --color-sky: #8fc3ff;
+  --color-sky-deep: #1f6fd1;
+  --color-sky-soft: #e3f0ff;
+  --color-amber-soft: #fff1d6;
+  --color-amber-deep: #b26b00;
+
+  --font-display: "Urbanist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Jost Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-ui: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono Variable", ui-monospace, monospace;
+
+  --text-h1: 64px;
+  --text-h1--line-height: 1.2;
+  --text-h2: 54px;
+  --text-h2--line-height: 1.2;
+  --text-h3: 42px;
+  --text-h3--line-height: 1.2;
+  --text-h4: 24px;
+  --text-h4--line-height: 1.2;
+  --text-lead: 21px;
+  --text-lead--line-height: 1.4;
+  --text-base: 16px;
+  --text-base--line-height: 1.4;
+  --text-sm: 14px;
+  --text-sm--line-height: 1.4;
+
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-float-slow: float 9s ease-in-out infinite;
+  --animate-orbit: orbit 80s linear infinite;
+  --animate-orbit-reverse: orbit 80s linear infinite reverse;
+  --animate-fade-up: fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-fade-in: fade-in 0.35s ease-out both;
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) rotate(var(--tilt, 0deg));
+    }
+    50% {
+      transform: translate3d(0, -10px, 0) rotate(calc(var(--tilt, 0deg) + 4deg));
+    }
+  }
+
+  @keyframes orbit {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 24px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
-    @apply bg-canvas text-ink font-sans antialiased;
+    @apply bg-page text-ink font-sans antialiased;
   }
 
   :focus-visible {
@@ -25,11 +108,56 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
     *,
     *::before,
     *::after {
       animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
     }
   }
+}
+
+@utility grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  background-size: 240px 240px;
+  mix-blend-mode: soft-light;
+}
+
+@utility reveal {
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      animation: fade-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 35%;
+    }
+  }
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility orbit-halo {
+  background-image: radial-gradient(
+    86.7% 32.76% at 50% 32.76%,
+    var(--color-section) 29.43%,
+    color-mix(in oklab, var(--color-pill) 70%, var(--color-section)) 100%
+  );
+}
+
+@utility orbit-ring {
+  background-image: radial-gradient(
+    149.55% 149.55% at 50% -16.87%,
+    color-mix(in oklab, var(--color-line) 0%, transparent) 10.89%,
+    color-mix(in oklab, var(--color-line) 60%, transparent) 100%
+  );
 }

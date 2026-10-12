@@ -1,4 +1,6 @@
-import "@fontsource-variable/geist";
+import "@fontsource-variable/urbanist";
+import "@fontsource-variable/jost";
+import "@fontsource-variable/inter";
 import "@fontsource-variable/geist-mono";
 import "./globals.css";
 import type { Metadata } from "next";
@@ -9,8 +11,9 @@ import { wagmiConfig } from "@/lib/wagmi";
 import { Providers } from "./providers";
 
 export const metadata: Metadata = {
-  title: "Spoke",
-  description: "Pay for revenue, not reach. Merchant-funded rewards for real sales, on Monad.",
+  title: "Spoke · The distribution graph",
+  description:
+    "Distribution is a network. Launch a product, let people share it through trusted communities, and pay only for real sales with transparent onchain rules.",
 };
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
