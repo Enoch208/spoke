@@ -7,8 +7,10 @@ import { createChainService } from "./services/chain.js";
 import proof from "../../../packages/contracts/deployments/10143-proof.json" with { type: "json" };
 import { createInsightsService } from "./services/insights.js";
 import { createIndexer } from "./services/indexer.js";
+import { createRpcFetch } from "./http/rpc-fetch.js";
 
 const env = parseEnv(process.env);
+const rpc = createRpcFetch({ requestsPerSecond: env.RPC_REQUESTS_PER_SECOND });
 const store = connectStore(env.DATABASE_URL);
 await store.migrate();
 const prune = () =>
@@ -25,6 +27,7 @@ const chain = createChainService(
   env.CHAIN_ID,
   env.PROTOCOL_ADDRESS,
   env.TOKEN_ADDRESS,
+  rpc.fetch,
 );
 const indexer = createIndexer(store, chain, BigInt(env.DEPLOYMENT_BLOCK), {
   source: env.INDEXER_SOURCE,
@@ -41,7 +44,7 @@ if (env.NANSEN_REFRESH_ON_START)
 const app = createApp({
   webOrigin: env.WEB_ORIGIN,
   probes: {
-    rpc: rpcProbe(env.RPC_URL, env.CHAIN_ID),
+    rpc: rpcProbe(env.RPC_URL, env.CHAIN_ID, rpc.fetch),
     database: async () => {
       try {
         return await store.health();
@@ -80,6 +83,7 @@ const app = createApp({
   },
   insights,
   rpcUrl: env.RPC_URL,
+  rpcFetch: rpc.fetch,
   deploymentBlock: env.DEPLOYMENT_BLOCK,
 });
 
@@ -91,6 +95,7 @@ for (const signal of ["SIGTERM", "SIGINT"] as const)
   process.on(signal, () => {
     clearInterval(maintenance);
     indexer.stop();
+    rpc.stop();
     server.close(() => {
       void store.close().then(() => process.exit(0));
     });

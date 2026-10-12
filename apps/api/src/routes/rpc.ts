@@ -125,13 +125,13 @@ export const validateRpc = (request: z.infer<typeof rpcInput>, services: Service
   return parsed;
 };
 
-export const rpcRoutes = (services: Services, rpcUrl: string) => {
+export const rpcRoutes = (services: Services, rpcUrl: string, fetcher: typeof fetch = fetch) => {
   const app = router();
   route(app, services, "POST", "/rpc", "public", async (c) => {
     await services.store.rate(`rpc:${c.get("ip")}`, 60, 60);
     const body = await input(c, rpcInput);
     const parsedParams = validateRpc(body, services);
-    const response = await fetch(rpcUrl, {
+    const response = await fetcher(rpcUrl, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ ...body, params: parsedParams }),

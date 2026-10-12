@@ -30,8 +30,11 @@ export const createChainService = (
   chainId: number,
   protocolAddress: string | null,
   tokenAddress: string | null,
+  fetcher?: typeof fetch,
 ) => {
-  const client = createPublicClient({ transport: http(rpcUrl, { timeout: 8000, retryCount: 1 }) });
+  const client = createPublicClient({
+    transport: http(rpcUrl, { timeout: 8000, retryCount: fetcher ? 0 : 1, fetchFn: fetcher }),
+  });
   const address = protocolAddress ? getAddress(protocolAddress) : null;
   const token = tokenAddress ? getAddress(tokenAddress) : null;
   const service = {

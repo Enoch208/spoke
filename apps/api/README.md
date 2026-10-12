@@ -15,6 +15,8 @@ pnpm --filter @spoke/api start
 
 Set `INDEXER_SOURCE=envio` with the [HyperIndex service](../../indexer/README.md) running against the same database. `direct_rpc` is an explicitly identified fallback. Chain timestamps and projection lag are exposed in `/v1/system/status`; stale projections are labelled `behind`.
 
+Use a private RPC endpoint for production. `RPC_REQUESTS_PER_SECOND` defaults to 5; indexing, wallet RPC and health checks share a bounded request queue and deadline. Rate-limited reads retry within that deadline with a shared cooldown. Signed broadcasts and uncertain network failures are not automatically retried.
+
 ## Contract
 
 The shared `@spoke/protocol` package exports `clientMethodSchemas`, `clientRoutes`, `ClientInput<M>` and `ClientOutput<M>`. These define all 185 client methods: 135 core methods and 50 designed methods. Designed methods reject live calls with `FEATURE_NOT_AVAILABLE`. `/v1/system/endpoints` lists the HTTP transport, authentication and availability.

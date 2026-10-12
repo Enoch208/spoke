@@ -41,6 +41,7 @@ export interface AppDeps {
   config: HealthConfig;
   services?: Services;
   rpcUrl?: string;
+  rpcFetch?: typeof fetch;
   deploymentBlock?: string;
   insights?: InsightsService;
 }
@@ -178,7 +179,7 @@ export const createApp = (deps: AppDeps) => {
       "/v1",
       playgroundRoutes(services, async (request) => await app.fetch(request)),
     );
-    if (deps.rpcUrl) app.route("/v1", rpcRoutes(services, deps.rpcUrl));
+    if (deps.rpcUrl) app.route("/v1", rpcRoutes(services, deps.rpcUrl, deps.rpcFetch));
   }
   return app;
 };

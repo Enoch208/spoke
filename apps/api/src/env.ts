@@ -26,6 +26,7 @@ const envSchema = z.object({
   INDEXER_SOURCE: z.enum(["direct_rpc", "envio"]).default("direct_rpc"),
   CHAIN_ID: z.coerce.number().int().refine(isSupportedChainId, "CHAIN_ID must be 10143 or 31337"),
   RPC_URL: z.url(),
+  RPC_REQUESTS_PER_SECOND: z.coerce.number().int().min(1).max(50).default(5),
   DATABASE_URL: z
     .url()
     .refine((url) => ["postgres:", "postgresql:"].includes(new URL(url).protocol)),
