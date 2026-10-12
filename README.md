@@ -57,3 +57,7 @@ The web app runs on http://localhost:3040 and the API on http://localhost:8740. 
 ## Network
 
 Monad Testnet, chain ID 10143, explorer [MonadVision](https://testnet.monadvision.com). Everything here is a testnet demonstration: tokens are demo tokens and balances are not money.
+
+## Credits
+
+The "Built on" strip shows the marks of the open-source tools and network Spoke uses, to credit them; each mark belongs to its owner. The Solidity logo is by the Solidity team and licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Solidity, OpenZeppelin, wagmi, Next.js and TypeScript marks come from [Simple Icons](https://simpleicons.org); the Monad, Foundry and viem marks come from their official sites and repositories.
