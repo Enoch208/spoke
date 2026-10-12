@@ -1,0 +1,345 @@
+{
+  "schemaVersion": 1,
+  "chainId": 10143,
+  "testnetOnly": true,
+  "scriptedDemonstration": true,
+  "description": "Scripted wallets exercise the frontend client, hosted API and contracts using non-redeemable SDUSD. This is not customer revenue.",
+  "journeyApplicationCommit": "5dab85a798c1f51dab297ef9ff8141f38de3bac6",
+  "deployedApplicationCommit": "15914b5f1cf118c072896b2346f360f46386f6a2",
+  "protocolAddress": "0x1Fa5e94e44DB2101664C0a24dBf1e52912af3eca",
+  "token": {
+    "address": "0xb6279237003eD710bB4ccE6fbd126e07eD4D8E23",
+    "symbol": "SDUSD",
+    "decimals": 6,
+    "redeemable": false
+  },
+  "campaign": {
+    "id": "3",
+    "productId": "scripted_sd_usd_demo_v3",
+    "merchantSlug": "scripted_sd_usd_demo",
+    "nodes": [
+      {
+        "id": "7",
+        "parentId": "0"
+      },
+      {
+        "id": "8",
+        "parentId": "7"
+      }
+    ],
+    "state": "FUNDED_ACTIVE",
+    "availableRewards": "4900000"
+  },
+  "publicLinks": {
+    "campaign": "https://usespoke.xyz/c/3",
+    "merchant": "https://usespoke.xyz/m/scripted_sd_usd_demo",
+    "graph": "https://usespoke.xyz/c/3/network",
+    "referral": "https://usespoke.xyz/r/10143-8",
+    "settledReceipt": "https://usespoke.xyz/receipts/10143/4",
+    "refundedReceipt": "https://usespoke.xyz/receipts/10143/5"
+  },
+  "transactions": {
+    "createCampaign3": {
+      "hash": "0xcb518b8e6ad64bf0ad5e9ea0a523069027d08f1598da22142ca55b0250ecbe49",
+      "blockNumber": "70504175",
+      "gasUsed": "350811"
+    },
+    "approveBudget": {
+      "hash": "0x5cf2775449d1c56174bb01fee94b860e49363599bae2a80c722968c8e310d9f3",
+      "blockNumber": "70504192",
+      "gasUsed": "35477"
+    },
+    "fundCampaign3": {
+      "hash": "0xaa00ac8695fdd8800490e872b168d31ae722582f0ff736737b0c84f6cde62577",
+      "blockNumber": "70504205",
+      "gasUsed": "182026"
+    },
+    "activateCampaign3": {
+      "hash": "0xc3ce49528235c4c01d09713e0484386e1670f6742c8c74f130690ea31c254bd7",
+      "blockNumber": "70504218",
+      "gasUsed": "86130"
+    },
+    "nodeA": {
+      "hash": "0xe55e3cc842dbf7fa81215b7137f70881709489753abc60da0c0b0b80fc1a91a0",
+      "blockNumber": "70504233",
+      "gasUsed": "200614"
+    },
+    "nodeB": {
+      "hash": "0x4bb7b1f70029d7169b96e6c30afb337926f72e9da923baa41e8f134c2da60b8f",
+      "blockNumber": "70504251",
+      "gasUsed": "208870"
+    },
+    "approve_buyerA": {
+      "hash": "0xfe43a07ed2b7330745f180dae5ff58154519f200295ccafba2dfdc9b0a7b9012",
+      "blockNumber": "70504386",
+      "gasUsed": "35477"
+    },
+    "purchase_buyerA": {
+      "hash": "0x985937f3eb8ef86c7a484704476b69f55a9370e160bac2ef1a937f2692ba18e8",
+      "blockNumber": "70504404",
+      "gasUsed": "640170"
+    },
+    "approve_refundBuyer": {
+      "hash": "0x0b0518707723bf5fe25bd5f756e796c3b14a15057c3ac39d87a95e5be65661d8",
+      "blockNumber": "70504544",
+      "gasUsed": "35477"
+    },
+    "purchase_refundBuyer": {
+      "hash": "0x4068fb1d98fab259e71bfbfa53b6b948a2175895e523644a183bbb841065486a",
+      "blockNumber": "70504555",
+      "gasUsed": "571642"
+    },
+    "refundSale": {
+      "hash": "0x28225cb3e4a10f48d854a7a4513be6c67864026dabd54fa315b528fe0ce1eccc",
+      "blockNumber": "70504599",
+      "gasUsed": "134252"
+    },
+    "finalizeSale": {
+      "hash": "0xf6d3327b8e5afc68d463bf94ca3ec5607e689c90383b4e6694a0cf22014b47f0",
+      "blockNumber": "70504708",
+      "gasUsed": "449947"
+    },
+    "claim_A": {
+      "hash": "0x47e5468dfab44e6c082e2c489a0aafc4cdb499f36e6af7c92f34dd00906ce977",
+      "blockNumber": "70504724",
+      "gasUsed": "185933"
+    },
+    "claim_B": {
+      "hash": "0x9672bd358a5786fe0e9627053ac90decbc4cbccc34fe5b62f187eb526953b7b4",
+      "blockNumber": "70504741",
+      "gasUsed": "168798"
+    },
+    "claimMerchantProceeds": {
+      "hash": "0x0a5ee75dfc9d233c46d053dd295bcce85e4ea0ce2a2db5a8022171c9ccc0bb63",
+      "blockNumber": "70504756",
+      "gasUsed": "92633"
+    }
+  },
+  "sales": {
+    "settled": {
+      "saleId": "4",
+      "campaignId": "3",
+      "nodeId": "8",
+      "state": "FINALIZED",
+      "price": "1000000",
+      "rewardReserved": "100000",
+      "policyHash": "0x9e45c822dd5519ed90191cabba80cc73b120ee90c3eeca43953a0e5a5f07e95b",
+      "policyVersion": 1,
+      "purchasedAt": "2026-10-12T21:26:40.000Z",
+      "unlockAt": "2026-10-12T21:27:40.000Z",
+      "proceedsState": "claimed",
+      "allocations": [
+        {
+          "level": 1,
+          "effectiveWeightBps": 7000,
+          "amount": "70000",
+          "state": "claimed"
+        },
+        {
+          "level": 2,
+          "effectiveWeightBps": 3000,
+          "amount": "30000",
+          "state": "claimed"
+        }
+      ]
+    },
+    "refunded": {
+      "saleId": "5",
+      "campaignId": "3",
+      "nodeId": "8",
+      "state": "REFUNDED",
+      "price": "1000000",
+      "rewardReserved": "100000",
+      "policyHash": "0x9e45c822dd5519ed90191cabba80cc73b120ee90c3eeca43953a0e5a5f07e95b",
+      "policyVersion": 1,
+      "purchasedAt": "2026-10-12T21:27:27.000Z",
+      "unlockAt": "2026-10-12T21:28:27.000Z",
+      "proceedsState": "refunded",
+      "allocations": [
+        {
+          "level": 1,
+          "effectiveWeightBps": 7000,
+          "amount": "70000",
+          "state": "refunded"
+        },
+        {
+          "level": 2,
+          "effectiveWeightBps": 3000,
+          "amount": "30000",
+          "state": "refunded"
+        }
+      ]
+    }
+  },
+  "campaignLedgers": {
+    "rewards": {
+      "netDeposited": "5000000",
+      "available": "4900000",
+      "pendingReserved": "0",
+      "vestedUnclaimed": "0",
+      "rewardsClaimed": "100000",
+      "surplusWithdrawn": "0"
+    },
+    "proceeds": {
+      "proceedsPending": "0",
+      "proceedsClaimable": "0",
+      "proceedsClaimed": "1000000",
+      "buyerRefunded": "1000000"
+    },
+    "rewardEquation": "5000000 deposited = 4900000 available + 100000 claimed",
+    "proceedsEquation": "2000000 received = 1000000 claimed + 1000000 refunded"
+  },
+  "receiptVerification": {
+    "paidBlock": "70506653",
+    "refundBlock": "70506657",
+    "paidMatchesIndex": true,
+    "refundMatchesIndex": true
+  },
+  "journeyCheckpoint": {
+    "name": "envio",
+    "indexedBlock": "70506660",
+    "chainHead": "70506683",
+    "chainTime": "2026-10-12T21:38:14.000Z",
+    "lagBlocks": "23",
+    "lagSeconds": 7,
+    "state": "live",
+    "blockHash": "0x6ce51adfbc5f41432f6b2354d8f9f585d86b942c8be6d25f539519c34a6b7e25",
+    "blockTimestamp": "1791841087"
+  },
+  "globalReconciliation": {
+    "matches": true,
+    "blockNumber": "70507063",
+    "rewardIndex": {
+      "netDeposited": "205000000",
+      "available": "4900000",
+      "pendingReserved": "0",
+      "vestedUnclaimed": "0",
+      "rewardsClaimed": "1600000",
+      "surplusWithdrawn": "198500000"
+    },
+    "rewardChain": {
+      "netDeposited": "205000000",
+      "available": "4900000",
+      "pendingReserved": "0",
+      "vestedUnclaimed": "0",
+      "rewardsClaimed": "1600000",
+      "surplusWithdrawn": "198500000"
+    },
+    "proceedsIndex": {
+      "proceedsPending": "0",
+      "proceedsClaimable": "0",
+      "proceedsClaimed": "16000000",
+      "buyerRefunded": "11000000"
+    },
+    "proceedsChain": {
+      "proceedsPending": "0",
+      "proceedsClaimable": "0",
+      "proceedsClaimed": "16000000",
+      "buyerRefunded": "11000000"
+    },
+    "mismatches": []
+  },
+  "assetCoverage": {
+    "protocolTokenBalance": "4900000",
+    "protectedLiabilities": "4900000",
+    "matches": true
+  },
+  "insights": {
+    "provider": "Nansen",
+    "cacheRecords": 4,
+    "observedStatus": "no_history",
+    "scope": "Supported mainnet history of the same address; excludes Monad Testnet and never determines payouts.",
+    "reservedCreditsBeforeJourney": 40,
+    "reservedCreditsAfterJourney": 40,
+    "cachedReadsDidNotIncreaseReservedCredits": true,
+    "verifiedClientReads": 2
+  },
+  "backupRestore": {
+    "restoredChainEvents": 90,
+    "restoredInsightCacheCount": 4,
+    "restoredNansenReservedCredits": 40,
+    "assetArchive": "readable",
+    "backupScope": "host-local"
+  },
+  "finalWorkerValidation": {
+    "applicationCommit": "15914b5f1cf118c072896b2346f360f46386f6a2",
+    "workerImage": "spoke-indexer:15914b5f1cf118c072896b2346f360f46386f6a2",
+    "nativeTlsVerification": true,
+    "temporaryMountCount": 0,
+    "source": "envio",
+    "workerProvider": "official Monad Testnet RPC",
+    "samples": [
+      {
+        "at": "2026-10-12T21:53:41.343019+00:00",
+        "block": "70509696",
+        "lagSeconds": 5
+      },
+      {
+        "at": "2026-10-12T21:53:56.763508+00:00",
+        "block": "70509747",
+        "lagSeconds": 5
+      },
+      {
+        "at": "2026-10-12T21:54:12.183541+00:00",
+        "block": "70509796",
+        "lagSeconds": 5
+      },
+      {
+        "at": "2026-10-12T21:54:27.622591+00:00",
+        "block": "70509847",
+        "lagSeconds": 5
+      },
+      {
+        "at": "2026-10-12T21:54:43.044163+00:00",
+        "block": "70509891",
+        "lagSeconds": 5
+      }
+    ],
+    "maxLagSeconds": 5,
+    "durationSeconds": 60
+  },
+  "checks": {
+    "paidAccess": true,
+    "refundRevocation": true,
+    "previouslyIssuedAccessRevoked": true,
+    "receiptMatchesIndex": true,
+    "bothRewardClaims": true,
+    "merchantProceedsClaimed": true,
+    "rewardConservation": true,
+    "proceedsConservation": true,
+    "demonstrationRemainsActive": true
+  },
+  "existingCampaignChecks": {
+    "ids": ["1", "2"],
+    "pausedStateNodeAndSaleCountsUnchanged": true
+  },
+  "browserVerification": {
+    "liveReadOnlyRoutes": [
+      "explore",
+      "merchant",
+      "campaign",
+      "graph",
+      "referral checkout",
+      "settled receipt",
+      "refunded receipt",
+      "status"
+    ],
+    "viewportWidths": [390, 1492],
+    "mobileOverflow": false,
+    "signedOutBuyDisabled": true,
+    "hardwarePasskeySigningExercised": false
+  },
+  "qualityGate": {
+    "applicationTestsPassed": 551,
+    "contractTestsPassed": 33,
+    "typecheck": "passed",
+    "lint": "passed",
+    "format": "passed",
+    "abiParity": "passed",
+    "productionBuild": "passed",
+    "hostedCI": "https://github.com/Enoch208/spoke/actions/runs/38313139691",
+    "hostedCIResult": "success"
+  },
+  "journeyCompletedAt": "2026-10-12T21:38:17.997Z",
+  "finalValidationCompletedAt": "2026-10-12T21:54:43.044163+00:00"
+}

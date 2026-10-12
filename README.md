@@ -9,7 +9,7 @@ Spoke is the distribution graph: an open distribution protocol on Monad. A merch
 
 Pay for revenue, not reach.
 
-**Live:** [usespoke.xyz](https://usespoke.xyz) (landing page; testnet contracts are listed below).
+**Live:** [Explore campaigns](https://usespoke.xyz/explore), [developer tools](https://usespoke.xyz/developers) and the [API endpoint registry](https://api.usespoke.xyz/v1/system/endpoints). [Demo mode](https://usespoke.xyz/demo) provides a separate, labelled walkthrough.
 
 ## The rules
 
@@ -25,18 +25,19 @@ Pay for revenue, not reach.
 
 ## Status
 
-This repository is under active construction for Monad Metropolis. Built so far:
+The core web app and API are deployed, with settlement on Monad Testnet:
 
-- The landing page (`apps/web`), with product screens drawn as clearly labelled illustrations.
+- Merchant setup, versioned products, campaign publication and management, referral links and graphs, checkout, buyer delivery, receipts, refunds and claims in the web app.
 - An immutable settlement contract with separate reward and buyer-payment ledgers, 1–5 commission levels, refunds, finalization, pull claims and future policy versions with 24 hours' notice.
 - A 6-decimal testnet demo token (`SpokeDemoUSD`, not a stablecoin and not redeemable), generated contract ABIs, shared reward math and schemas for all 185 client methods.
-- A PostgreSQL API for wallet sessions, immutable product versions, campaign publication, graph exploration, receipts, six earnings buckets, merchant vaults, reports and privacy-aware distributor records.
-- Envio HyperIndex settlement and SDUSD event indexing, canonical replay and reorganization checks, and cached Nansen context for the demonstration distributors.
+- A PostgreSQL API implementing 135 core client methods for wallet sessions, immutable product versions, campaign publication, graph exploration, receipts, six earnings buckets, merchant vaults, reports and privacy-aware distributor records. Another 50 designed methods return an explicit unavailable error.
+- Envio HyperIndex settlement and SDUSD event indexing, canonical replay and reorganization checks. HyperSync supplies history; native RPC supplies live events with TLS verification and bounded log ranges.
+- Cached Nansen context for four demonstration distributors, labelled as supported mainnet history. These new wallets have no observed history; page views do not purchase provider queries, and insights never determine payouts.
 - Private product uploads and buyer-only delivery that checks sale state directly onchain, plus a bounded testnet gas station with durable transaction retries.
 - A typed public read SDK, request and response validation, contract invariants and an actual frontend-client-to-API-to-contract settlement journey.
 - A scripted two-merchant testnet settlement proof with four rewarded levels, a branch, a separate refund, successful claims and protected unused-budget withdrawals.
 
-The contracts are deployed on Monad Testnet and source verified through Monad Sourcify, with exact matches for creation and runtime bytecode. The full API and frontend rollout is being verified for deployment. Prototype contract limits are 128 campaigns, 256 nodes and 100 sales per campaign. External commerce integrations, teams, webhooks and multi-currency settlement remain designed previews, with no live financial behavior.
+The contracts are source verified through Monad Sourcify, with exact matches for creation and runtime bytecode. Live pages use the deployed API and indexed contract state; Demo uses local fixtures. Prototype contract limits are 128 campaigns, 256 nodes and 100 sales per campaign. External commerce integrations, teams, webhooks and multi-currency settlement remain designed previews, with no live financial behavior.
 
 ## Layout
 
@@ -85,6 +86,10 @@ Monad Testnet, chain ID 10143, explorer [MonadVision](https://testnet.monadvisio
 Deployment blocks, compiler settings, checked token metadata and source-verification evidence are in [the deployment manifest](packages/contracts/deployments/10143.json).
 
 The [settlement proof](packages/contracts/deployments/10143-proof.json) records real testnet transactions, allocations, refund and finalization times, claimed balances and ledger reconciliation. These are scripted demonstration wallets using non-redeemable SDUSD, not customer revenue. [Reproduction commands](packages/contracts/README.md) cover Anvil and the checked testnet deployment.
+
+The [hosted API journey](packages/contracts/deployments/10143-production-journey.json) records 15 confirmed onchain transactions in a journey using the actual frontend client and HTTPS API: campaign publication and funding, two referral nodes, purchases, buyer delivery, refund access revocation, finalization and all claims. [Campaign 3](https://usespoke.xyz/c/3) remains active; [sale 4](https://usespoke.xyz/receipts/10143/4) finalized and [sale 5](https://usespoke.xyz/receipts/10143/5) refunded. Global reconciliation matched every campaign, and the contract's 4.9 SDUSD balance exactly covered its remaining liabilities. A fresh backup restored 90 indexed events, four insight caches and the unchanged credit reservation into a disposable database; the asset archive was readable. Backups are host-local.
+
+Release verification passed 551 application tests, 33 contract tests, typechecks, lint, formatting, ABI parity, production builds and [hosted CI](https://github.com/Enoch208/spoke/actions/runs/38313139691). Live browser checks covered public journeys at 390px and desktop widths, alongside an interactive Demo purchase and claim journey. Scripted EOA wallets signed the financial transactions; the frontend client and API prepared and verified the journey. Hardware passkey signing was not exercised by the browser check. Five final worker samples over a minute each reported five seconds of lag, with TLS verification enabled and no temporary mounts. This demonstrates the tested journey, rather than high-load capacity.
 
 ## Credits
 
