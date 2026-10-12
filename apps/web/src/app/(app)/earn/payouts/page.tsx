@@ -1,4 +1,5 @@
-import { EarningsPage } from "@/components/earn/earnings-page";
+import { PayoutsPage } from "@/components/earn/payouts/payouts-page";
+
 export default function Page() {
-  return <EarningsPage />;
+  return <PayoutsPage />;
 }
