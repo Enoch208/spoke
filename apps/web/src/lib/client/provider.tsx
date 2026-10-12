@@ -62,6 +62,7 @@ export function ClientProvider({
 }) {
   const hydrated = useStoresHydrated();
   const mode = useModeStore(selectMode);
+  const persona = useModeStore((state) => state.persona);
   const queryClient = useQueryClient();
   const live = useMemo(
     () =>
@@ -77,12 +78,18 @@ export function ClientProvider({
   });
   const [demoAttempt, setDemoAttempt] = useState(0);
   const previousMode = useRef<Mode | null>(null);
+  const previousPersona = useRef(persona);
 
   useEffect(() => {
     if (!hydrated) return;
-    if (previousMode.current !== null && previousMode.current !== mode) queryClient.clear();
+    if (
+      previousMode.current !== null &&
+      (previousMode.current !== mode || previousPersona.current !== persona)
+    )
+      queryClient.clear();
     previousMode.current = mode;
-  }, [hydrated, mode, queryClient]);
+    previousPersona.current = persona;
+  }, [hydrated, mode, persona, queryClient]);
 
   useEffect(() => {
     if (!hydrated || mode !== "demo" || demo.client || !loadDemoClient) return;

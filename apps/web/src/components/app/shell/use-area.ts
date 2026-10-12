@@ -1,0 +1,36 @@
+"use client";
+
+import { usePathname } from "next/navigation";
+import { routes } from "@/lib/routes";
+import { useWorkspaceStore, workspaceForPath } from "@/lib/stores/workspace";
+
+export type ShellArea = "earn" | "sell" | "ops";
+
+export const areaForPath = (pathname: string, fallback: "earn" | "sell"): ShellArea => {
+  if (pathname === routes.ops.queue || pathname.startsWith(`${routes.ops.queue}/`)) return "ops";
+  return workspaceForPath(pathname) ?? fallback;
+};
+
+export const useShellArea = (): ShellArea => {
+  const pathname = usePathname();
+  const workspace = useWorkspaceStore((state) => state.workspace);
+  return areaForPath(pathname, workspace);
+};
+
+const signedOutThingByPrefix: readonly [string, string][] = [
+  [routes.earn.earnings, "earnings"],
+  [routes.earn.payouts, "earnings"],
+  [routes.earn.links, "links"],
+  [routes.sell.sales, "sales"],
+  [routes.purchases, "purchases"],
+  [routes.sell.campaigns, "campaigns"],
+  [routes.wallet, "wallet"],
+  [routes.notifications, "notifications"],
+  ["/settings", "settings"],
+  [routes.sell.overview, "campaigns"],
+];
+
+export const signedOutThingFor = (pathname: string) =>
+  signedOutThingByPrefix.find(
+    ([prefix]) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+  )?.[1] ?? "earnings";

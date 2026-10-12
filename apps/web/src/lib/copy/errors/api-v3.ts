@@ -7,6 +7,12 @@ export type ErrorLine = {
 };
 
 export const v3ApiErrors = {
+  NANSEN_UNAVAILABLE: {
+    title: "Wallet insights are unavailable",
+    body: "Cached insights could not be loaded. Settled sales and rewards are unaffected.",
+    recovery: ["Try again"],
+    retryable: "yes",
+  },
   CAMPAIGN_NOT_FUNDED: {
     title: "Not funded yet",
     body: required.notFunded,

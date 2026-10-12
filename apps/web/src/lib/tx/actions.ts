@@ -1,7 +1,7 @@
 import { protocolLimits } from "@spoke/protocol";
 import type { FeatureKey } from "@/lib/features";
 import type { InvalidationTarget } from "@/lib/query/keys";
-import type { TxKind, TxParamsMap, TxStepKind } from "./types";
+import type { AnyTxRecord, TxKind, TxParamsMap, TxStepKind } from "./types";
 
 export type StepPlan = { kind: TxStepKind; target: string | null; waitsForIndex: boolean };
 
@@ -39,7 +39,7 @@ export const actions: ActionTable = {
       step("activateCampaign", null, true),
     ],
     resumeKey: (params) => `createCampaign:${params.draftId}`,
-    invalidates: ["campaigns.mine", "vault.get"],
+    invalidates: ["campaigns", "vault", "funding.status", "account.balances"],
     quickAction: "always-prompt",
     alreadyDoneCheckable: true,
   },
@@ -48,7 +48,7 @@ export const actions: ActionTable = {
     plan: () => [step("approve"), step("fundCampaign", null, true)],
     resumeKey: (params, startedAt) =>
       `fundCampaign:${params.campaignId}:${params.amount}:${String(startedAt)}`,
-    invalidates: ["vault", "campaigns.get"],
+    invalidates: ["vault", "campaigns", "funding.status", "account.balances"],
     quickAction: "always-prompt",
     alreadyDoneCheckable: false,
   },
@@ -56,7 +56,7 @@ export const actions: ActionTable = {
     feature: "links",
     plan: single("createNode"),
     resumeKey: (params) => `createNode:${params.campaignId}`,
-    invalidates: ["links", "graph"],
+    invalidates: ["links", "graph", "campaigns"],
     quickAction: "allowed",
     alreadyDoneCheckable: true,
   },
@@ -64,7 +64,14 @@ export const actions: ActionTable = {
     feature: "checkout",
     plan: () => [step("approve"), step("purchase", null, true)],
     resumeKey: (params) => `purchase:${params.campaignId}:${params.orderKey}`,
-    invalidates: ["receipts", "earnings", "vault.get", "campaigns.stats", "account.balances"],
+    invalidates: [
+      "receipts",
+      "earnings",
+      "vault",
+      "campaigns",
+      "account.balances",
+      "funding.status",
+    ],
     quickAction: "capped",
     alreadyDoneCheckable: true,
   },
@@ -80,7 +87,7 @@ export const actions: ActionTable = {
     feature: "settlement",
     plan: (params) => [step("finalize", params.saleId, true)],
     resumeKey: (params) => `finalize:${params.saleId}`,
-    invalidates: ["receipts.get", "earnings", "vault.get", "reputation", "distributors"],
+    invalidates: ["receipts", "earnings", "vault", "reputation", "distributors", "campaigns"],
     quickAction: "allowed",
     alreadyDoneCheckable: true,
   },
@@ -112,7 +119,7 @@ export const actions: ActionTable = {
     feature: "vault",
     plan: single("withdrawUnused"),
     resumeKey: (params) => `withdrawUnused:${params.campaignId}`,
-    invalidates: ["vault", "campaigns.get"],
+    invalidates: ["vault", "campaigns", "funding.status", "account.balances"],
     quickAction: "always-prompt",
     alreadyDoneCheckable: true,
   },
@@ -167,8 +174,8 @@ export const resumeKeyFor = <K extends TxKind>(
   startedAt: number,
 ) => actions[kind].resumeKey(params, startedAt);
 
-export const purchaseAmountMinor = <K extends TxKind>(kind: K, params: TxParamsMap[K]) =>
-  "price" in params && kind === "purchase" ? BigInt(params.price) : 0n;
+export const purchaseAmountOf = (record: AnyTxRecord) =>
+  record.kind === "purchase" ? BigInt(record.params.price) : 0n;
 
 export const needsPasskeyPrompt = (
   kind: TxKind,

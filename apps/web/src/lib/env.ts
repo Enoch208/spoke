@@ -15,6 +15,10 @@ const publicEnvSchema = z.object({
   NEXT_PUBLIC_API_URL: z.url(),
   NEXT_PUBLIC_PROTOCOL_ADDRESS: optionalAddress,
   NEXT_PUBLIC_DEMO_TOKEN_ADDRESS: optionalAddress,
+  NEXT_PUBLIC_REOWN_PROJECT_ID: z
+    .union([z.string().regex(/^[a-fA-F0-9]{32}$/), z.literal("")])
+    .optional()
+    .transform((value) => value || undefined),
 });
 
 export type PublicEnv = z.infer<typeof publicEnvSchema>;

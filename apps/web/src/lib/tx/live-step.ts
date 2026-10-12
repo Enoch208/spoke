@@ -263,7 +263,11 @@ export const runLiveStep = async (ctx: StepContext): Promise<StepOutcome> => {
   await ctx.waitForQueue();
   const prepared = await preflight(ctx, signer, call);
   if (prepared === "done" || prepared === "stopped") return prepared;
-  await ctx.beforeSign(signer);
+  try {
+    await ctx.beforeSign(signer);
+  } catch (error) {
+    return fail(ctx, classifySendError(error, "wallet"));
+  }
   ctx.update({
     status: "wallet_confirmation",
     interrupted: false,

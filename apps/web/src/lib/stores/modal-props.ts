@@ -5,7 +5,12 @@ import type { AccountKind } from "./session";
 
 export type SignInReason = "open" | "buy" | "share" | "sell" | "invite";
 
-type SignInProps = { reason: SignInReason; subject?: string; returnTo?: string };
+type SignInProps = {
+  reason: SignInReason;
+  subject?: string;
+  returnTo?: string;
+  expectedAddress?: string;
+};
 type NoProps = Record<string, never>;
 type ReportTargetKind = NonNullable<ClientInput<"support.report">["target"]>["kind"];
 

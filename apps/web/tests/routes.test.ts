@@ -30,8 +30,18 @@ describe("routes", () => {
 });
 
 describe("feature registry", () => {
-  it("starts every feature as demo-only until its backend is verified live", () => {
-    expect(featureKeys.every((key) => !isLive(key))).toBe(true);
+  it("enables verified core paths while keeping upcoming integrations in demo", () => {
+    expect(isLive("composer")).toBe(true);
+    expect(isLive("checkout")).toBe(true);
+    expect(isLive("settlement")).toBe(true);
+    expect(isLive("gasSponsorship")).toBe(true);
+    expect(isLive("shopify")).toBe(false);
+    expect(isLive("sdkWrite")).toBe(false);
+    expect(
+      featureKeys.every(
+        (key) => features[key].status !== "live" || features[key].target === "live",
+      ),
+    ).toBe(true);
   });
 
   it("keeps the planned submission status for each feature", () => {

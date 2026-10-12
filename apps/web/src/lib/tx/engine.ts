@@ -16,6 +16,7 @@ import type { AnyTxRecord, Hex, TxKind, TxParamsMap, TxStep } from "./types";
 export type TxEventType =
   | "hidden"
   | "walletWaiting"
+  | "sent"
   | "syncing"
   | "done"
   | "rejected"
@@ -125,6 +126,7 @@ export class TxEngine {
         if (patch.status === "wallet_confirmation") {
           this.deps.emit({ type: "walletWaiting", record: current() });
         }
+        if (patch.status === "submitted") this.deps.emit({ type: "sent", record: current() });
       },
       setContext: (values) => {
         if (Object.keys(values).length === 0) return;
@@ -144,6 +146,11 @@ export class TxEngine {
         }
       },
       beforeSign: async (signer) => {
+        if (signer.walletName) {
+          store.patchRecord(id, {
+            context: { ...current().context, walletName: signer.walletName },
+          });
+        }
         const record = current();
         if (signer.kind === "passkey" && record.hiddenAt !== null) this.show(id);
         await this.deps.beforeSign(record, signer);

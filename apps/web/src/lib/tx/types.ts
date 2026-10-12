@@ -28,9 +28,14 @@ export type TxParamsMap = {
   };
   refund: { saleId: string; price: string };
   finalize: { saleId: string };
-  claimRewards: { token: Hex; finalizeSaleIds: readonly string[] };
-  claimProceeds: { campaignIds: readonly string[]; finalizeSaleIds: readonly string[] };
-  withdrawUnused: { campaignId: string; campaignName: string };
+  claimRewards: { token: Hex; amount: string; finalizeSaleIds: readonly string[] };
+  claimProceeds: {
+    campaignIds: readonly string[];
+    campaignName: string | null;
+    amount: string;
+    finalizeSaleIds: readonly string[];
+  };
+  withdrawUnused: { campaignId: string; campaignName: string; amount: string };
   pause: { campaignId: string; campaignName: string };
   resume: { campaignId: string; campaignName: string };
   end: { campaignId: string; campaignName: string };

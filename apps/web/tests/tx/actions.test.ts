@@ -34,6 +34,7 @@ describe("step plans", () => {
     const saleIds = Array.from({ length: 12 }, (_, index) => String(index + 1));
     const steps = planSteps("claimRewards", {
       token: "0x00000000000000000000000000000000000000bb",
+      amount: "1",
       finalizeSaleIds: saleIds,
     });
     expect(steps.filter((step) => step.kind === "finalize")).toHaveLength(10);
@@ -41,7 +42,12 @@ describe("step plans", () => {
   });
 
   it("claims proceeds once per campaign and indexes only the last claim", () => {
-    const steps = planSteps("claimProceeds", { campaignIds: ["9", "3"], finalizeSaleIds: ["5"] });
+    const steps = planSteps("claimProceeds", {
+      campaignIds: ["9", "3"],
+      campaignName: null,
+      amount: "1",
+      finalizeSaleIds: ["5"],
+    });
     expect(steps.map((step) => `${step.kind}:${step.target ?? ""}`)).toEqual([
       "finalize:5",
       "claimProceeds:3",

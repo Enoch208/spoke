@@ -7,6 +7,9 @@ import { retryDelay, shouldRetry } from "@/lib/client/errors";
 import { ClientProvider } from "@/lib/client/provider";
 import { staleTimes } from "@/lib/query/keys";
 import { wagmiConfig } from "@/lib/wagmi";
+import { loadDemoBundle } from "@/lib/demo/bundle";
+import { SessionBootstrap } from "./session-bootstrap";
+import { TxEngineProvider } from "./tx/tx-provider";
 
 export const createQueryClient = () =>
   new QueryClient({
@@ -32,7 +35,10 @@ export function Providers({
   return (
     <WagmiProvider config={wagmiConfig} initialState={initialState}>
       <QueryClientProvider client={queryClient}>
-        <ClientProvider>{children}</ClientProvider>
+        <ClientProvider loadDemoClient={async () => (await loadDemoBundle()).client}>
+          <SessionBootstrap />
+          <TxEngineProvider>{children}</TxEngineProvider>
+        </ClientProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );
