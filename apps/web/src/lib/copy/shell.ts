@@ -1,6 +1,7 @@
 export const shellCopy = {
   skipToContent: "Skip to content",
   mainNav: "Main",
+  breadcrumb: "Breadcrumb",
   workspaceLabel: "Workspace",
   workspaces: { earn: "Earn", sell: "Sell" },
   setUpSelling: "Sell · Set up selling",
