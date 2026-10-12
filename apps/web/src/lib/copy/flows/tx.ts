@@ -1,0 +1,25 @@
+import { required } from "../required";
+
+export const txFlow = {
+  ready: "Ready",
+  confirmPasskey: "Confirm with passkey",
+  confirmWallet: "Confirm in wallet",
+  signing: "Signing",
+  waitingWallet: "Not seeing it? Open {wallet}, or send the request again.",
+  sent: "Sent to Monad Testnet",
+  slow: "Taking longer than usual. Monad Testnet may be busy.",
+  included: "Included in block {block}",
+  confirmed: "Confirmed onchain",
+  indexed: "Recorded by Spoke",
+  rejected: "Cancelled in your wallet. Nothing was sent and no fee was charged.",
+  failed: "Didn’t go through: {reason}",
+  failedFee: "The network fee was used; nothing else changed.",
+  failedUnknown: "We couldn’t read the reason. Only the network fee was used.",
+  unknown: `${required.unverified} Don’t send it again until this resolves.`,
+  replaced: "Sped up in your wallet. Tracking the new transaction.",
+  cancelledInWallet: "Your wallet cancelled this transaction. Nothing changed.",
+  confirmedSyncing: required.syncing,
+  resuming: "Checking a transaction you started earlier.",
+  notSent: "This wasn’t sent. Nothing changed.",
+  outOfGas: "The network fee limit was set too low in your wallet. Try again without changing it.",
+} as const satisfies Record<string, string>;
