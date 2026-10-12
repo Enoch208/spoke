@@ -64,6 +64,7 @@ export const productInput = z.strictObject({
   merchantId: resourceId.optional(),
   title: z.string().min(2).max(150),
   summary: z.string().max(300),
+  outcome: z.string().max(500).default(""),
   description: z.string().max(15000),
   category: z.enum(["digital", "education", "software", "design", "other"]),
   priceBaseUnits: uintString.refine((value) => BigInt(value) > 0n && BigInt(value) < 2n ** 128n),
