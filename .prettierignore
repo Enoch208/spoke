@@ -1,0 +1,6 @@
+pnpm-lock.yaml
+packages/contracts/out
+packages/contracts/cache
+packages/contracts/broadcast
+apps/web/.next
+apps/web/next-env.d.ts
