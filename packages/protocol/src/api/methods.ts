@@ -296,7 +296,10 @@ export const clientMethodSchemas = {
     campaign.extend({ node: m.protocolId.optional(), buyer: addressString.optional() }),
     m.checkoutPreview,
   ),
-  "checkout.createIntent": method(i.checkoutInputV3, m.checkoutIntent),
+  "checkout.createIntent": method(
+    i.checkoutInputV3.extend({ campaignId: m.protocolId, nodeId: m.protocolId.default("0") }),
+    m.checkoutIntent,
+  ),
   "checkout.getIntent": method(id, m.checkoutIntent),
   "checkout.attachTransaction": method(id.extend({ txHash: bytes32String }), m.checkoutIntent),
   "receipts.get": method(sale, m.saleReceipt),
@@ -379,7 +382,7 @@ export const clientMethodSchemas = {
     pagination.extend({ distributor: addressString.optional() }),
     m.pagedSchema(p.invitation),
   ),
-  "invitations.send": method(i.invitationInput, p.invitation),
+  "invitations.send": method(i.invitationInput.extend({ campaignId: m.protocolId }), p.invitation),
   "invitations.respond": method(
     id.extend({ response: z.enum(["accept", "decline"]), reason: z.string().max(500).optional() }),
     p.invitation,

@@ -9,6 +9,8 @@ import {
   demoTokenAbi,
   txStates,
   uintString,
+  checkoutInputV3,
+  invitationInput,
 } from "../src/index.js";
 
 const token = "0x0000000000000000000000000000000000000001";
@@ -26,6 +28,31 @@ const policy = {
 };
 
 describe("v3 client and contract boundaries", () => {
+  it("accepts demo identifiers at the client seam while live validators require chain identifiers", () => {
+    const checkout = {
+      campaignId: "demo-campaign-one",
+      nodeId: "demo-node-one",
+      orderKey: hash,
+      expectedPrice: "100",
+      expectedReward: "10",
+      policyHash: hash,
+      chainId: 10143,
+    };
+    const invitation = {
+      distributor: token,
+      campaignId: "demo-campaign-one",
+      message: "Join this campaign",
+      terms: "Published campaign terms",
+      expiresAt: "2030-01-01T00:00:00Z",
+    };
+    expect(clientMethodSchemas["checkout.createIntent"].input.safeParse(checkout).success).toBe(
+      true,
+    );
+    expect(clientMethodSchemas["invitations.send"].input.safeParse(invitation).success).toBe(true);
+    expect(checkoutInputV3.safeParse(checkout).success).toBe(false);
+    expect(invitationInput.safeParse(invitation).success).toBe(false);
+  });
+
   it("encodes a direct purchase and preserves the client's order key", () => {
     const input = clientMethodSchemas["checkout.createIntent"].input.parse({
       campaignId: "1",
