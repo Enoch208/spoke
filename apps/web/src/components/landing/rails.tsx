@@ -36,15 +36,22 @@ function IconRing({
               top: radius * Math.sin(angle) - bubble / 2,
             }}
           >
-            <span
-              className="[mask-position:center] [mask-repeat:no-repeat] [mask-size:contain]"
-              style={{
-                width: logo,
-                height: logo,
-                backgroundColor: item.color,
-                maskImage: `url(${item.logo})`,
-              }}
-            />
+            {item.color ? (
+              <span
+                className="[mask-position:center] [mask-repeat:no-repeat] [mask-size:contain]"
+                style={{
+                  width: logo,
+                  height: logo,
+                  backgroundColor: item.color,
+                  maskImage: `url(${item.logo})`,
+                }}
+              />
+            ) : (
+              <span
+                className="bg-contain bg-center bg-no-repeat"
+                style={{ width: logo, height: logo, backgroundImage: `url(${item.logo})` }}
+              />
+            )}
           </span>
         );
       })}

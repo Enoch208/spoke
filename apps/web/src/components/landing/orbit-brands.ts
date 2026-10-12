@@ -1,7 +1,7 @@
 export interface OrbitBrand {
   name: string;
   logo: string;
-  color: string;
+  color?: string;
 }
 
 export const shareChannels: OrbitBrand[] = [
@@ -12,7 +12,7 @@ export const shareChannels: OrbitBrand[] = [
   { name: "Instagram", logo: "/brands/instagram.svg", color: "#FF0069" },
   { name: "Farcaster", logo: "/brands/farcaster.svg", color: "#855DCD" },
   { name: "Reddit", logo: "/brands/reddit.svg", color: "#FF4500" },
-  { name: "Gmail", logo: "/brands/gmail.svg", color: "#EA4335" },
+  { name: "Gmail", logo: "/brands/gmail.svg" },
   { name: "Signal", logo: "/brands/signal.svg", color: "#3B45FD" },
   { name: "Messenger", logo: "/brands/messenger.svg", color: "#0866FF" },
 ];
