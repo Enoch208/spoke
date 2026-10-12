@@ -39,11 +39,13 @@ export function SiteFooter() {
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         <Cloud className="text-pill/60 absolute top-6 -right-6 hidden w-[484px] lg:block" />
         <Cloud className="text-pill/70 absolute bottom-0 -left-4 w-[480px]" />
-        <Piece
-          id="cta-lime"
-          shape="lime"
-          className="animate-float absolute top-[59px] left-1/2 w-[100px] -translate-x-1/2 drop-shadow-[0_16px_20px_rgba(140,190,20,0.25)] [--tilt:-6deg]"
-        />
+        <div className="absolute top-[59px] left-1/2 w-[100px] -translate-x-1/2">
+          <Piece
+            id="cta-lime"
+            shape="lime"
+            className="animate-rock w-full drop-shadow-[0_16px_20px_rgba(140,190,20,0.25)] will-change-transform"
+          />
+        </div>
         <Blob
           tone="pink"
           shape="diamond"
@@ -53,16 +55,16 @@ export function SiteFooter() {
         <Piece
           id="cta-pink"
           shape="pink"
-          className="animate-float-slow absolute top-[432px] left-[16%] hidden w-[110px] drop-shadow-[0_20px_24px_rgba(240,120,210,0.3)] [--tilt:-10deg] lg:block"
+          className="absolute top-[432px] left-[16%] hidden w-[110px] -rotate-[10deg] drop-shadow-[0_20px_24px_rgba(240,120,210,0.3)] lg:block"
         />
         <Piece
           id="cta-lilac"
           shape="block"
           tone="lilac"
-          className="animate-float absolute top-[370px] right-[8%] hidden w-[160px] drop-shadow-[0_20px_24px_rgba(150,120,240,0.25)] [--tilt:12deg] [animation-delay:-3s] lg:block"
+          className="absolute top-[370px] right-[8%] hidden w-[160px] rotate-[12deg] drop-shadow-[0_20px_24px_rgba(150,120,240,0.25)] lg:block"
         />
       </div>
-      <div className="reveal relative mx-auto flex max-w-[780px] flex-col items-center pt-[200px] text-center lg:pt-[256px]">
+      <div className="relative mx-auto flex max-w-[780px] flex-col items-center pt-[200px] text-center lg:pt-[256px]">
         <h2 className="font-display text-[40px] leading-[1.2] font-medium lg:text-h1">
           Pay for revenue, not reach.
         </h2>
@@ -89,7 +91,7 @@ export function SiteFooter() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="hover:text-muted font-medium whitespace-nowrap"
+                      className="hover:text-body font-medium whitespace-nowrap"
                     >
                       {link.label}
                     </Link>

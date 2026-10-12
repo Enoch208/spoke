@@ -1,14 +1,31 @@
 "use client";
 
-import { Cancel01Icon, Menu01Icon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { routes } from "@/lib/routes";
 import { navLinks } from "./nav-links";
 
+const bar =
+  "bg-ink ease-spring absolute left-[11px] h-[1.5px] w-[18px] rounded-full transition-transform duration-[423ms]";
+
 export function MobileMenu() {
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+    const root = document.documentElement;
+    const previous = root.style.overflow;
+    root.style.overflow = "hidden";
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      root.style.overflow = previous;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
   return (
     <div className="lg:hidden">
       <button
@@ -19,14 +36,21 @@ export function MobileMenu() {
         onClick={() => {
           setOpen((value) => !value);
         }}
-        className="flex size-10 items-center justify-center rounded-full"
+        className="relative size-10 rounded-full"
       >
-        <HugeiconsIcon icon={open ? Cancel01Icon : Menu01Icon} size={24} aria-hidden="true" />
+        <span
+          aria-hidden="true"
+          className={`${bar} top-[19px] ${open ? "rotate-45" : "-translate-y-[3.5px]"}`}
+        />
+        <span
+          aria-hidden="true"
+          className={`${bar} top-[19px] ${open ? "-rotate-45" : "translate-y-[3.5px]"}`}
+        />
       </button>
       <nav
         id="mobile-menu"
-        hidden={!open}
-        className="bg-page/95 border-line absolute inset-x-0 top-[72px] border-b px-5 pt-2 pb-6 backdrop-blur"
+        aria-label="Mobile"
+        className={`bg-page ease-spring absolute inset-x-0 top-full h-[calc(100dvh-72px)] overflow-y-auto px-5 pt-2 pb-10 transition-[opacity,visibility] duration-[423ms] ${open ? "visible opacity-100" : "invisible opacity-0"}`}
       >
         <ul className="flex flex-col">
           {[...navLinks, { label: "Explore campaigns", href: routes.explore }].map((link) => (
@@ -36,7 +60,7 @@ export function MobileMenu() {
                 onClick={() => {
                   setOpen(false);
                 }}
-                className="text-ink block py-3 text-lg font-medium"
+                className="text-ink hover:text-body block py-3 text-lg font-medium"
               >
                 {link.label}
               </Link>

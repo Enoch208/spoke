@@ -6,7 +6,7 @@ import { routes } from "@/lib/routes";
 
 export function Hero() {
   return (
-    <section className="relative mx-auto max-w-[1240px] px-5 pt-16 pb-14 lg:mt-10 lg:flex lg:h-[600px] lg:items-center lg:justify-center lg:py-20">
+    <section className="animate-hero-in relative mx-auto max-w-[1240px] px-5 pt-16 pb-14 lg:mt-10 lg:flex lg:h-[600px] lg:items-center lg:justify-center lg:py-20">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 overflow-hidden xl:overflow-visible"
@@ -15,18 +15,18 @@ export function Hero() {
         <Piece
           id="hero-lime"
           shape="lime"
-          className="animate-float absolute top-0 -left-12 w-20 drop-shadow-[0_18px_24px_rgba(140,190,20,0.25)] [--tilt:-8deg] xl:top-[70px] xl:left-[140px] xl:w-[120px]"
+          className="animate-rock absolute top-0 -left-12 w-20 drop-shadow-[0_18px_24px_rgba(140,190,20,0.25)] will-change-transform xl:top-[70px] xl:left-[140px] xl:w-[120px]"
         />
         <Piece
           id="hero-lilac"
           shape="block"
           tone="lilac"
-          className="animate-float-slow absolute top-[110px] right-[70px] hidden w-[150px] drop-shadow-[0_18px_24px_rgba(150,120,240,0.25)] [--tilt:10deg] [animation-delay:-2s] xl:block"
+          className="absolute top-[110px] right-[70px] hidden w-[150px] rotate-[10deg] drop-shadow-[0_18px_24px_rgba(150,120,240,0.25)] xl:block"
         />
         <Piece
           id="hero-pink"
           shape="pink"
-          className="animate-float absolute top-[408px] right-[150px] hidden w-[150px] drop-shadow-[0_24px_30px_rgba(240,120,210,0.3)] [--tilt:14deg] [animation-delay:-4s] xl:block"
+          className="absolute top-[408px] right-[150px] hidden w-[150px] rotate-[14deg] drop-shadow-[0_24px_30px_rgba(240,120,210,0.3)] xl:block"
         />
         <Blob
           tone="lime"
@@ -34,7 +34,7 @@ export function Hero() {
           className="top-[475px] left-[324px] hidden size-12 xl:block"
         />
       </div>
-      <div className="animate-fade-up relative mx-auto flex w-full max-w-[780px] flex-col items-center text-center">
+      <div className="relative mx-auto flex w-full max-w-[780px] flex-col items-center text-center">
         <p className="text-body flex items-center gap-2">
           <span aria-hidden="true" className="flex gap-1">
             <span className="bg-lime size-2.5 rounded-[3px]" />

@@ -18,7 +18,7 @@ export function PillLink({
   return (
     <Link
       href={href}
-      className={`bg-pill text-ink hover:bg-line inline-flex items-center rounded-3xl font-medium transition-colors duration-200 ${sizes[size]}`}
+      className={`bg-pill text-ink ease-spring inline-flex items-center rounded-3xl border border-transparent font-medium transition-[background-color,border-color] duration-[423ms] hover:border-ink hover:bg-transparent focus-visible:border-ink focus-visible:bg-transparent ${sizes[size]}`}
     >
       {children}
     </Link>
