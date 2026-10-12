@@ -15,10 +15,7 @@ export interface Feature {
 
 export function FeatureBlock({ feature }: { feature: Feature }) {
   return (
-    <article
-      id={feature.id}
-      className="reveal bg-pill flex scroll-mt-24 flex-col gap-8 rounded-3xl p-6 shadow-[0_-12px_32px_rgba(128,128,128,0.05)] lg:h-[580px] lg:flex-row lg:gap-10 lg:p-10"
-    >
+    <article className="bg-pill flex flex-col gap-8 rounded-3xl p-6 shadow-[0_-12px_32px_rgba(128,128,128,0.05)] lg:h-[580px] lg:flex-row lg:gap-10 lg:p-10">
       <div className="flex flex-1 flex-col">
         <h3 className="font-display text-[30px] leading-[1.2] font-medium lg:text-h3">
           {feature.title}

@@ -25,14 +25,15 @@ const benefits: { title: string; body: string; shape: PieceShape; art: ReactNode
 
 export function Benefits() {
   return (
-    <section className="reveal mx-auto mt-14 max-w-[1200px] px-5 lg:mt-5 xl:px-0">
-      <div className="bg-pill flex flex-col gap-2 rounded-[32px] p-2 lg:h-[436px] lg:flex-row lg:[&:has(>article:hover)>article]:basis-[316px] lg:[&:has(>article:hover)>article:hover]:basis-[537px]">
+    <section data-reveal className="mx-auto mt-14 max-w-[1200px] px-5 lg:mt-5 xl:px-0">
+      <div className="benefits bg-pill flex flex-col gap-2 rounded-[32px] p-2 lg:h-[436px] lg:flex-row">
         {benefits.map((benefit, index) => (
           <article
             key={benefit.title}
-            className={`@container flex flex-col gap-2 rounded-3xl p-2 transition-[flex-basis,background-color] duration-500 ease-out lg:grow lg:flex-row lg:gap-0 ${index === 0 ? "bg-surface lg:basis-[537px]" : "bg-soft hover:bg-surface lg:basis-[316px]"}`}
+            data-default={index === 0 ? "" : undefined}
+            className="benefit-card relative flex flex-col gap-2 overflow-hidden rounded-3xl p-2 lg:flex-row lg:gap-0 lg:max-xl:flex-1"
           >
-            <div className="flex min-w-0 flex-1 flex-col justify-between gap-10 px-6 pt-6 pb-6 lg:pb-[17px]">
+            <div className="benefit-text flex min-w-0 shrink-0 flex-col justify-between gap-10 px-6 pt-6 pb-6 lg:flex-1 lg:pb-[17px] xl:flex-none">
               <span className="bg-pill flex size-16 items-center justify-center rounded-full">
                 <Piece id={`benefit-${benefit.shape}`} shape={benefit.shape} className="w-9" />
               </span>
@@ -41,7 +42,7 @@ export function Benefits() {
                 <p className="text-muted mt-1.5">{benefit.body}</p>
               </div>
             </div>
-            <div className="h-[300px] shrink-0 lg:hidden lg:h-auto lg:w-[267px] xl:@min-[420px]:block">
+            <div className="benefit-art h-[300px] lg:hidden xl:absolute xl:top-2 xl:bottom-2 xl:left-[262px] xl:block xl:h-auto xl:w-[267px]">
               {benefit.art}
             </div>
           </article>

@@ -70,7 +70,7 @@ export function Questions() {
       id={sections.faq}
       className="mx-auto mt-24 max-w-[1000px] scroll-mt-24 px-5 lg:mt-[120px] xl:px-0"
     >
-      <h2 className="reveal font-display mx-auto max-w-[780px] text-center text-[36px] leading-[1.2] font-medium text-balance lg:text-h2">
+      <h2 className="font-display mx-auto max-w-[780px] text-center text-[36px] leading-[1.2] font-medium text-balance lg:text-h2">
         Straight answers to the hard questions
       </h2>
       <div className="mt-10 grid gap-3 md:grid-cols-3 lg:mt-[49px]">

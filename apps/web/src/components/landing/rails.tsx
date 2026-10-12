@@ -43,6 +43,8 @@ const inner: Orbiter[] = [
   { icon: WebhookIcon, tone: "text-sky-deep", label: "Settlement events" },
   { icon: Link01Icon, tone: "text-lime-deep", label: "Deep links" },
   { icon: Wallet01Icon, tone: "text-pink-deep", label: "Payout claims" },
+  { icon: Coins01Icon, tone: "text-olive", label: "Funded rewards" },
+  { icon: Analytics01Icon, tone: "text-lime-deep", label: "Policy previews" },
 ];
 
 function IconRing({
@@ -59,14 +61,14 @@ function IconRing({
   offset: number;
 }) {
   return (
-    <div className={`absolute top-0 left-0 size-0 ${spin}`}>
+    <div className={`orbit-spin absolute top-0 left-0 size-0 will-change-transform ${spin}`}>
       {items.map((item, index) => {
         const angle = offset + (index / items.length) * Math.PI * 2;
         return (
           <span
             key={item.label}
             title={item.label}
-            className={`bg-section absolute flex size-16 items-center justify-center rounded-full shadow-[0_4px_16px_rgba(0,0,0,0.05)] ${counter}`}
+            className={`orbit-spin bg-section absolute flex size-16 items-center justify-center rounded-full shadow-[0_4px_16px_rgba(0,0,0,0.05)] ${counter}`}
             style={{ left: radius * Math.cos(angle) - 32, top: radius * Math.sin(angle) - 32 }}
           >
             <HugeiconsIcon icon={item.icon} size={30} className={item.tone} aria-hidden="true" />
@@ -89,7 +91,7 @@ export function Rails() {
       id={sections.developers}
       className="bg-section relative mt-24 h-[720px] scroll-mt-20 overflow-hidden pt-20 lg:mt-[80px] lg:h-[946px]"
     >
-      <div className="reveal relative z-10 mx-auto flex max-w-[780px] flex-col items-center px-5 text-center">
+      <div className="relative z-10 mx-auto flex max-w-[780px] flex-col items-center px-5 text-center">
         <h2 className="font-display text-[36px] leading-[1.2] font-medium text-balance lg:text-h2">
           Plug the same rails into any product
         </h2>
@@ -116,15 +118,15 @@ export function Rails() {
         <IconRing
           items={outer}
           radius={498}
-          spin="animate-orbit"
-          counter="animate-orbit-reverse"
+          spin="animate-orbit-outer"
+          counter="animate-orbit-outer-counter"
           offset={0.2}
         />
         <IconRing
           items={inner}
           radius={376}
-          spin="animate-orbit-reverse"
-          counter="animate-orbit"
+          spin="animate-orbit-inner"
+          counter="animate-orbit-inner-counter"
           offset={0.5}
         />
         <div className="absolute -top-[190px] -left-[58px]">

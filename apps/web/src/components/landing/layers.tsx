@@ -14,6 +14,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import { anchor, routes, sections } from "@/lib/routes";
 import { FeatureBlock, type Feature } from "./feature-block";
+import { StackedCards } from "./stacked-cards";
 import { MarketplaceScreen } from "./screens/marketplace-screen";
 import { NetworkScreen } from "./screens/network-screen";
 import { ReputationScreen } from "./screens/reputation-screen";
@@ -76,14 +77,16 @@ const features: Feature[] = [
 
 export function Layers() {
   return (
-    <section className="mx-auto mt-24 max-w-[1200px] px-5 lg:mt-[120px] xl:px-0">
-      <h2 className="reveal font-display max-w-[780px] text-[36px] leading-[1.2] font-medium text-balance lg:text-h2">
+    <section data-reveal className="mx-auto mt-24 max-w-[1200px] px-5 lg:mt-[120px] xl:px-0">
+      <h2 className="font-display max-w-[780px] text-[36px] leading-[1.2] font-medium text-balance lg:text-h2">
         One network for everything distribution needs
       </h2>
       <div className="mt-10 flex flex-col gap-10">
-        {features.map((feature) => (
-          <FeatureBlock key={feature.id} feature={feature} />
-        ))}
+        <StackedCards anchors={features.map((feature) => feature.id)}>
+          {features.map((feature) => (
+            <FeatureBlock key={feature.id} feature={feature} />
+          ))}
+        </StackedCards>
       </div>
     </section>
   );
