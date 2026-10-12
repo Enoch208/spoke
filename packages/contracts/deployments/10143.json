@@ -1,0 +1,32 @@
+{
+  "chainId": 10143,
+  "contracts": [
+    {
+      "name": "SpokeDemoUSD",
+      "address": "0xb6279237003ed710bb4cce6fbd126e07ed4d8e23",
+      "txHash": "0xa7c7c5190fd2907510394a0baf44302d463c400f4f9b3ded703ee923918bc231",
+      "blockNumber": "70445279",
+      "runtimeBytes": 1960
+    },
+    {
+      "name": "SpokeProtocol",
+      "address": "0x1fa5e94e44db2101664c0a24dbf1e52912af3eca",
+      "txHash": "0xabc0a2e3328332bd9b5a869fe8388718ded540a7623fea8fdb0ce9888da8abaf",
+      "blockNumber": "70445284",
+      "runtimeBytes": 22584
+    }
+  ],
+  "decimals": 6,
+  "faucetLimit": "1000000000",
+  "paymentToken": "0xb6279237003ed710bb4cce6fbd126e07ed4d8e23",
+  "network": "monad-testnet",
+  "compiler": "0.8.30",
+  "optimizerRuns": 200,
+  "evmVersion": "cancun",
+  "sourceCommit": "9126f05",
+  "verification": {
+    "status": "pending_approval",
+    "verifier": "sourcify"
+  },
+  "testnetOnly": true
+}
