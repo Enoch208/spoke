@@ -127,12 +127,12 @@ describe("session", () => {
 });
 
 describe("demo store", () => {
-  it("resets the sample world and bumps its revision", () => {
-    const before = useDemoStore.getState().revision;
-    useDemoStore.getState().advanceClock(600);
+  it("drops the sample world snapshot and quick-action choices on reset", () => {
+    useDemoStore.getState().setSnapshot({ version: 1 });
+    useDemoStore.getState().setQuickActions("buyer", { choice: "allow", capMinor: "100000000" });
     useDemoStore.getState().reset();
-    expect(useDemoStore.getState().revision).toBe(before + 1);
-    expect(useDemoStore.getState().clockOffsetSeconds).toBe(0);
+    expect(useDemoStore.getState().snapshot).toBeNull();
+    expect(useDemoStore.getState().quickActions).toEqual({});
   });
 });
 

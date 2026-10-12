@@ -6,10 +6,9 @@ import { localJsonStorage } from "./storage";
 export type QuickActionChoice = { choice: "allow" | "ask"; capMinor: string };
 
 type DemoState = {
-  revision: number;
-  clockOffsetSeconds: number;
+  snapshot: unknown;
   quickActions: Partial<Record<Persona, QuickActionChoice>>;
-  advanceClock: (seconds: number) => void;
+  setSnapshot: (snapshot: unknown) => void;
   setQuickActions: (persona: Persona, choice: QuickActionChoice) => void;
   reset: () => void;
 };
@@ -17,32 +16,25 @@ type DemoState = {
 export const useDemoStore = create<DemoState>()(
   persist(
     (set) => ({
-      revision: 0,
-      clockOffsetSeconds: 0,
+      snapshot: null,
       quickActions: {},
-      advanceClock: (seconds) => {
-        set((state) => ({ clockOffsetSeconds: state.clockOffsetSeconds + Math.max(0, seconds) }));
+      setSnapshot: (snapshot) => {
+        set({ snapshot });
       },
       setQuickActions: (persona, choice) => {
         set((state) => ({ quickActions: { ...state.quickActions, [persona]: choice } }));
       },
       reset: () => {
-        set((state) => ({ revision: state.revision + 1, clockOffsetSeconds: 0, quickActions: {} }));
+        set({ snapshot: null, quickActions: {} });
       },
     }),
     {
       name: "spoke-demo",
-      version: 1,
+      version: 2,
       storage: localJsonStorage,
       skipHydration: true,
-      partialize: ({ revision, clockOffsetSeconds, quickActions }) => ({
-        revision,
-        clockOffsetSeconds,
-        quickActions,
-      }),
+      migrate: () => ({ snapshot: null, quickActions: {} }),
+      partialize: ({ snapshot, quickActions }) => ({ snapshot, quickActions }),
     },
   ),
 );
-
-export const demoNow = (clockOffsetSeconds: number, now = Date.now()) =>
-  new Date(now + clockOffsetSeconds * 1000);
