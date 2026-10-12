@@ -3,6 +3,7 @@ import {
   campaignFilters,
   commissionPolicy,
   campaignPolicy,
+  policyVersion,
   checkoutPreview,
   joinPreview,
   simulatePolicy,
@@ -128,8 +129,8 @@ export const campaignRoutes = (services: Services) => {
         current: policyView(fresh.currentPolicy),
         scheduled: fresh.scheduledPolicy.version === 0 ? null : policyView(fresh.scheduledPolicy),
         history: (await related(store, "policy-version", "campaignId", id))
-          .map((row) => row.payload)
-          .sort((a, b) => z.number().parse(a.version) - z.number().parse(b.version)),
+          .map((row) => policyVersion.strip().parse(row.payload))
+          .sort((a, b) => a.version - b.version),
       }),
     );
   });
