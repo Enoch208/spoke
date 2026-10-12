@@ -1,41 +1,44 @@
 export const spokeProtocolAbi = [
   {
     type: "function",
-    name: "checkout",
+    name: "activateCampaign",
     inputs: [
       {
         name: "campaignId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "claimMerchantProceeds",
+    inputs: [
       {
-        name: "leafNodeId",
-        type: "uint64",
-        internalType: "uint64",
-      },
-      {
-        name: "checkoutKey",
-        type: "bytes32",
-        internalType: "bytes32",
+        name: "campaignId",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
     outputs: [
       {
-        name: "saleId",
-        type: "uint64",
-        internalType: "uint64",
+        name: "amount",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
     stateMutability: "nonpayable",
   },
   {
     type: "function",
-    name: "claimCampaignEarnings",
+    name: "claimRewards",
     inputs: [
       {
-        name: "campaignId",
-        type: "uint64",
-        internalType: "uint64",
+        name: "token",
+        type: "address",
+        internalType: "address",
       },
     ],
     outputs: [
@@ -53,8 +56,8 @@ export const spokeProtocolAbi = [
     inputs: [
       {
         name: "campaignId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
       {
         name: "account",
@@ -78,18 +81,42 @@ export const spokeProtocolAbi = [
   },
   {
     type: "function",
+    name: "claimableRewards",
+    inputs: [
+      {
+        name: "token",
+        type: "address",
+        internalType: "address",
+      },
+      {
+        name: "account",
+        type: "address",
+        internalType: "address",
+      },
+    ],
+    outputs: [
+      {
+        name: "amount",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
     name: "createCampaign",
     inputs: [
+      {
+        name: "metadataHash",
+        type: "bytes32",
+        internalType: "bytes32",
+      },
       {
         name: "config",
         type: "tuple",
         internalType: "struct ISpokeProtocol.CampaignConfig",
         components: [
-          {
-            name: "token",
-            type: "address",
-            internalType: "address",
-          },
           {
             name: "skuHash",
             type: "bytes32",
@@ -100,10 +127,17 @@ export const spokeProtocolAbi = [
             type: "uint128",
             internalType: "uint128",
           },
+        ],
+      },
+      {
+        name: "policy",
+        type: "tuple",
+        internalType: "struct ISpokeProtocol.CommissionPolicy",
+        components: [
           {
-            name: "maxCommissionPerSale",
-            type: "uint128",
-            internalType: "uint128",
+            name: "rewardToken",
+            type: "address",
+            internalType: "address",
           },
           {
             name: "commissionBps",
@@ -111,19 +145,44 @@ export const spokeProtocolAbi = [
             internalType: "uint16",
           },
           {
-            name: "startsAt",
+            name: "maxRewardedAncestors",
+            type: "uint16",
+            internalType: "uint16",
+          },
+          {
+            name: "weightsBps",
+            type: "uint16[]",
+            internalType: "uint16[]",
+          },
+          {
+            name: "perSaleCap",
+            type: "uint256",
+            internalType: "uint256",
+          },
+          {
+            name: "campaignLiabilityCap",
+            type: "uint256",
+            internalType: "uint256",
+          },
+          {
+            name: "holdSeconds",
             type: "uint64",
             internalType: "uint64",
           },
           {
-            name: "endsAt",
+            name: "expiry",
             type: "uint64",
             internalType: "uint64",
           },
           {
-            name: "settlementHoldSeconds",
-            type: "uint32",
-            internalType: "uint32",
+            name: "shortPathMode",
+            type: "uint8",
+            internalType: "enum ISpokeProtocol.ShortPathMode",
+          },
+          {
+            name: "eligibilityHash",
+            type: "bytes32",
+            internalType: "bytes32",
           },
         ],
       },
@@ -131,32 +190,37 @@ export const spokeProtocolAbi = [
     outputs: [
       {
         name: "campaignId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
     stateMutability: "nonpayable",
   },
   {
     type: "function",
-    name: "createReferralNode",
+    name: "createNode",
     inputs: [
       {
         name: "campaignId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
       {
-        name: "parentId",
-        type: "uint64",
-        internalType: "uint64",
+        name: "parentNodeId",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "metadataHash",
+        type: "bytes32",
+        internalType: "bytes32",
       },
     ],
     outputs: [
       {
         name: "nodeId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
     stateMutability: "nonpayable",
@@ -167,8 +231,8 @@ export const spokeProtocolAbi = [
     inputs: [
       {
         name: "campaignId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
     outputs: [],
@@ -180,8 +244,8 @@ export const spokeProtocolAbi = [
     inputs: [
       {
         name: "saleId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
     outputs: [],
@@ -193,8 +257,8 @@ export const spokeProtocolAbi = [
     inputs: [
       {
         name: "campaignId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
       {
         name: "amount",
@@ -211,8 +275,8 @@ export const spokeProtocolAbi = [
     inputs: [
       {
         name: "campaignId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
     outputs: [
@@ -232,6 +296,11 @@ export const spokeProtocolAbi = [
             internalType: "address",
           },
           {
+            name: "metadataHash",
+            type: "bytes32",
+            internalType: "bytes32",
+          },
+          {
             name: "skuHash",
             type: "bytes32",
             internalType: "bytes32",
@@ -242,17 +311,7 @@ export const spokeProtocolAbi = [
             internalType: "uint128",
           },
           {
-            name: "maxCommissionPerSale",
-            type: "uint128",
-            internalType: "uint128",
-          },
-          {
-            name: "commissionBps",
-            type: "uint16",
-            internalType: "uint16",
-          },
-          {
-            name: "startsAt",
+            name: "createdAt",
             type: "uint64",
             internalType: "uint64",
           },
@@ -262,9 +321,9 @@ export const spokeProtocolAbi = [
             internalType: "uint64",
           },
           {
-            name: "settlementHoldSeconds",
-            type: "uint32",
-            internalType: "uint32",
+            name: "active",
+            type: "bool",
+            internalType: "bool",
           },
           {
             name: "paused",
@@ -278,13 +337,106 @@ export const spokeProtocolAbi = [
           },
           {
             name: "nodeCount",
-            type: "uint16",
-            internalType: "uint16",
+            type: "uint256",
+            internalType: "uint256",
           },
           {
             name: "saleCount",
-            type: "uint16",
-            internalType: "uint16",
+            type: "uint256",
+            internalType: "uint256",
+          },
+        ],
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getCurrentPolicy",
+    inputs: [
+      {
+        name: "campaignId",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    outputs: [
+      {
+        name: "",
+        type: "tuple",
+        internalType: "struct ISpokeProtocol.PolicyVersion",
+        components: [
+          {
+            name: "policy",
+            type: "tuple",
+            internalType: "struct ISpokeProtocol.CommissionPolicy",
+            components: [
+              {
+                name: "rewardToken",
+                type: "address",
+                internalType: "address",
+              },
+              {
+                name: "commissionBps",
+                type: "uint16",
+                internalType: "uint16",
+              },
+              {
+                name: "maxRewardedAncestors",
+                type: "uint16",
+                internalType: "uint16",
+              },
+              {
+                name: "weightsBps",
+                type: "uint16[]",
+                internalType: "uint16[]",
+              },
+              {
+                name: "perSaleCap",
+                type: "uint256",
+                internalType: "uint256",
+              },
+              {
+                name: "campaignLiabilityCap",
+                type: "uint256",
+                internalType: "uint256",
+              },
+              {
+                name: "holdSeconds",
+                type: "uint64",
+                internalType: "uint64",
+              },
+              {
+                name: "expiry",
+                type: "uint64",
+                internalType: "uint64",
+              },
+              {
+                name: "shortPathMode",
+                type: "uint8",
+                internalType: "enum ISpokeProtocol.ShortPathMode",
+              },
+              {
+                name: "eligibilityHash",
+                type: "bytes32",
+                internalType: "bytes32",
+              },
+            ],
+          },
+          {
+            name: "policyHash",
+            type: "bytes32",
+            internalType: "bytes32",
+          },
+          {
+            name: "version",
+            type: "uint32",
+            internalType: "uint32",
+          },
+          {
+            name: "effectiveAt",
+            type: "uint64",
+            internalType: "uint64",
           },
         ],
       },
@@ -297,8 +449,8 @@ export const spokeProtocolAbi = [
     inputs: [
       {
         name: "nodeId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
     outputs: [
@@ -309,18 +461,23 @@ export const spokeProtocolAbi = [
         components: [
           {
             name: "campaignId",
-            type: "uint64",
-            internalType: "uint64",
+            type: "uint256",
+            internalType: "uint256",
           },
           {
             name: "parentId",
-            type: "uint64",
-            internalType: "uint64",
+            type: "uint256",
+            internalType: "uint256",
           },
           {
             name: "creator",
             type: "address",
             internalType: "address",
+          },
+          {
+            name: "metadataHash",
+            type: "bytes32",
+            internalType: "bytes32",
           },
           {
             name: "createdAt",
@@ -338,8 +495,8 @@ export const spokeProtocolAbi = [
     inputs: [
       {
         name: "nodeId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
     outputs: [
@@ -353,12 +510,110 @@ export const spokeProtocolAbi = [
   },
   {
     type: "function",
+    name: "getPolicyVersion",
+    inputs: [
+      {
+        name: "campaignId",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "version",
+        type: "uint32",
+        internalType: "uint32",
+      },
+    ],
+    outputs: [
+      {
+        name: "",
+        type: "tuple",
+        internalType: "struct ISpokeProtocol.PolicyVersion",
+        components: [
+          {
+            name: "policy",
+            type: "tuple",
+            internalType: "struct ISpokeProtocol.CommissionPolicy",
+            components: [
+              {
+                name: "rewardToken",
+                type: "address",
+                internalType: "address",
+              },
+              {
+                name: "commissionBps",
+                type: "uint16",
+                internalType: "uint16",
+              },
+              {
+                name: "maxRewardedAncestors",
+                type: "uint16",
+                internalType: "uint16",
+              },
+              {
+                name: "weightsBps",
+                type: "uint16[]",
+                internalType: "uint16[]",
+              },
+              {
+                name: "perSaleCap",
+                type: "uint256",
+                internalType: "uint256",
+              },
+              {
+                name: "campaignLiabilityCap",
+                type: "uint256",
+                internalType: "uint256",
+              },
+              {
+                name: "holdSeconds",
+                type: "uint64",
+                internalType: "uint64",
+              },
+              {
+                name: "expiry",
+                type: "uint64",
+                internalType: "uint64",
+              },
+              {
+                name: "shortPathMode",
+                type: "uint8",
+                internalType: "enum ISpokeProtocol.ShortPathMode",
+              },
+              {
+                name: "eligibilityHash",
+                type: "bytes32",
+                internalType: "bytes32",
+              },
+            ],
+          },
+          {
+            name: "policyHash",
+            type: "bytes32",
+            internalType: "bytes32",
+          },
+          {
+            name: "version",
+            type: "uint32",
+            internalType: "uint32",
+          },
+          {
+            name: "effectiveAt",
+            type: "uint64",
+            internalType: "uint64",
+          },
+        ],
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
     name: "getPriceLedger",
     inputs: [
       {
         name: "campaignId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
     outputs: [
@@ -373,22 +628,22 @@ export const spokeProtocolAbi = [
             internalType: "uint256",
           },
           {
-            name: "pendingEscrow",
+            name: "proceedsPending",
             type: "uint256",
             internalType: "uint256",
           },
           {
-            name: "merchantClaimable",
+            name: "proceedsClaimable",
             type: "uint256",
             internalType: "uint256",
           },
           {
-            name: "merchantClaimed",
+            name: "proceedsClaimed",
             type: "uint256",
             internalType: "uint256",
           },
           {
-            name: "refunded",
+            name: "buyerRefunded",
             type: "uint256",
             internalType: "uint256",
           },
@@ -403,8 +658,8 @@ export const spokeProtocolAbi = [
     inputs: [
       {
         name: "campaignId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
     outputs: [
@@ -414,7 +669,7 @@ export const spokeProtocolAbi = [
         internalType: "struct ISpokeProtocol.RewardLedger",
         components: [
           {
-            name: "deposited",
+            name: "netDeposited",
             type: "uint256",
             internalType: "uint256",
           },
@@ -424,22 +679,22 @@ export const spokeProtocolAbi = [
             internalType: "uint256",
           },
           {
-            name: "reserved",
+            name: "pendingReserved",
             type: "uint256",
             internalType: "uint256",
           },
           {
-            name: "claimable",
+            name: "vestedUnclaimed",
             type: "uint256",
             internalType: "uint256",
           },
           {
-            name: "claimed",
+            name: "rewardsClaimed",
             type: "uint256",
             internalType: "uint256",
           },
           {
-            name: "withdrawn",
+            name: "surplusWithdrawn",
             type: "uint256",
             internalType: "uint256",
           },
@@ -454,8 +709,8 @@ export const spokeProtocolAbi = [
     inputs: [
       {
         name: "saleId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
     outputs: [
@@ -466,13 +721,13 @@ export const spokeProtocolAbi = [
         components: [
           {
             name: "campaignId",
-            type: "uint64",
-            internalType: "uint64",
+            type: "uint256",
+            internalType: "uint256",
           },
           {
-            name: "leafNodeId",
-            type: "uint64",
-            internalType: "uint64",
+            name: "nodeId",
+            type: "uint256",
+            internalType: "uint256",
           },
           {
             name: "buyer",
@@ -480,14 +735,29 @@ export const spokeProtocolAbi = [
             internalType: "address",
           },
           {
-            name: "price",
-            type: "uint128",
-            internalType: "uint128",
+            name: "orderKey",
+            type: "bytes32",
+            internalType: "bytes32",
           },
           {
-            name: "commission",
-            type: "uint128",
-            internalType: "uint128",
+            name: "policyHash",
+            type: "bytes32",
+            internalType: "bytes32",
+          },
+          {
+            name: "policyVersion",
+            type: "uint32",
+            internalType: "uint32",
+          },
+          {
+            name: "price",
+            type: "uint256",
+            internalType: "uint256",
+          },
+          {
+            name: "rewardReserved",
+            type: "uint256",
+            internalType: "uint256",
           },
           {
             name: "purchasedAt",
@@ -504,6 +774,11 @@ export const spokeProtocolAbi = [
             type: "uint8",
             internalType: "enum ISpokeProtocol.SaleStatus",
           },
+          {
+            name: "source",
+            type: "uint8",
+            internalType: "enum ISpokeProtocol.SaleSource",
+          },
         ],
       },
       {
@@ -518,13 +793,111 @@ export const spokeProtocolAbi = [
           },
           {
             name: "amount",
-            type: "uint128",
-            internalType: "uint128",
+            type: "uint256",
+            internalType: "uint256",
           },
           {
             name: "depth",
             type: "uint8",
             internalType: "uint8",
+          },
+          {
+            name: "effectiveWeightBps",
+            type: "uint16",
+            internalType: "uint16",
+          },
+        ],
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getScheduledPolicy",
+    inputs: [
+      {
+        name: "campaignId",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    outputs: [
+      {
+        name: "",
+        type: "tuple",
+        internalType: "struct ISpokeProtocol.PolicyVersion",
+        components: [
+          {
+            name: "policy",
+            type: "tuple",
+            internalType: "struct ISpokeProtocol.CommissionPolicy",
+            components: [
+              {
+                name: "rewardToken",
+                type: "address",
+                internalType: "address",
+              },
+              {
+                name: "commissionBps",
+                type: "uint16",
+                internalType: "uint16",
+              },
+              {
+                name: "maxRewardedAncestors",
+                type: "uint16",
+                internalType: "uint16",
+              },
+              {
+                name: "weightsBps",
+                type: "uint16[]",
+                internalType: "uint16[]",
+              },
+              {
+                name: "perSaleCap",
+                type: "uint256",
+                internalType: "uint256",
+              },
+              {
+                name: "campaignLiabilityCap",
+                type: "uint256",
+                internalType: "uint256",
+              },
+              {
+                name: "holdSeconds",
+                type: "uint64",
+                internalType: "uint64",
+              },
+              {
+                name: "expiry",
+                type: "uint64",
+                internalType: "uint64",
+              },
+              {
+                name: "shortPathMode",
+                type: "uint8",
+                internalType: "enum ISpokeProtocol.ShortPathMode",
+              },
+              {
+                name: "eligibilityHash",
+                type: "bytes32",
+                internalType: "bytes32",
+              },
+            ],
+          },
+          {
+            name: "policyHash",
+            type: "bytes32",
+            internalType: "bytes32",
+          },
+          {
+            name: "version",
+            type: "uint32",
+            internalType: "uint32",
+          },
+          {
+            name: "effectiveAt",
+            type: "uint64",
+            internalType: "uint64",
           },
         ],
       },
@@ -537,8 +910,8 @@ export const spokeProtocolAbi = [
     inputs: [
       {
         name: "campaignId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
       {
         name: "wallet",
@@ -549,8 +922,8 @@ export const spokeProtocolAbi = [
     outputs: [
       {
         name: "nodeId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
     stateMutability: "view",
@@ -561,13 +934,8 @@ export const spokeProtocolAbi = [
     inputs: [
       {
         name: "campaignId",
-        type: "uint64",
-        internalType: "uint64",
-      },
-      {
-        name: "paused",
-        type: "bool",
-        internalType: "bool",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
     outputs: [],
@@ -588,17 +956,56 @@ export const spokeProtocolAbi = [
   },
   {
     type: "function",
-    name: "previewCheckout",
+    name: "previewAllocation",
     inputs: [
       {
         name: "campaignId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
       {
-        name: "leafNodeId",
-        type: "uint64",
-        internalType: "uint64",
+        name: "nodeId",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "saleAmount",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    outputs: [
+      {
+        name: "recipients",
+        type: "address[]",
+        internalType: "address[]",
+      },
+      {
+        name: "amounts",
+        type: "uint256[]",
+        internalType: "uint256[]",
+      },
+      {
+        name: "rewardTotal",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "previewPurchase",
+    inputs: [
+      {
+        name: "campaignId",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "nodeId",
+        type: "uint256",
+        internalType: "uint256",
       },
       {
         name: "buyer",
@@ -609,13 +1016,13 @@ export const spokeProtocolAbi = [
     outputs: [
       {
         name: "price",
-        type: "uint128",
-        internalType: "uint128",
+        type: "uint256",
+        internalType: "uint256",
       },
       {
-        name: "commission",
-        type: "uint128",
-        internalType: "uint128",
+        name: "rewardTotal",
+        type: "uint256",
+        internalType: "uint256",
       },
       {
         name: "allocations",
@@ -629,25 +1036,168 @@ export const spokeProtocolAbi = [
           },
           {
             name: "amount",
-            type: "uint128",
-            internalType: "uint128",
+            type: "uint256",
+            internalType: "uint256",
           },
           {
             name: "depth",
             type: "uint8",
             internalType: "uint8",
           },
+          {
+            name: "effectiveWeightBps",
+            type: "uint16",
+            internalType: "uint16",
+          },
         ],
+      },
+      {
+        name: "policyHash",
+        type: "bytes32",
+        internalType: "bytes32",
+      },
+      {
+        name: "policyVersion",
+        type: "uint32",
+        internalType: "uint32",
+      },
+      {
+        name: "unallocated",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
     stateMutability: "view",
   },
   {
     type: "function",
-    name: "refundPendingSale",
+    name: "purchase",
+    inputs: [
+      {
+        name: "campaignId",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "nodeId",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "orderKey",
+        type: "bytes32",
+        internalType: "bytes32",
+      },
+    ],
+    outputs: [
+      {
+        name: "saleId",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "refundNativeSale",
     inputs: [
       {
         name: "saleId",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "refundUnusedRewardBudget",
+    inputs: [
+      {
+        name: "campaignId",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    outputs: [
+      {
+        name: "amount",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "registerPolicyVersion",
+    inputs: [
+      {
+        name: "campaignId",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "policy",
+        type: "tuple",
+        internalType: "struct ISpokeProtocol.CommissionPolicy",
+        components: [
+          {
+            name: "rewardToken",
+            type: "address",
+            internalType: "address",
+          },
+          {
+            name: "commissionBps",
+            type: "uint16",
+            internalType: "uint16",
+          },
+          {
+            name: "maxRewardedAncestors",
+            type: "uint16",
+            internalType: "uint16",
+          },
+          {
+            name: "weightsBps",
+            type: "uint16[]",
+            internalType: "uint16[]",
+          },
+          {
+            name: "perSaleCap",
+            type: "uint256",
+            internalType: "uint256",
+          },
+          {
+            name: "campaignLiabilityCap",
+            type: "uint256",
+            internalType: "uint256",
+          },
+          {
+            name: "holdSeconds",
+            type: "uint64",
+            internalType: "uint64",
+          },
+          {
+            name: "expiry",
+            type: "uint64",
+            internalType: "uint64",
+          },
+          {
+            name: "shortPathMode",
+            type: "uint8",
+            internalType: "enum ISpokeProtocol.ShortPathMode",
+          },
+          {
+            name: "eligibilityHash",
+            type: "bytes32",
+            internalType: "bytes32",
+          },
+        ],
+      },
+      {
+        name: "effectiveAt",
         type: "uint64",
         internalType: "uint64",
       },
@@ -657,20 +1207,28 @@ export const spokeProtocolAbi = [
   },
   {
     type: "function",
-    name: "saleIdForCheckout",
+    name: "resumeCampaign",
     inputs: [
       {
         name: "campaignId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "saleIdForOrder",
+    inputs: [
+      {
+        name: "campaignId",
+        type: "uint256",
+        internalType: "uint256",
       },
       {
-        name: "buyer",
-        type: "address",
-        internalType: "address",
-      },
-      {
-        name: "checkoutKey",
+        name: "orderKey",
         type: "bytes32",
         internalType: "bytes32",
       },
@@ -678,8 +1236,8 @@ export const spokeProtocolAbi = [
     outputs: [
       {
         name: "saleId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
     stateMutability: "view",
@@ -691,8 +1249,8 @@ export const spokeProtocolAbi = [
     outputs: [
       {
         name: "",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
     stateMutability: "view",
@@ -704,8 +1262,8 @@ export const spokeProtocolAbi = [
     outputs: [
       {
         name: "",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
     stateMutability: "view",
@@ -717,29 +1275,11 @@ export const spokeProtocolAbi = [
     outputs: [
       {
         name: "",
-        type: "uint64",
-        internalType: "uint64",
-      },
-    ],
-    stateMutability: "view",
-  },
-  {
-    type: "function",
-    name: "withdrawAvailableReward",
-    inputs: [
-      {
-        name: "campaignId",
-        type: "uint64",
-        internalType: "uint64",
-      },
-      {
-        name: "amount",
         type: "uint256",
         internalType: "uint256",
       },
     ],
-    outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "view",
   },
   {
     type: "event",
@@ -747,9 +1287,9 @@ export const spokeProtocolAbi = [
     inputs: [
       {
         name: "campaignId",
-        type: "uint64",
+        type: "uint256",
         indexed: true,
-        internalType: "uint64",
+        internalType: "uint256",
       },
       {
         name: "merchant",
@@ -758,10 +1298,22 @@ export const spokeProtocolAbi = [
         internalType: "address",
       },
       {
+        name: "metadataHash",
+        type: "bytes32",
+        indexed: false,
+        internalType: "bytes32",
+      },
+      {
         name: "skuHash",
         type: "bytes32",
         indexed: false,
         internalType: "bytes32",
+      },
+      {
+        name: "price",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
       },
       {
         name: "token",
@@ -770,53 +1322,10 @@ export const spokeProtocolAbi = [
         internalType: "address",
       },
       {
-        name: "price",
-        type: "uint128",
+        name: "policyHash",
+        type: "bytes32",
         indexed: false,
-        internalType: "uint128",
-      },
-      {
-        name: "commissionBps",
-        type: "uint16",
-        indexed: false,
-        internalType: "uint16",
-      },
-      {
-        name: "maxCommissionPerSale",
-        type: "uint128",
-        indexed: false,
-        internalType: "uint128",
-      },
-      {
-        name: "settlementHoldSeconds",
-        type: "uint32",
-        indexed: false,
-        internalType: "uint32",
-      },
-      {
-        name: "startsAt",
-        type: "uint64",
-        indexed: false,
-        internalType: "uint64",
-      },
-      {
-        name: "endsAt",
-        type: "uint64",
-        indexed: false,
-        internalType: "uint64",
-      },
-    ],
-    anonymous: false,
-  },
-  {
-    type: "event",
-    name: "CampaignEnded",
-    inputs: [
-      {
-        name: "campaignId",
-        type: "uint64",
-        indexed: true,
-        internalType: "uint64",
+        internalType: "bytes32",
       },
     ],
     anonymous: false,
@@ -827,9 +1336,9 @@ export const spokeProtocolAbi = [
     inputs: [
       {
         name: "campaignId",
-        type: "uint64",
+        type: "uint256",
         indexed: true,
-        internalType: "uint64",
+        internalType: "uint256",
       },
       {
         name: "funder",
@@ -848,16 +1357,28 @@ export const spokeProtocolAbi = [
   },
   {
     type: "event",
-    name: "CampaignPaused",
+    name: "CampaignStatusChanged",
     inputs: [
       {
         name: "campaignId",
-        type: "uint64",
+        type: "uint256",
         indexed: true,
-        internalType: "uint64",
+        internalType: "uint256",
+      },
+      {
+        name: "active",
+        type: "bool",
+        indexed: false,
+        internalType: "bool",
       },
       {
         name: "paused",
+        type: "bool",
+        indexed: false,
+        internalType: "bool",
+      },
+      {
+        name: "ended",
         type: "bool",
         indexed: false,
         internalType: "bool",
@@ -867,13 +1388,268 @@ export const spokeProtocolAbi = [
   },
   {
     type: "event",
-    name: "EarningsClaimed",
+    name: "MerchantProceedsClaimed",
     inputs: [
       {
         name: "campaignId",
-        type: "uint64",
+        type: "uint256",
         indexed: true,
+        internalType: "uint256",
+      },
+      {
+        name: "merchant",
+        type: "address",
+        indexed: true,
+        internalType: "address",
+      },
+      {
+        name: "amount",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "NativePurchaseAccepted",
+    inputs: [
+      {
+        name: "saleId",
+        type: "uint256",
+        indexed: true,
+        internalType: "uint256",
+      },
+      {
+        name: "campaignId",
+        type: "uint256",
+        indexed: true,
+        internalType: "uint256",
+      },
+      {
+        name: "buyer",
+        type: "address",
+        indexed: true,
+        internalType: "address",
+      },
+      {
+        name: "nodeId",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+      {
+        name: "orderKey",
+        type: "bytes32",
+        indexed: false,
+        internalType: "bytes32",
+      },
+      {
+        name: "policyHash",
+        type: "bytes32",
+        indexed: false,
+        internalType: "bytes32",
+      },
+      {
+        name: "policyVersion",
+        type: "uint32",
+        indexed: false,
+        internalType: "uint32",
+      },
+      {
+        name: "price",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+      {
+        name: "rewardReserved",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+      {
+        name: "unlockAt",
+        type: "uint64",
+        indexed: false,
         internalType: "uint64",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "NodeCreated",
+    inputs: [
+      {
+        name: "campaignId",
+        type: "uint256",
+        indexed: true,
+        internalType: "uint256",
+      },
+      {
+        name: "nodeId",
+        type: "uint256",
+        indexed: true,
+        internalType: "uint256",
+      },
+      {
+        name: "parentNodeId",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+      {
+        name: "owner",
+        type: "address",
+        indexed: true,
+        internalType: "address",
+      },
+      {
+        name: "metadataHash",
+        type: "bytes32",
+        indexed: false,
+        internalType: "bytes32",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "PolicyVersionRegistered",
+    inputs: [
+      {
+        name: "campaignId",
+        type: "uint256",
+        indexed: true,
+        internalType: "uint256",
+      },
+      {
+        name: "version",
+        type: "uint32",
+        indexed: true,
+        internalType: "uint32",
+      },
+      {
+        name: "policyHash",
+        type: "bytes32",
+        indexed: true,
+        internalType: "bytes32",
+      },
+      {
+        name: "effectiveAt",
+        type: "uint64",
+        indexed: false,
+        internalType: "uint64",
+      },
+      {
+        name: "policy",
+        type: "tuple",
+        indexed: false,
+        internalType: "struct ISpokeProtocol.CommissionPolicy",
+        components: [
+          {
+            name: "rewardToken",
+            type: "address",
+            internalType: "address",
+          },
+          {
+            name: "commissionBps",
+            type: "uint16",
+            internalType: "uint16",
+          },
+          {
+            name: "maxRewardedAncestors",
+            type: "uint16",
+            internalType: "uint16",
+          },
+          {
+            name: "weightsBps",
+            type: "uint16[]",
+            internalType: "uint16[]",
+          },
+          {
+            name: "perSaleCap",
+            type: "uint256",
+            internalType: "uint256",
+          },
+          {
+            name: "campaignLiabilityCap",
+            type: "uint256",
+            internalType: "uint256",
+          },
+          {
+            name: "holdSeconds",
+            type: "uint64",
+            internalType: "uint64",
+          },
+          {
+            name: "expiry",
+            type: "uint64",
+            internalType: "uint64",
+          },
+          {
+            name: "shortPathMode",
+            type: "uint8",
+            internalType: "enum ISpokeProtocol.ShortPathMode",
+          },
+          {
+            name: "eligibilityHash",
+            type: "bytes32",
+            internalType: "bytes32",
+          },
+        ],
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "RewardClaimed",
+    inputs: [
+      {
+        name: "campaignId",
+        type: "uint256",
+        indexed: true,
+        internalType: "uint256",
+      },
+      {
+        name: "recipient",
+        type: "address",
+        indexed: true,
+        internalType: "address",
+      },
+      {
+        name: "token",
+        type: "address",
+        indexed: true,
+        internalType: "address",
+      },
+      {
+        name: "amount",
+        type: "uint256",
+        indexed: false,
+        internalType: "uint256",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "RewardReserved",
+    inputs: [
+      {
+        name: "saleId",
+        type: "uint256",
+        indexed: true,
+        internalType: "uint256",
+      },
+      {
+        name: "campaignId",
+        type: "uint256",
+        indexed: true,
+        internalType: "uint256",
       },
       {
         name: "recipient",
@@ -888,94 +1664,32 @@ export const spokeProtocolAbi = [
         internalType: "uint256",
       },
       {
-        name: "source",
-        type: "uint8",
-        indexed: false,
-        internalType: "enum ISpokeProtocol.CreditSource",
-      },
-    ],
-    anonymous: false,
-  },
-  {
-    type: "event",
-    name: "ReferralNodeCreated",
-    inputs: [
-      {
-        name: "campaignId",
-        type: "uint64",
-        indexed: true,
-        internalType: "uint64",
-      },
-      {
-        name: "nodeId",
-        type: "uint64",
-        indexed: true,
-        internalType: "uint64",
-      },
-      {
-        name: "parentId",
-        type: "uint64",
-        indexed: false,
-        internalType: "uint64",
-      },
-      {
-        name: "distributor",
-        type: "address",
-        indexed: true,
-        internalType: "address",
-      },
-    ],
-    anonymous: false,
-  },
-  {
-    type: "event",
-    name: "RewardReserved",
-    inputs: [
-      {
-        name: "saleId",
-        type: "uint64",
-        indexed: true,
-        internalType: "uint64",
-      },
-      {
-        name: "campaignId",
-        type: "uint64",
-        indexed: true,
-        internalType: "uint64",
-      },
-      {
-        name: "recipient",
-        type: "address",
-        indexed: true,
-        internalType: "address",
-      },
-      {
-        name: "amount",
-        type: "uint128",
-        indexed: false,
-        internalType: "uint128",
-      },
-      {
         name: "depth",
         type: "uint8",
         indexed: false,
         internalType: "uint8",
       },
+      {
+        name: "effectiveWeightBps",
+        type: "uint16",
+        indexed: false,
+        internalType: "uint16",
+      },
     ],
     anonymous: false,
   },
   {
     type: "event",
-    name: "RewardWithdrawn",
+    name: "RewardVested",
     inputs: [
       {
-        name: "campaignId",
-        type: "uint64",
+        name: "saleId",
+        type: "uint256",
         indexed: true,
-        internalType: "uint64",
+        internalType: "uint256",
       },
       {
-        name: "merchant",
+        name: "recipient",
         type: "address",
         indexed: true,
         internalType: "address",
@@ -995,82 +1709,27 @@ export const spokeProtocolAbi = [
     inputs: [
       {
         name: "saleId",
-        type: "uint64",
+        type: "uint256",
         indexed: true,
-        internalType: "uint64",
+        internalType: "uint256",
       },
       {
         name: "campaignId",
-        type: "uint64",
+        type: "uint256",
         indexed: true,
-        internalType: "uint64",
+        internalType: "uint256",
       },
       {
         name: "merchantAmount",
-        type: "uint128",
+        type: "uint256",
         indexed: false,
-        internalType: "uint128",
+        internalType: "uint256",
       },
       {
         name: "commissionAmount",
-        type: "uint128",
+        type: "uint256",
         indexed: false,
-        internalType: "uint128",
-      },
-    ],
-    anonymous: false,
-  },
-  {
-    type: "event",
-    name: "SalePurchased",
-    inputs: [
-      {
-        name: "saleId",
-        type: "uint64",
-        indexed: true,
-        internalType: "uint64",
-      },
-      {
-        name: "campaignId",
-        type: "uint64",
-        indexed: true,
-        internalType: "uint64",
-      },
-      {
-        name: "buyer",
-        type: "address",
-        indexed: true,
-        internalType: "address",
-      },
-      {
-        name: "leafNodeId",
-        type: "uint64",
-        indexed: false,
-        internalType: "uint64",
-      },
-      {
-        name: "price",
-        type: "uint128",
-        indexed: false,
-        internalType: "uint128",
-      },
-      {
-        name: "commission",
-        type: "uint128",
-        indexed: false,
-        internalType: "uint128",
-      },
-      {
-        name: "unlockAt",
-        type: "uint64",
-        indexed: false,
-        internalType: "uint64",
-      },
-      {
-        name: "checkoutKey",
-        type: "bytes32",
-        indexed: false,
-        internalType: "bytes32",
+        internalType: "uint256",
       },
     ],
     anonymous: false,
@@ -1081,52 +1740,55 @@ export const spokeProtocolAbi = [
     inputs: [
       {
         name: "saleId",
-        type: "uint64",
+        type: "uint256",
         indexed: true,
-        internalType: "uint64",
+        internalType: "uint256",
       },
       {
         name: "campaignId",
-        type: "uint64",
+        type: "uint256",
         indexed: true,
-        internalType: "uint64",
-      },
-      {
-        name: "buyer",
-        type: "address",
-        indexed: true,
-        internalType: "address",
+        internalType: "uint256",
       },
       {
         name: "price",
-        type: "uint128",
+        type: "uint256",
         indexed: false,
-        internalType: "uint128",
+        internalType: "uint256",
       },
       {
         name: "releasedReward",
-        type: "uint128",
+        type: "uint256",
         indexed: false,
-        internalType: "uint128",
+        internalType: "uint256",
       },
     ],
     anonymous: false,
   },
   {
-    type: "error",
-    name: "AmountExceedsAvailable",
+    type: "event",
+    name: "SurplusReturned",
     inputs: [
       {
-        name: "requested",
+        name: "campaignId",
         type: "uint256",
+        indexed: true,
         internalType: "uint256",
       },
       {
-        name: "available",
+        name: "merchant",
+        type: "address",
+        indexed: true,
+        internalType: "address",
+      },
+      {
+        name: "amount",
         type: "uint256",
+        indexed: false,
         internalType: "uint256",
       },
     ],
+    anonymous: false,
   },
   {
     type: "error",
@@ -1134,13 +1796,24 @@ export const spokeProtocolAbi = [
     inputs: [
       {
         name: "campaignId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
       {
         name: "buyer",
         type: "address",
         internalType: "address",
+      },
+    ],
+  },
+  {
+    type: "error",
+    name: "CampaignActive",
+    inputs: [
+      {
+        name: "campaignId",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
   },
@@ -1150,8 +1823,8 @@ export const spokeProtocolAbi = [
     inputs: [
       {
         name: "campaignId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
   },
@@ -1161,8 +1834,8 @@ export const spokeProtocolAbi = [
     inputs: [
       {
         name: "campaignId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
   },
@@ -1172,8 +1845,8 @@ export const spokeProtocolAbi = [
     inputs: [
       {
         name: "campaignId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
   },
@@ -1183,19 +1856,19 @@ export const spokeProtocolAbi = [
     inputs: [
       {
         name: "campaignId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
   },
   {
     type: "error",
-    name: "DuplicateCheckout",
+    name: "CampaignNotFunded",
     inputs: [
       {
-        name: "checkoutKey",
-        type: "bytes32",
-        internalType: "bytes32",
+        name: "campaignId",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
   },
@@ -1232,15 +1905,20 @@ export const spokeProtocolAbi = [
     inputs: [
       {
         name: "campaignId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
       {
-        name: "parentId",
-        type: "uint64",
-        internalType: "uint64",
+        name: "parentNodeId",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
+  },
+  {
+    type: "error",
+    name: "InvalidPolicy",
+    inputs: [],
   },
   {
     type: "error",
@@ -1252,25 +1930,35 @@ export const spokeProtocolAbi = [
     name: "InvalidReferralPath",
     inputs: [
       {
-        name: "leafNodeId",
-        type: "uint64",
-        internalType: "uint64",
+        name: "nodeId",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
   },
   {
     type: "error",
     name: "InvalidSchedule",
+    inputs: [],
+  },
+  {
+    type: "error",
+    name: "InvalidWeights",
+    inputs: [],
+  },
+  {
+    type: "error",
+    name: "LiabilityCapExceeded",
     inputs: [
       {
-        name: "startsAt",
-        type: "uint64",
-        internalType: "uint64",
+        name: "required",
+        type: "uint256",
+        internalType: "uint256",
       },
       {
-        name: "endsAt",
-        type: "uint64",
-        internalType: "uint64",
+        name: "available",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
   },
@@ -1280,8 +1968,8 @@ export const spokeProtocolAbi = [
     inputs: [
       {
         name: "campaignId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
       {
         name: "wallet",
@@ -1296,8 +1984,8 @@ export const spokeProtocolAbi = [
     inputs: [
       {
         name: "saleId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
       {
         name: "caller",
@@ -1312,8 +2000,8 @@ export const spokeProtocolAbi = [
     inputs: [
       {
         name: "campaignId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
       {
         name: "caller",
@@ -1327,14 +2015,63 @@ export const spokeProtocolAbi = [
     name: "NothingToClaim",
     inputs: [
       {
-        name: "campaignId",
-        type: "uint64",
-        internalType: "uint64",
-      },
-      {
         name: "account",
         type: "address",
         internalType: "address",
+      },
+    ],
+  },
+  {
+    type: "error",
+    name: "OrderAlreadyUsed",
+    inputs: [
+      {
+        name: "orderKey",
+        type: "bytes32",
+        internalType: "bytes32",
+      },
+    ],
+  },
+  {
+    type: "error",
+    name: "PolicyMismatch",
+    inputs: [
+      {
+        name: "expected",
+        type: "bytes32",
+        internalType: "bytes32",
+      },
+      {
+        name: "actual",
+        type: "bytes32",
+        internalType: "bytes32",
+      },
+    ],
+  },
+  {
+    type: "error",
+    name: "PolicyNoticeTooShort",
+    inputs: [
+      {
+        name: "earliestEffectiveAt",
+        type: "uint64",
+        internalType: "uint64",
+      },
+    ],
+  },
+  {
+    type: "error",
+    name: "PolicyTokenImmutable",
+    inputs: [],
+  },
+  {
+    type: "error",
+    name: "PolicyVersionPending",
+    inputs: [
+      {
+        name: "campaignId",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
   },
@@ -1344,8 +2081,8 @@ export const spokeProtocolAbi = [
     inputs: [
       {
         name: "saleId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
       {
         name: "unlockAt",
@@ -1360,8 +2097,8 @@ export const spokeProtocolAbi = [
     inputs: [
       {
         name: "saleId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
   },
@@ -1371,8 +2108,8 @@ export const spokeProtocolAbi = [
     inputs: [
       {
         name: "saleId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
   },
@@ -1382,8 +2119,8 @@ export const spokeProtocolAbi = [
     inputs: [
       {
         name: "saleId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
       {
         name: "unlockAt",
@@ -1436,8 +2173,8 @@ export const spokeProtocolAbi = [
     inputs: [
       {
         name: "campaignId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
   },
@@ -1447,8 +2184,8 @@ export const spokeProtocolAbi = [
     inputs: [
       {
         name: "nodeId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
   },
@@ -1458,8 +2195,8 @@ export const spokeProtocolAbi = [
     inputs: [
       {
         name: "saleId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
   },
@@ -1474,8 +2211,8 @@ export const spokeProtocolAbi = [
     inputs: [
       {
         name: "campaignId",
-        type: "uint64",
-        internalType: "uint64",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
   },

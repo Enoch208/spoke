@@ -24,13 +24,31 @@ export const txStates = [
   "included",
   "confirmed",
   "indexed",
-  "action_available",
+  "done",
+  "rejected",
+  "unknown",
+  "replaced",
   "failed",
 ] as const;
 export type TxState = (typeof txStates)[number];
 
-export const earningsBuckets = ["pending_settlement", "claimable", "claimed", "reversed"] as const;
+export const earningsBuckets = [
+  "atRisk",
+  "readyToFinalize",
+  "claimable",
+  "claimed",
+  "refunded",
+  "reversed",
+] as const;
 export type EarningsBucket = (typeof earningsBuckets)[number];
+export const allocationStates = [
+  "reserved",
+  "claimable",
+  "claimed",
+  "refunded",
+  "reversed",
+] as const;
+export type AllocationState = (typeof allocationStates)[number];
 
 export const subsystemHealth = ["ok", "degraded", "down", "not_configured"] as const;
 export type SubsystemHealth = (typeof subsystemHealth)[number];

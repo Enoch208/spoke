@@ -1,66 +1,37 @@
 import { describe, expect, it } from "vitest";
 import { allocateReward, computeReward, splitReward } from "../src/economics.js";
 
-const alice = "0x00000000000000000000000000000000000A11CE";
-const ben = "0x0000000000000000000000000000000000000BE0";
-const chi = "0x0000000000000000000000000000000000000C41";
-
-describe("computeReward", () => {
-  it("takes the rate of the price in base units", () => {
-    expect(computeReward(100_000_000n, 1_000, 10_000_000n)).toBe(10_000_000n);
+const addresses = [
+  "0x0000000000000000000000000000000000000001",
+  "0x0000000000000000000000000000000000000002",
+  "0x0000000000000000000000000000000000000003",
+  "0x0000000000000000000000000000000000000004",
+] as const;
+const weights = [5000, 2500, 1500, 1000];
+describe("v3 merchant policy math", () => {
+  it("caps and floors commission in base units", () => {
+    expect(computeReward(100_000_000n, 1000, 10_000_000n)).toBe(10_000_000n);
+    expect(computeReward(100_000_000n, 1000, 4_000_000n)).toBe(4_000_000n);
+    expect(computeReward(999n, 1000, 1000n)).toBe(99n);
+    expect(computeReward(1001n, 10000, 2000n)).toBe(1001n);
+    expect(() => computeReward(100n, 10001, 100n)).toThrow(RangeError);
   });
-
-  it("caps the reward at the per-sale maximum", () => {
-    expect(computeReward(100_000_000n, 1_000, 4_000_000n)).toBe(4_000_000n);
+  it.each([
+    [1000n, [500n, 250n, 150n, 100n]],
+    [1001n, [501n, 250n, 150n, 100n]],
+    [1n, [1n, 0n, 0n, 0n]],
+  ] as const)("conserves the %s golden vector", (reward, expected) => {
+    expect(splitReward(reward, weights)).toEqual(expected);
   });
-
-  it("floors fractional base units", () => {
-    expect(computeReward(999n, 1_000, 1_000n)).toBe(99n);
+  it("labels four levels and takes explicit policy weights", () => {
+    const result = allocateReward(1000n, addresses, weights);
+    expect(result.map((allocation) => allocation.amountMinor)).toEqual([500n, 250n, 150n, 100n]);
+    expect(result[3]).toMatchObject({ role: "ancestor", depth: 3, effectiveWeightBps: 1000 });
   });
-
-  it("rejects a rate above 100%", () => {
-    expect(() => computeReward(100n, 10_001, 100n)).toThrow(RangeError);
-  });
-});
-
-describe("splitReward", () => {
-  it("T13: one recipient takes the whole reward", () => {
-    expect(splitReward(10_000_000n, 1)).toEqual([10_000_000n]);
-  });
-
-  it("T14: two recipients split 75/25 nearest first", () => {
-    expect(splitReward(10_000_000n, 2)).toEqual([7_500_000n, 2_500_000n]);
-  });
-
-  it("T15: three recipients split 60/25/15 nearest first", () => {
-    expect(splitReward(10_000_000n, 3)).toEqual([6_000_000n, 2_500_000n, 1_500_000n]);
-  });
-
-  it("T16: the nearest recipient takes the rounding remainder", () => {
-    expect(splitReward(10n, 3)).toEqual([7n, 2n, 1n]);
-  });
-
-  it("never loses a base unit", () => {
-    for (let reward = 0n; reward < 2_000n; reward += 7n) {
-      for (const count of [1, 2, 3] as const) {
-        const total = splitReward(reward, count).reduce((sum, amount) => sum + amount, 0n);
-        expect(total).toBe(reward);
-      }
-    }
-  });
-});
-
-describe("allocateReward", () => {
-  it("labels recipients by depth for the Chi → Ben → Alice path", () => {
-    expect(allocateReward(10_000_000n, [chi, ben, alice])).toEqual([
-      { recipient: chi, role: "nearest", depth: 0, amountMinor: 6_000_000n },
-      { recipient: ben, role: "parent", depth: 1, amountMinor: 2_500_000n },
-      { recipient: alice, role: "grandparent", depth: 2, amountMinor: 1_500_000n },
-    ]);
-  });
-
-  it("rejects an empty or over-long path", () => {
-    expect(() => allocateReward(10n, [])).toThrow(RangeError);
-    expect(() => allocateReward(10n, [chi, ben, alice, chi])).toThrow(RangeError);
+  it("rejects malformed weights and duplicated wallets", () => {
+    expect(() => splitReward(1000n, [5000, 2500])).toThrow(RangeError);
+    expect(() => allocateReward(1000n, [addresses[0], addresses[0]], [5000, 5000])).toThrow(
+      RangeError,
+    );
   });
 });
