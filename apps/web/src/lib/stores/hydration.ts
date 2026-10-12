@@ -5,6 +5,7 @@ import { create } from "zustand";
 import { useCheckoutStore } from "./checkout";
 import { useDemoStore } from "./demo";
 import { useModeStore } from "./mode";
+import { useTxStore } from "./tx";
 import { useUiStore } from "./ui";
 import { useWorkspaceStore } from "./workspace";
 
@@ -14,6 +15,7 @@ const persistedStores = [
   useUiStore,
   useCheckoutStore,
   useDemoStore,
+  useTxStore,
 ] as const;
 
 type HydrationState = { hydrated: boolean; markHydrated: () => void };
