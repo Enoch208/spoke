@@ -8,6 +8,7 @@ import proof from "../../../packages/contracts/deployments/10143-proof.json" wit
 import { createInsightsService } from "./services/insights.js";
 import { createIndexer } from "./services/indexer.js";
 import { createRpcFetch } from "./http/rpc-fetch.js";
+import { createIndexerHealthProbes } from "./services/indexer-health.js";
 
 const env = parseEnv(process.env);
 const rpc = createRpcFetch({ requestsPerSecond: env.RPC_REQUESTS_PER_SECOND });
@@ -52,21 +53,8 @@ const app = createApp({
         return "down";
       }
     },
-    indexer: async () => {
-      if (!env.PROTOCOL_ADDRESS) return "not_configured";
-      const row = await store.get("indexer", "cursor");
-      return row && row.payload.status === "live" && Date.now() - row.updatedAt.getTime() < 30_000
-        ? "ok"
-        : "degraded";
-    },
+    ...createIndexerHealthProbes(store, env.PROTOCOL_ADDRESS),
     chainHead: async () => (await chain.head()).blockNumber,
-    indexed: async () => {
-      const row = await store.get("indexer", "cursor");
-      return {
-        lastBlock: typeof row?.payload.blockNumber === "string" ? row.payload.blockNumber : null,
-        lagSeconds: typeof row?.payload.lagSeconds === "number" ? row.payload.lagSeconds : null,
-      };
-    },
   },
   config: { chainId: env.CHAIN_ID, protocolAddress: env.PROTOCOL_ADDRESS },
   services: {
