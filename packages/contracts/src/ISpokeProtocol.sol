@@ -270,6 +270,11 @@ interface ISpokeProtocol {
         external
         view
         returns (uint256 saleId);
+    function saleIdForBuyer(uint256 campaignId, address buyer)
+        external
+        view
+        returns (uint256 saleId);
+    function allocationClaimed(uint256 saleId, address recipient) external view returns (bool);
     function claimableOf(uint256 campaignId, address account)
         external
         view

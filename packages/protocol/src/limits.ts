@@ -1,4 +1,5 @@
 export const protocolLimits = {
+  maxCampaigns: 128,
   maxNodesPerCampaign: 256,
   maxSalesPerCampaign: 100,
   maxRewardedAncestors: 5,

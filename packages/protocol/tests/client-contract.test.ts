@@ -6,6 +6,7 @@ import {
   contractErrorCodes,
   earningsBuckets,
   spokeProtocolAbi,
+  demoTokenAbi,
   txStates,
   uintString,
 } from "../src/index.js";
@@ -70,7 +71,7 @@ describe("v3 client and contract boundaries", () => {
   });
 
   it("exposes every protocol and faucet error through the typed error catalogue", () => {
-    for (const entry of spokeProtocolAbi)
+    for (const entry of [...spokeProtocolAbi, ...demoTokenAbi])
       if (entry.type === "error") expect(Object.hasOwn(contractErrorCodes, entry.name)).toBe(true);
     expect(contractErrorCodes.CampaignActive).toBe("VALIDATION_FAILED");
     expect(contractErrorCodes.PolicyVersionPending).toBe("VALIDATION_FAILED");

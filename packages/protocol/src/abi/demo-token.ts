@@ -1,5 +1,10 @@
 export const demoTokenAbi = [
   {
+    type: "constructor",
+    inputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
     type: "function",
     name: "FAUCET_LIMIT",
     inputs: [],
@@ -90,7 +95,7 @@ export const demoTokenAbi = [
         internalType: "uint8",
       },
     ],
-    stateMutability: "view",
+    stateMutability: "pure",
   },
   {
     type: "function",
@@ -246,6 +251,92 @@ export const demoTokenAbi = [
       },
     ],
     anonymous: false,
+  },
+  {
+    type: "error",
+    name: "ERC20InsufficientAllowance",
+    inputs: [
+      {
+        name: "spender",
+        type: "address",
+        internalType: "address",
+      },
+      {
+        name: "allowance",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "needed",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+  },
+  {
+    type: "error",
+    name: "ERC20InsufficientBalance",
+    inputs: [
+      {
+        name: "sender",
+        type: "address",
+        internalType: "address",
+      },
+      {
+        name: "balance",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "needed",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+  },
+  {
+    type: "error",
+    name: "ERC20InvalidApprover",
+    inputs: [
+      {
+        name: "approver",
+        type: "address",
+        internalType: "address",
+      },
+    ],
+  },
+  {
+    type: "error",
+    name: "ERC20InvalidReceiver",
+    inputs: [
+      {
+        name: "receiver",
+        type: "address",
+        internalType: "address",
+      },
+    ],
+  },
+  {
+    type: "error",
+    name: "ERC20InvalidSender",
+    inputs: [
+      {
+        name: "sender",
+        type: "address",
+        internalType: "address",
+      },
+    ],
+  },
+  {
+    type: "error",
+    name: "ERC20InvalidSpender",
+    inputs: [
+      {
+        name: "spender",
+        type: "address",
+        internalType: "address",
+      },
+    ],
   },
   {
     type: "error",

@@ -53,6 +53,12 @@ export const errorCodes = [
 export type ErrorCode = (typeof errorCodes)[number];
 
 export const contractErrorCodes = {
+  ReentrancyGuardReentrantCall: "CHECKOUT_PAYMENT_FAILED",
+  SafeERC20FailedOperation: "CHECKOUT_PAYMENT_FAILED",
+  ERC20InvalidApprover: "VALIDATION_FAILED",
+  ERC20InvalidReceiver: "VALIDATION_FAILED",
+  ERC20InvalidSender: "VALIDATION_FAILED",
+  ERC20InvalidSpender: "VALIDATION_FAILED",
   InvalidPolicy: "VALIDATION_FAILED",
   InvalidWeights: "VALIDATION_FAILED",
   CampaignActive: "VALIDATION_FAILED",

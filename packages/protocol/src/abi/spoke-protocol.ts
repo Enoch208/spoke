@@ -1,5 +1,55 @@
 export const spokeProtocolAbi = [
   {
+    type: "constructor",
+    inputs: [
+      {
+        name: "token",
+        type: "address",
+        internalType: "address",
+      },
+    ],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "MAX_CAMPAIGNS",
+    inputs: [],
+    outputs: [
+      {
+        name: "",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "MAX_NODES",
+    inputs: [],
+    outputs: [
+      {
+        name: "",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "MAX_SALES",
+    inputs: [],
+    outputs: [
+      {
+        name: "",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
     type: "function",
     name: "activateCampaign",
     inputs: [
@@ -11,6 +61,30 @@ export const spokeProtocolAbi = [
     ],
     outputs: [],
     stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "allocationClaimed",
+    inputs: [
+      {
+        name: "saleId",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "recipient",
+        type: "address",
+        internalType: "address",
+      },
+    ],
+    outputs: [
+      {
+        name: "",
+        type: "bool",
+        internalType: "bool",
+      },
+    ],
+    stateMutability: "view",
   },
   {
     type: "function",
@@ -72,7 +146,7 @@ export const spokeProtocolAbi = [
         internalType: "uint256",
       },
       {
-        name: "proceeds",
+        name: "price",
         type: "uint256",
         internalType: "uint256",
       },
@@ -96,7 +170,7 @@ export const spokeProtocolAbi = [
     ],
     outputs: [
       {
-        name: "amount",
+        name: "",
         type: "uint256",
         internalType: "uint256",
       },
@@ -281,7 +355,7 @@ export const spokeProtocolAbi = [
     ],
     outputs: [
       {
-        name: "",
+        name: "campaign",
         type: "tuple",
         internalType: "struct ISpokeProtocol.Campaign",
         components: [
@@ -782,7 +856,7 @@ export const spokeProtocolAbi = [
         ],
       },
       {
-        name: "allocations",
+        name: "split",
         type: "tuple[]",
         internalType: "struct ISpokeProtocol.Allocation[]",
         components: [
@@ -909,19 +983,19 @@ export const spokeProtocolAbi = [
     name: "nodeOf",
     inputs: [
       {
-        name: "campaignId",
+        name: "",
         type: "uint256",
         internalType: "uint256",
       },
       {
-        name: "wallet",
+        name: "",
         type: "address",
         internalType: "address",
       },
     ],
     outputs: [
       {
-        name: "nodeId",
+        name: "",
         type: "uint256",
         internalType: "uint256",
       },
@@ -1025,7 +1099,7 @@ export const spokeProtocolAbi = [
         internalType: "uint256",
       },
       {
-        name: "allocations",
+        name: "split",
         type: "tuple[]",
         internalType: "struct ISpokeProtocol.Allocation[]",
         components: [
@@ -1220,22 +1294,46 @@ export const spokeProtocolAbi = [
   },
   {
     type: "function",
-    name: "saleIdForOrder",
+    name: "saleIdForBuyer",
     inputs: [
       {
-        name: "campaignId",
+        name: "",
         type: "uint256",
         internalType: "uint256",
       },
       {
-        name: "orderKey",
+        name: "",
+        type: "address",
+        internalType: "address",
+      },
+    ],
+    outputs: [
+      {
+        name: "",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "saleIdForOrder",
+    inputs: [
+      {
+        name: "",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "",
         type: "bytes32",
         internalType: "bytes32",
       },
     ],
     outputs: [
       {
-        name: "saleId",
+        name: "",
         type: "uint256",
         internalType: "uint256",
       },
@@ -2077,6 +2175,11 @@ export const spokeProtocolAbi = [
   },
   {
     type: "error",
+    name: "ReentrancyGuardReentrantCall",
+    inputs: [],
+  },
+  {
+    type: "error",
     name: "RefundWindowClosed",
     inputs: [
       {
@@ -2088,6 +2191,17 @@ export const spokeProtocolAbi = [
         name: "unlockAt",
         type: "uint64",
         internalType: "uint64",
+      },
+    ],
+  },
+  {
+    type: "error",
+    name: "SafeERC20FailedOperation",
+    inputs: [
+      {
+        name: "token",
+        type: "address",
+        internalType: "address",
       },
     ],
   },

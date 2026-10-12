@@ -7,11 +7,11 @@ const abiDir = join(packageRoot, "..", "protocol", "src", "abi");
 
 const exportsToWrite = [
   {
-    artifact: "ISpokeProtocol.sol/ISpokeProtocol.json",
+    artifact: "SpokeProtocol.sol/SpokeProtocol.json",
     file: "spoke-protocol.ts",
     name: "spokeProtocolAbi",
   },
-  { artifact: "ISpokeDemoUSD.sol/ISpokeDemoUSD.json", file: "demo-token.ts", name: "demoTokenAbi" },
+  { artifact: "SpokeDemoUSD.sol/SpokeDemoUSD.json", file: "demo-token.ts", name: "demoTokenAbi" },
 ] as const;
 
 const readAbi = async (artifact: string): Promise<unknown> => {
