@@ -539,6 +539,7 @@ export const proofEvent = z.object({
 export const conversionEarning = z.object({
   saleId: protocolId,
   campaignId: protocolId,
+  token: tokenInfo,
   level: z.number().int().min(1).max(8),
   pathLength: z.number().int().positive(),
   effectiveWeightBps: z.number().int().min(0).max(10000),

@@ -62,6 +62,7 @@ const conversion = (world: DemoWorld, share: Share): Conversion => {
   return {
     saleId: sale.id,
     campaignId: sale.campaignId,
+    token: tokenInfo(world, share.token),
     level: allocation.level,
     pathLength: sale.allocations.length,
     effectiveWeightBps: allocation.weightBps,

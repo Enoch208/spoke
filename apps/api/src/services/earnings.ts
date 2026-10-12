@@ -39,6 +39,14 @@ export const earnedSnapshot = async (services: Services, wallets: string[]) => {
       .some((item) => wallets.includes(item.recipient.toLowerCase())),
   );
   const head = await chain.client.getBlock(before ? { blockNumber: BigInt(before) } : {});
+  const token = chain.token ? nativeToken(chain.token) : null;
+  if (receipts.length > 0 && !token)
+    throw new ApiProblem(
+      503,
+      "UPSTREAM_UNAVAILABLE",
+      "The settlement token is not configured.",
+      false,
+    );
   const rows = [];
   for (const receipt of receipts) {
     const split = allocations.parse(receipt.payload.allocations);
@@ -67,6 +75,7 @@ export const earnedSnapshot = async (services: Services, wallets: string[]) => {
       const value = conversionEarning.parse({
         saleId: receipt.id,
         campaignId: receipt.payload.campaignId,
+        token,
         level: allocation.depth + 1,
         pathLength: path.rows.length,
         effectiveWeightBps: allocation.effectiveWeightBps,
@@ -128,7 +137,7 @@ export const earnedSnapshot = async (services: Services, wallets: string[]) => {
     rows,
     buckets,
     breakdown,
-    token: chain.token ? nativeToken(chain.token) : null,
+    token,
     indexedBlock: before,
     blockNumber: head.number.toString(),
     chainTime: head.timestamp,
