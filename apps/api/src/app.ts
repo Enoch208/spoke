@@ -79,12 +79,18 @@ export const createApp = (deps: AppDeps) => {
         await deps.services.store.rate(`global:${c.get("ip")}`, 240, 60);
         const cursor = await deps.services.store.get("indexer", "cursor");
         if (cursor) {
+          const indexedBlockAt =
+            typeof cursor.payload.indexedBlockAt === "string"
+              ? Date.parse(cursor.payload.indexedBlockAt)
+              : NaN;
           c.set("blockNumber", z.string().parse(cursor.payload.blockNumber));
           c.set(
             "indexingStatus",
-            Date.now() - cursor.updatedAt.getTime() > 30_000
-              ? "behind"
-              : cursor.payload.status === "behind"
+            cursor.payload.status === "syncing"
+              ? "syncing"
+              : cursor.payload.status === "behind" ||
+                  !Number.isFinite(indexedBlockAt) ||
+                  Date.now() - indexedBlockAt > 15_000
                 ? "behind"
                 : cursor.payload.status === "live"
                   ? "live"
