@@ -9,7 +9,7 @@ export function CampaignCard({
   campaign: ClientOutput<"campaigns.list">["items"][number];
 }) {
   return (
-    <Link href={`/c/${campaign.campaignId}`} className="group block">
+    <Link href={`/c/${campaign.campaignId}`} className="group block min-w-0">
       <Card padding="none" className="overflow-hidden transition-shadow hover:shadow-sm">
         <div className="bg-lilac-soft flex h-36 items-center justify-center overflow-hidden">
           <span className="font-display text-h3 text-olive">
@@ -18,8 +18,13 @@ export function CampaignCard({
         </div>
         <div className="space-y-3 p-5">
           <div className="flex items-center justify-between gap-2">
-            <p className="text-subtle text-sm">{campaign.merchant.name}</p>
-            <span className="bg-pill rounded-full px-2 py-1 text-xs">
+            <p
+              className="text-subtle min-w-0 flex-1 truncate text-sm"
+              title={campaign.merchant.name}
+            >
+              {campaign.merchant.name}
+            </p>
+            <span className="bg-pill shrink-0 rounded-full px-2 py-1 text-xs">
               {campaign.state.replaceAll("_", " ")}
             </span>
           </div>
