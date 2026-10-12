@@ -156,7 +156,7 @@ export const txDemo = {
 } as const satisfies SheetCopy;
 
 export const txStepNames = {
-  approve: "Allow SDUSD",
+  approve: "Allow spending",
   createCampaign: "Create campaign",
   fundCampaign: "Deposit reward budget",
   activateCampaign: "Go live",
