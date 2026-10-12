@@ -6,14 +6,26 @@
       "address": "0xb6279237003ed710bb4cce6fbd126e07ed4d8e23",
       "txHash": "0xa7c7c5190fd2907510394a0baf44302d463c400f4f9b3ded703ee923918bc231",
       "blockNumber": "70445279",
-      "runtimeBytes": 1960
+      "runtimeBytes": 1960,
+      "verification": {
+        "creationMatch": "exact_match",
+        "runtimeMatch": "exact_match",
+        "verifiedAt": "2026-10-12T19:13:09Z",
+        "jobUrl": "https://sourcify-api-monad.blockvision.org/v2/verify/d94b3038-e440-4eb8-af5e-b6b2d865e2a4"
+      }
     },
     {
       "name": "SpokeProtocol",
       "address": "0x1fa5e94e44db2101664c0a24dbf1e52912af3eca",
       "txHash": "0xabc0a2e3328332bd9b5a869fe8388718ded540a7623fea8fdb0ce9888da8abaf",
       "blockNumber": "70445284",
-      "runtimeBytes": 22584
+      "runtimeBytes": 22584,
+      "verification": {
+        "creationMatch": "exact_match",
+        "runtimeMatch": "exact_match",
+        "verifiedAt": "2026-10-12T19:13:39Z",
+        "jobUrl": "https://sourcify-api-monad.blockvision.org/v2/verify/88339cff-9c1f-444c-9cc0-33ff52429f2a"
+      }
     }
   ],
   "decimals": 6,
@@ -25,8 +37,9 @@
   "evmVersion": "cancun",
   "sourceCommit": "9126f05",
   "verification": {
-    "status": "pending_approval",
-    "verifier": "sourcify"
+    "status": "exact_match",
+    "verifier": "sourcify",
+    "verifierUrl": "https://sourcify-api-monad.blockvision.org/"
   },
   "testnetOnly": true
 }
