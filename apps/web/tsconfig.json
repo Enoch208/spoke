@@ -5,8 +5,15 @@
     "jsx": "react-jsx",
     "allowJs": false,
     "incremental": true,
-    "plugins": [{ "name": "next" }],
-    "paths": { "@/*": ["./src/*"] }
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "types": ["node", "next/image-types/global"]
   },
   "include": [
     "next-env.d.ts",
