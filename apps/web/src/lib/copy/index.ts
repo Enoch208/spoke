@@ -17,3 +17,4 @@ export * from "./tx";
 export * from "./toasts";
 export * from "./modals";
 export { flows } from "./flows";
+export { shellCopy } from "./shell";
