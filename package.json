@@ -17,6 +17,8 @@
     "test:watch": "vitest",
     "contracts:build": "pnpm --filter @spoke/contracts build",
     "contracts:test": "pnpm --filter @spoke/contracts test",
+    "chain": "anvil --port 8545 --chain-id 31337",
+    "deploy:local": "pnpm --filter @spoke/contracts deploy:local",
     "abi": "pnpm --filter @spoke/contracts abi"
   },
   "devDependencies": {

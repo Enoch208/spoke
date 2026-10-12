@@ -5,6 +5,8 @@
   "scripts": {
     "build": "forge build",
     "test": "forge test",
+    "deploy:local": "forge script script/Deploy.s.sol:Deploy --rpc-url http://127.0.0.1:8545 --broadcast --slow --non-interactive",
+    "fixture:keys": "node scripts/create-fixture-keys.ts",
     "abi": "forge build && node scripts/export-abi.ts && prettier --write ../protocol/src/abi --ignore-path ''",
     "typecheck": "tsc --noEmit"
   },

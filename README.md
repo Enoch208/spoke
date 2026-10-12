@@ -31,6 +31,7 @@ This repository is under active construction for Monad Metropolis. Built so far:
 - An immutable settlement contract with separate reward and buyer-payment ledgers, 1–5 commission levels, refunds, finalization, pull claims and future policy versions with 24 hours' notice.
 - A 6-decimal testnet demo token (`SpokeDemoUSD`, not a stablecoin and not redeemable), generated contract ABIs, shared reward math and schemas for all 185 client methods.
 - Contract unit, fuzz, security and stateful invariant tests, plus an API health endpoint.
+- A scripted two-merchant testnet settlement proof with four rewarded levels, a branch, a separate refund, successful claims and protected unused-budget withdrawals.
 
 The contracts are deployed on Monad Testnet and source verified through Monad Sourcify, with exact matches for creation and runtime bytecode. The deployed product still serves the landing page; marketplace, network explorer, checkout and claims screens, reputation and the full API rollout are in progress. Prototype contract limits are 128 campaigns, 256 nodes and 100 sales per campaign.
 
@@ -68,6 +69,8 @@ Monad Testnet, chain ID 10143, explorer [MonadVision](https://testnet.monadvisio
 | SpokeDemoUSD  | [0xb627…8E23](https://testnet.monadvision.com/address/0xb6279237003eD710bB4ccE6fbd126e07eD4D8E23) | [0xa7c7…c231](https://testnet.monadvision.com/tx/0xa7c7c5190fd2907510394a0baf44302d463c400f4f9b3ded703ee923918bc231) |
 
 Deployment blocks, compiler settings, checked token metadata and source-verification evidence are in [the deployment manifest](packages/contracts/deployments/10143.json).
+
+The [settlement proof](packages/contracts/deployments/10143-proof.json) records real testnet transactions, allocations, refund and finalization times, claimed balances and ledger reconciliation. These are scripted demonstration wallets using non-redeemable SDUSD, not customer revenue. [Reproduction commands](packages/contracts/README.md) cover Anvil and the checked testnet deployment.
 
 ## Credits
 
