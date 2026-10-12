@@ -1,0 +1,17 @@
+{
+  "name": "@spoke/indexer",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "codegen": "envio codegen",
+    "start": "envio start",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "envio": "3.14.0"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "typescript": "5.9.3"
+  }
+}

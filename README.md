@@ -30,10 +30,13 @@ This repository is under active construction for Monad Metropolis. Built so far:
 - The landing page (`apps/web`), with product screens drawn as clearly labelled illustrations.
 - An immutable settlement contract with separate reward and buyer-payment ledgers, 1–5 commission levels, refunds, finalization, pull claims and future policy versions with 24 hours' notice.
 - A 6-decimal testnet demo token (`SpokeDemoUSD`, not a stablecoin and not redeemable), generated contract ABIs, shared reward math and schemas for all 185 client methods.
-- Contract unit, fuzz, security and stateful invariant tests, plus an API health endpoint.
+- A PostgreSQL API for wallet sessions, immutable product versions, campaign publication, graph exploration, receipts, six earnings buckets, merchant vaults, reports and privacy-aware distributor records.
+- Envio HyperIndex settlement and SDUSD event indexing, canonical replay and reorganization checks, and cached Nansen context for the demonstration distributors.
+- Private product uploads and buyer-only delivery that checks sale state directly onchain, plus a bounded testnet gas station with durable transaction retries.
+- A typed public read SDK, request and response validation, contract invariants and an actual frontend-client-to-API-to-contract settlement journey.
 - A scripted two-merchant testnet settlement proof with four rewarded levels, a branch, a separate refund, successful claims and protected unused-budget withdrawals.
 
-The contracts are deployed on Monad Testnet and source verified through Monad Sourcify, with exact matches for creation and runtime bytecode. The deployed product still serves the landing page; marketplace, network explorer, checkout and claims screens, reputation and the full API rollout are in progress. Prototype contract limits are 128 campaigns, 256 nodes and 100 sales per campaign.
+The contracts are deployed on Monad Testnet and source verified through Monad Sourcify, with exact matches for creation and runtime bytecode. The full API and frontend rollout is being verified for deployment. Prototype contract limits are 128 campaigns, 256 nodes and 100 sales per campaign. External commerce integrations, teams, webhooks and multi-currency settlement remain designed previews, with no live financial behavior.
 
 ## Layout
 
@@ -42,11 +45,20 @@ apps/web              Next.js app: landing, campaigns, network explorer, checkou
 apps/api              Hono API: catalog, wallet sessions, read model, public read endpoints
 packages/contracts    Foundry: protocol interface, demo token, settlement contract, tests
 packages/protocol     Shared TypeScript: ABIs, chains, payout math, money, statuses, API schemas
+packages/sdk          Validated public read client
+indexer               Envio HyperIndex handlers and deployment container
+ops                   Private database and asset backup operations
 ```
 
 ## Run it
 
-Requires Node 24, pnpm 10 and Foundry.
+Requires Node 24, pnpm 10, Foundry and PostgreSQL 16. For a disposable local database:
+
+```sh
+docker run --name spoke-postgres -d \
+  -e POSTGRES_USER=spoke -e POSTGRES_PASSWORD=spoke -e POSTGRES_DB=spoke \
+  -p 127.0.0.1:54332:5432 postgres:16.10-bookworm
+```
 
 ```sh
 pnpm install
@@ -58,6 +70,8 @@ pnpm dev
 ```
 
 The web app runs on http://localhost:3040 and the API on http://localhost:8740. `pnpm abi` rebuilds the contracts and regenerates the TypeScript ABIs.
+
+For local settlement, start Anvil and follow the [contract deployment commands](packages/contracts/README.md), then set the returned addresses in both app environment files. The API applies its database migrations on startup. See the [API guide](apps/api/README.md), [indexer setup](indexer/README.md), [read client](packages/sdk/README.md) and [operations](ops/README.md).
 
 ## Network
 

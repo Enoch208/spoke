@@ -1,0 +1,36 @@
+name: spoke-distribution
+description: Canonical referral and settlement events on Monad Testnet
+rollback_on_reorg: true
+address_format: lowercase
+raw_events: true
+full_batch_size: 1000
+contracts:
+  - name: SpokeProtocol
+    abi_file_path: ./abis/SpokeProtocol.json
+    events:
+      - event: CampaignCreated
+      - event: CampaignFunded
+      - event: CampaignStatusChanged
+      - event: MerchantProceedsClaimed
+      - event: NativePurchaseAccepted
+      - event: NodeCreated
+      - event: PolicyVersionRegistered
+      - event: RewardClaimed
+      - event: RewardReserved
+      - event: RewardVested
+      - event: SaleFinalized
+      - event: SaleRefunded
+      - event: SurplusReturned
+  - name: SpokeDemoUSD
+    abi_file_path: ./abis/SpokeDemoUSD.json
+    events:
+      - event: Transfer
+chains:
+  - id: 10143
+    start_block: 70445279
+    block_lag: 2
+    contracts:
+      - name: SpokeProtocol
+        address: "0x1Fa5e94e44DB2101664C0a24dBf1e52912af3eca"
+      - name: SpokeDemoUSD
+        address: "0xb6279237003eD710bB4ccE6fbd126e07eD4D8E23"

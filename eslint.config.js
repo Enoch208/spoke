@@ -8,6 +8,8 @@ export default tseslint.config(
   {
     ignores: [
       "**/dist/**",
+      "**/.envio/**",
+      "**/envio-env.d.ts",
       "**/node_modules/**",
       "**/.next/**",
       "**/next-env.d.ts",

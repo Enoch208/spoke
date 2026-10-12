@@ -53,7 +53,7 @@ export const buildRequest = (
   const init: RequestInit = {
     method: route.verb,
     headers,
-    credentials: route.verb === "GET" && route.auth === "public" ? "omit" : "include",
+    credentials: "include",
   };
   if (route.verb === "GET") {
     for (const [key, value] of Object.entries(rest)) {

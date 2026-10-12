@@ -1,0 +1,18 @@
+type ChainEvent {
+  id: ID!
+  chainId: Int!
+  contractAddress: String!
+  blockNumber: BigInt!
+  blockHash: String!
+  transactionHash: String!
+  logIndex: Int!
+  name: String!
+  payload: String!
+  timestamp: BigInt!
+}
+
+type IndexerCheckpoint {
+  id: ID!
+  chainId: Int!
+  blockNumber: BigInt!
+}

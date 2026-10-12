@@ -19,6 +19,24 @@ jobs:
     env:
       NEXT_PUBLIC_CHAIN_ID: "31337"
       NEXT_PUBLIC_API_URL: http://localhost:8740
+      TEST_DATABASE_URL: postgres://spoke:spoke@127.0.0.1:5432/spoke_test
+      TEST_GAS_RPC_URL: http://127.0.0.1:20545
+      JOURNEY_RPC_URL: http://127.0.0.1:19546
+      JOURNEY_DATABASE_URL: postgres://spoke:spoke@127.0.0.1:5432/spoke_journey
+    services:
+      postgres:
+        image: postgres:16.10-bookworm
+        env:
+          POSTGRES_USER: spoke
+          POSTGRES_PASSWORD: spoke
+          POSTGRES_DB: spoke_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U spoke -d spoke_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
     steps:
       - name: Check out source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -49,6 +67,13 @@ jobs:
         run: pnpm contracts:test
       - name: Check generated ABIs match the interface
         run: pnpm abi && git diff --exit-code packages/protocol/src/abi
+      - name: Start local integration chains
+        run: |
+          docker exec '${{ job.services.postgres.id }}' createdb -U spoke spoke_journey
+          anvil --port 20545 --chain-id 10143 --silent > "$RUNNER_TEMP/spoke-gas-anvil.log" 2>&1 &
+          anvil --port 19546 --chain-id 31337 --silent > "$RUNNER_TEMP/spoke-journey-anvil.log" 2>&1 &
+          curl --fail --silent --retry 10 --retry-delay 1 --retry-connrefused --header 'Content-Type: application/json' --data '{"jsonrpc":"2.0","id":1,"method":"eth_chainId","params":[]}' http://127.0.0.1:20545
+          curl --fail --silent --retry 10 --retry-delay 1 --retry-connrefused --header 'Content-Type: application/json' --data '{"jsonrpc":"2.0","id":1,"method":"eth_chainId","params":[]}' http://127.0.0.1:19546
       - name: Test
         run: pnpm test
       - name: Build

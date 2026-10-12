@@ -55,14 +55,14 @@ describe("route table", () => {
 describe("buildRequest", () => {
   const config = { apiBase, csrfToken: () => "csrf-1" };
 
-  it("fills path parameters and sends the rest as query on public reads without cookies", () => {
+  it("fills path parameters and sends the rest as query on public reads with optional session cookies", () => {
     const { url, init } = buildRequest(
       liveRoutes["checkout.preview"],
       { campaignId: "7", node: "3", buyer: undefined },
       config,
     );
     expect(url).toBe(`${apiBase}/campaigns/7/checkout-preview?node=3`);
-    expect(init.credentials).toBe("omit");
+    expect(init.credentials).toBe("include");
     expect(new Headers(init.headers).has("x-csrf-token")).toBe(false);
   });
 

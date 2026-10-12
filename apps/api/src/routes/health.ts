@@ -18,15 +18,26 @@ export interface HealthConfig {
 
 export const healthRoutes = (probes: HealthProbes, config: HealthConfig) =>
   new Hono<{ Variables: AppVariables }>().get("/", async (c) => {
+    const subsystem = (probe: (() => Promise<SubsystemHealth>) | undefined) =>
+      probe ? probe().catch(() => "down" as const) : Promise.resolve("not_configured" as const);
+    const [database, rpc, indexer, indexed, chainHead] = await Promise.all([
+      subsystem(probes.database),
+      subsystem(probes.rpc),
+      subsystem(probes.indexer),
+      probes.indexed
+        ? probes.indexed().catch(() => ({ lastBlock: null, lagSeconds: null }))
+        : Promise.resolve({ lastBlock: null, lagSeconds: null }),
+      probes.chainHead ? probes.chainHead().catch(() => null) : Promise.resolve(null),
+    ]);
     const health: Health = {
       api: "ok",
-      database: probes.database ? await probes.database() : "not_configured",
-      rpc: await probes.rpc(),
+      database,
+      rpc,
       indexer: {
-        status: probes.indexer ? await probes.indexer() : "not_configured",
-        ...(probes.indexed ? await probes.indexed() : { lastBlock: null, lagSeconds: null }),
+        status: indexer,
+        ...indexed,
       },
-      chainHead: probes.chainHead ? await probes.chainHead() : null,
+      chainHead,
       chainId: config.chainId,
       protocolAddress: config.protocolAddress,
     };

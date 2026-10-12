@@ -48,7 +48,12 @@ export const saleFilters = pagination.extend(range.shape).extend({
   provider: z.string().optional(),
   unlockBefore: isoTimestamp.optional(),
 });
+export const merchantCampaignFilters = campaignFilters.extend({
+  status: z.enum(["active", "not_live", "paused", "ended", "expired", "draft"]).optional(),
+  eligibility: z.string().optional(),
+});
 export const distributorFilters = pagination.extend({
+  q: z.string().max(200).optional(),
   categories: z.array(z.string()).optional(),
   minSettledSales: z.number().int().nonnegative().optional(),
   merchantDiversity: z.number().int().nonnegative().optional(),
@@ -204,7 +209,7 @@ export const clientMethodSchemas = {
   "campaigns.stats": method(campaign, m.campaignStats),
   "campaigns.activity": method(campaign.extend(timeline.shape), m.pagedSchema(p.activityItem)),
   "campaigns.mine": method(
-    campaignFilters,
+    merchantCampaignFilters,
     m
       .pagedSchema(p.merchantCampaignRow)
       .extend({ countsByState: z.record(z.string(), z.number().int().nonnegative()) }),
@@ -259,7 +264,7 @@ export const clientMethodSchemas = {
     m.pagedSchema(m.campaignCard),
   ),
   "links.mine": method(pagination, m.pagedSchema(m.linkRow)),
-  "links.get": method(node, m.linkRow),
+  "links.get": method(node, z.union([m.publicLinkRow, m.linkRow])),
   "links.resolveCode": method(z.object({ code: z.string() }), m.referralResolution),
   "links.recordOpen": method(z.object({ code: z.string() }), m.okSchema),
   "links.previewJoin": method(campaign.extend({ parent: m.protocolId.optional() }), m.joinPreview),
@@ -341,7 +346,11 @@ export const clientMethodSchemas = {
   ),
   "reputation.get": method(
     z.object({ addressOrHandle: z.string(), groupBy: z.enum(["merchant", "campaign"]).optional() }),
-    z.union([m.reputationProfile, z.object({ hidden: z.literal(true) })]),
+    z.union([
+      m.publicReputationProfile,
+      m.reputationProfile,
+      z.object({ hidden: z.literal(true) }),
+    ]),
   ),
   "reputation.mine": method(empty, m.reputationProfile),
   "reputation.updateVisibility": method(visibility, visibility),

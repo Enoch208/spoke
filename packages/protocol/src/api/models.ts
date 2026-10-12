@@ -92,6 +92,7 @@ export const product = z.object({
   token: tokenInfo,
   category: z.string(),
   fulfillmentMode: z.enum(["download", "external", "manual"]),
+  deliverable: z.string().min(1).max(2048).optional(),
   version: z.number().int().positive(),
   skuHash: bytes32String,
   refundPolicy: z.string(),
@@ -422,6 +423,7 @@ export const linkStats = z.object({
   sales: countsByState,
   earned: sixBuckets,
 });
+export const publicLinkRow = linkRow.extend({ visitsEstimate: z.null(), earned: z.null() });
 export const joinPreview = z.object({
   eligibility: z.enum([
     "ok",
@@ -621,6 +623,19 @@ export const reputationProfile = z.object({
   pendingConversions: z.number().int().nonnegative(),
   visibility: z.enum(["public", "pseudonymous", "private"]),
   acceptsInvitations: z.boolean(),
+});
+export const publicReputationProfile = reputationProfile.extend({
+  settledConversions: z.number().int().nonnegative().nullable(),
+  directConversions: z.number().int().nonnegative().nullable(),
+  networkConversions: z.number().int().nonnegative().nullable(),
+  netAttributedValue: uintString.nullable(),
+  settledCommission: uintString.nullable(),
+  merchantCount: z.number().int().nonnegative().nullable(),
+  campaignCount: z.number().int().nonnegative().nullable(),
+  refundAdjustment: uintString.nullable(),
+  pendingConversions: z.number().int().nonnegative().nullable(),
+  visibleFields: z.array(z.string()),
+  indexing: z.enum(["index", "noindex"]),
 });
 export type Me = z.infer<typeof me>;
 export type Session = z.infer<typeof session>;

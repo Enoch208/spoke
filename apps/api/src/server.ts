@@ -2,15 +2,97 @@ import { serve } from "@hono/node-server";
 import { createApp } from "./app.js";
 import { rpcProbe } from "./chain.js";
 import { parseEnv } from "./env.js";
+import { connectStore } from "./db/store.js";
+import { createChainService } from "./services/chain.js";
+import proof from "../../../packages/contracts/deployments/10143-proof.json" with { type: "json" };
+import { createInsightsService } from "./services/insights.js";
+import { createIndexer } from "./services/indexer.js";
 
 const env = parseEnv(process.env);
+const store = connectStore(env.DATABASE_URL);
+await store.migrate();
+const prune = () =>
+  store.pruneExpired().catch(() => {
+    process.stderr.write("expired_record_cleanup_failed\n");
+  });
+void prune();
+const maintenance = setInterval(() => {
+  void prune();
+}, 3_600_000);
+maintenance.unref();
+const chain = createChainService(
+  env.RPC_URL,
+  env.CHAIN_ID,
+  env.PROTOCOL_ADDRESS,
+  env.TOKEN_ADDRESS,
+);
+const indexer = createIndexer(store, chain, BigInt(env.DEPLOYMENT_BLOCK), {
+  source: env.INDEXER_SOURCE,
+});
+void indexer.tick();
+const insights = createInsightsService(store, {
+  apiKey: env.NANSEN_API_KEY ?? null,
+  budgetCredits: env.NANSEN_CREDIT_BUDGET,
+  demoAddresses: [proof.actors.A, proof.actors.B, proof.actors.C, proof.actors.D],
+});
+if (env.NANSEN_REFRESH_ON_START)
+  void insights.refreshConfigured().catch(() => process.stderr.write("insights_refresh_failed\n"));
 
 const app = createApp({
   webOrigin: env.WEB_ORIGIN,
-  probes: { rpc: rpcProbe(env.RPC_URL, env.CHAIN_ID) },
+  probes: {
+    rpc: rpcProbe(env.RPC_URL, env.CHAIN_ID),
+    database: async () => {
+      try {
+        return await store.health();
+      } catch {
+        return "down";
+      }
+    },
+    indexer: async () => {
+      if (!env.PROTOCOL_ADDRESS) return "not_configured";
+      const row = await store.get("indexer", "cursor");
+      return row && row.payload.status === "live" && Date.now() - row.updatedAt.getTime() < 30_000
+        ? "ok"
+        : "degraded";
+    },
+    chainHead: async () => (await chain.head()).blockNumber,
+    indexed: async () => {
+      const row = await store.get("indexer", "cursor");
+      return {
+        lastBlock: typeof row?.payload.blockNumber === "string" ? row.payload.blockNumber : null,
+        lagSeconds: typeof row?.payload.lagSeconds === "number" ? row.payload.lagSeconds : null,
+      };
+    },
+  },
   config: { chainId: env.CHAIN_ID, protocolAddress: env.PROTOCOL_ADDRESS },
+  services: {
+    store,
+    chain,
+    webOrigin: env.WEB_ORIGIN,
+    production: env.NODE_ENV === "production",
+    operators: env.OPERATOR_ADDRESSES,
+    ...(env.API_ORIGIN ? { apiOrigin: env.API_ORIGIN } : {}),
+    ...(env.STORAGE_DIRECTORY ? { storageDirectory: env.STORAGE_DIRECTORY } : {}),
+    ...(env.GAS_STATION_PRIVATE_KEY
+      ? { gasStationKey: env.GAS_STATION_PRIVATE_KEY as `0x${string}` }
+      : {}),
+  },
+  insights,
+  rpcUrl: env.RPC_URL,
+  deploymentBlock: env.DEPLOYMENT_BLOCK,
 });
 
-serve({ fetch: app.fetch, port: env.PORT, hostname: env.HOST }, (info) => {
+const server = serve({ fetch: app.fetch, port: env.PORT, hostname: env.HOST }, (info) => {
   process.stdout.write(`Spoke API listening on http://${info.address}:${String(info.port)}\n`);
 });
+
+for (const signal of ["SIGTERM", "SIGINT"] as const)
+  process.on(signal, () => {
+    clearInterval(maintenance);
+    indexer.stop();
+    server.close(() => {
+      void store.close().then(() => process.exit(0));
+    });
+    setTimeout(() => process.exit(1), 10_000).unref();
+  });

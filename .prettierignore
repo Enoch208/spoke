@@ -4,3 +4,5 @@ packages/contracts/cache
 packages/contracts/broadcast
 apps/web/.next
 apps/web/next-env.d.ts
+indexer/.envio
+indexer/pnpm-lock.yaml

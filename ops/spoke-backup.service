@@ -1,0 +1,13 @@
+[Unit]
+Description=Back up Spoke PostgreSQL and private assets
+After=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /srv/spoke/app/ops/backup.py
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/srv/spoke/backups

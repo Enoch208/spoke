@@ -14,7 +14,17 @@ export default defineConfig({
       },
       {
         test: {
+          name: "sdk",
+          root: "packages/sdk",
+          include: ["tests/**/*.test.ts"],
+          environment: "node",
+        },
+      },
+      {
+        resolve: { alias: { "@": fileURLToPath(new URL("./apps/web/src", import.meta.url)) } },
+        test: {
           name: "api",
+          fileParallelism: false,
           root: "apps/api",
           include: ["tests/**/*.test.ts"],
           environment: "node",

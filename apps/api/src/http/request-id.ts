@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { createMiddleware } from "hono/factory";
 
-export type AppVariables = { requestId: string };
+export type AppVariables = import("../types.js").Variables;
 
 export const requestId = createMiddleware<{ Variables: AppVariables }>(async (c, next) => {
   const id = `req_${randomUUID()}`;
