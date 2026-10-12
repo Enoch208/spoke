@@ -9,16 +9,16 @@ Spoke is the distribution graph: an open distribution protocol on Monad. A merch
 
 Pay for revenue, not reach.
 
-**Live:** [usespoke.xyz](https://usespoke.xyz) (landing page; the settlement protocol is not deployed yet).
+**Live:** [usespoke.xyz](https://usespoke.xyz) (landing page; testnet contracts are listed below).
 
 ## The rules
 
 | Rule                                       | What it means                                                                                                                                                                                  |
 | ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | A real sale is the only trigger            | No reward for clicks, sign-ups or recruiting.                                                                                                                                                  |
-| Rewards are pre-funded                     | A purchase the pool cannot cover is refused before the buyer pays.                                                                                                                             |
+| Rewards are pre-funded                     | A referred purchase the pool cannot cover is refused before payment. A direct purchase reserves no commission.                                                                                 |
 | The split is a public policy               | The merchant sets the rate, the cap and the weight of each level, nearest first (for example 50 / 25 / 15 / 10). The remainder of any rounding goes to the nearest person, so no unit is lost. |
-| The graph can be deep, payouts are bounded | Links branch without limit; each sale pays a finite, disclosed number of levels.                                                                                                               |
+| The graph can be deep, payouts are bounded | Links form a branching graph; each sale pays a finite, disclosed number of levels. Prototype capacity limits apply.                                                                            |
 | Terms never change after a sale            | Every accepted sale keeps the policy it was made under.                                                                                                                                        |
 | Refund or finalize, never both             | A pending sale is refunded by the merchant before its unlock time, or finalized by anyone after it.                                                                                            |
 | Only settled sales count                   | Pending and refunded sales never reach a public profile.                                                                                                                                       |
@@ -28,9 +28,11 @@ Pay for revenue, not reach.
 This repository is under active construction for Monad Metropolis. Built so far:
 
 - The landing page (`apps/web`), with product screens drawn as clearly labelled illustrations.
-- A first protocol interface and its TypeScript ABI, a 6-decimal testnet demo token (`SpokeDemoUSD`, not a stablecoin and not redeemable), shared money and status helpers, and an API skeleton that reports API, database, RPC and indexer health separately.
+- An immutable settlement contract with separate reward and buyer-payment ledgers, 1–5 commission levels, refunds, finalization, pull claims and future policy versions with 24 hours' notice.
+- A 6-decimal testnet demo token (`SpokeDemoUSD`, not a stablecoin and not redeemable), generated contract ABIs, shared reward math and schemas for all 185 client methods.
+- Contract unit, fuzz, security and stateful invariant tests, plus an API health endpoint.
 
-Not built yet: the settlement contract and its configurable payout policy, deployment, the marketplace, network explorer, checkout, claims, reputation and developer API. Deployed addresses and transaction links will be added here only once they exist.
+The contracts are deployed on Monad Testnet. Explorer source verification is pending. The deployed product still serves the landing page; marketplace, network explorer, checkout and claims screens, reputation and the full API rollout are in progress. Prototype contract limits are 128 campaigns, 256 nodes and 100 sales per campaign.
 
 ## Layout
 
@@ -59,6 +61,13 @@ The web app runs on http://localhost:3040 and the API on http://localhost:8740. 
 ## Network
 
 Monad Testnet, chain ID 10143, explorer [MonadVision](https://testnet.monadvision.com). Everything here is a testnet demonstration: tokens are demo tokens and balances are not money.
+
+| Contract      | Address                                                                                           | Deployment transaction                                                                                               |
+| ------------- | ------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| SpokeProtocol | [0x1Fa5…3eca](https://testnet.monadvision.com/address/0x1Fa5e94e44DB2101664C0a24dBf1e52912af3eca) | [0xabc0…abaf](https://testnet.monadvision.com/tx/0xabc0a2e3328332bd9b5a869fe8388718ded540a7623fea8fdb0ce9888da8abaf) |
+| SpokeDemoUSD  | [0xb627…8E23](https://testnet.monadvision.com/address/0xb6279237003eD710bB4ccE6fbd126e07eD4D8E23) | [0xa7c7…c231](https://testnet.monadvision.com/tx/0xa7c7c5190fd2907510394a0baf44302d463c400f4f9b3ded703ee923918bc231) |
+
+Deployment blocks, compiler settings and checked token metadata are in [the deployment manifest](packages/contracts/deployments/10143.json).
 
 ## Credits
 
