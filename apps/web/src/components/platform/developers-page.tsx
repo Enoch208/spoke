@@ -60,9 +60,9 @@ export function DevelopersPage({ section = "overview" }: { section?: string }) {
         error={contracts.error}
         retry={() => void contracts.refetch()}
       >
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {contracts.data?.contracts.map((contract) => (
-            <Card key={contract.address}>
+            <Card key={contract.address} className="min-w-0">
               <h2 className="font-display text-h4">{contract.name}</h2>
               <p className="text-subtle mt-2 text-sm">
                 Version {contract.version} ·{" "}
