@@ -111,8 +111,8 @@ export function CheckoutPage({ campaignId }: { campaignId: string }) {
           retry={() => void campaign.refetch()}
         >
           {data ? (
-            <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
-              <div className="space-y-4">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.4fr_1fr]">
+              <div className="min-w-0 space-y-4">
                 <Card>
                   <p className="text-subtle text-sm">{data.merchant.name}</p>
                   <h2 className="font-display text-h4 mt-2">{data.product.title}</h2>
@@ -184,7 +184,7 @@ export function CheckoutPage({ campaignId }: { campaignId: string }) {
                   </p>
                 </Card>
               </div>
-              <div className="space-y-4 lg:sticky lg:top-6 lg:self-start">
+              <div className="min-w-0 space-y-4 lg:sticky lg:top-6 lg:self-start">
                 {signedIn ? (
                   <FundsPanel />
                 ) : (
@@ -221,7 +221,7 @@ export function CheckoutPage({ campaignId }: { campaignId: string }) {
                       <p>{quote.blocking.contractError ?? quote.blocking.code}</p>
                       {quote.directPurchaseAvailable ? (
                         <Button
-                          className="mt-3"
+                          className="mt-3 h-auto! min-h-10 max-w-full py-2 whitespace-normal!"
                           variant="secondary"
                           onClick={() => {
                             setDirect(true);

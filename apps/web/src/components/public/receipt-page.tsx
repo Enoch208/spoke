@@ -107,7 +107,7 @@ export function ReceiptPage({ saleId, chainId = 10143 }: { saleId: string; chain
                     : `Contract read at block ${verify.data.blockNumber}; the activity index is catching up.`
                   : "Contract verification is loading."}
               </p>
-              <div className="mt-4 grid gap-3">
+              <div className="mt-4 grid grid-cols-1 gap-3">
                 <CopyField
                   value={data.policyHash}
                   label="Immutable policy hash"

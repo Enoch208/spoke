@@ -22,9 +22,9 @@ export function LinksPage({ nodeId }: { nodeId?: string }) {
         error={nodeId ? link.error : list.error}
         retry={() => void (nodeId ? link.refetch() : list.refetch())}
       >
-        <div className="grid gap-4">
+        <div className="grid grid-cols-1 gap-4">
           {rows.map((row) => (
-            <Card key={row.nodeId}>
+            <Card key={row.nodeId} className="min-w-0">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <h2 className="font-display text-h4">
