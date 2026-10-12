@@ -1,0 +1,138 @@
+import type { EmptyStateCopy } from "./shape";
+
+export const sellEmptyStates = {
+  "ES-40": {
+    list: "Products (SELL-03)",
+    title: "Add your first product",
+    body: "A product is what buyers pay for: a title, a price in SDUSD and what they get after paying.",
+    actions: ["Add product"],
+    illustration: "code:piece-pink",
+  },
+  "ES-41": {
+    list: "Campaigns (SELL-06)",
+    title: "Launch your first campaign",
+    body: "Choose a product, set the commission and how it splits across levels, fund the reward budget and go live.",
+    actions: ["New campaign"],
+    illustration: "IMG-EMPTY-CAMPAIGNS",
+  },
+  "ES-42": {
+    list: "Campaigns, Drafts tab",
+    title: "No drafts",
+    body: "Campaigns you save before launching appear here.",
+    actions: ["New campaign"],
+  },
+  "ES-43": {
+    list: "Sales (SELL-09, SELL-07 sales tab)",
+    title: "No sales yet",
+    body: "Sales appear here as soon as they’re onchain, with their hold and refund window.",
+    actions: ["Invite a distributor"],
+    illustration: "IMG-EMPTY-SALES",
+  },
+  "ES-44": {
+    list: "Campaign distributors (SELL-07)",
+    title: "No distributors yet",
+    body: "People who create links for this campaign appear here with their settled results.",
+    actions: ["Invite a distributor"],
+  },
+  "ES-45": {
+    list: "Vault movements (SELL-10)",
+    title: "No budget movements yet",
+    body: "Deposits, reservations, settlements and withdrawals appear here.",
+    actions: ["Add funds"],
+  },
+  "ES-46": {
+    list: "Partners (SELL-11)",
+    title: "No partners yet",
+    body: "Partners are distributors with settled sales in your campaigns or who accepted your invitation.",
+    actions: ["Discover distributors"],
+    illustration: "code:piece-trio",
+  },
+  "ES-47": {
+    list: "Discover distributors, no results (SELL-12)",
+    title: "No distributors match",
+    body: "Try a broader category or fewer settled sales. A short record is a new record, not a bad one.",
+    actions: ["Clear filters"],
+  },
+  "ES-48": {
+    list: "Partner insights (SELL-13, M-29)",
+    insightStates: ["noCoverage", "notFetched"],
+  },
+  "ES-49": {
+    list: "Analytics (SELL-14)",
+    title: "Analytics start with your first sale",
+    body: "Charts fill in as sales come in. Views and clicks are estimated; sales and commissions come from the chain.",
+    actions: ["View campaigns"],
+    illustration: "code:piece-lime",
+  },
+  "ES-50": {
+    list: "Commission Studio templates (SELL-08)",
+    title: "No saved templates",
+    body: "Save a split you like to reuse it in later campaigns.",
+    actions: ["Open simulator"],
+  },
+  "ES-51": {
+    list: "Integrations (SELL-15, demo)",
+    title: "No stores connected",
+    body: "Connect a store so its orders can earn rewards through signed attestations.",
+    actions: ["Connect a store"],
+  },
+  "ES-52": {
+    list: "Order signers (SELL-16, demo)",
+    title: "No order signers",
+    body: "Signers let an external store attest orders for rewards. Add one when you connect a store.",
+    actions: ["Add signer"],
+  },
+  "ES-53": {
+    list: "API keys (SELL-17, demo)",
+    title: "No API keys",
+    body: "Public read endpoints work without a key. Create one for higher limits or write access.",
+    actions: ["Create API key"],
+  },
+  "ES-54": {
+    list: "Webhook endpoints (SELL-17, demo)",
+    title: "No webhook endpoints",
+    body: "Add an endpoint to receive signed events for sales, settlements and claims.",
+    actions: ["Add endpoint"],
+  },
+  "ES-55": {
+    list: "Webhook deliveries (SELL-17, demo)",
+    title: "No deliveries yet",
+    body: "Send a test event to check your endpoint.",
+    actions: ["Send test event"],
+  },
+  "ES-56": {
+    list: "Team (SELL-18, demo)",
+    title: "Just you so far",
+    body: "Invite teammates to help run your campaigns, each with a role.",
+    actions: ["Invite teammate"],
+  },
+  "ES-57": {
+    list: "Reports (SELL-19)",
+    title: "No exports yet",
+    body: "Exports reconcile to the chain at the block they were made.",
+    actions: ["Export report"],
+  },
+  "ES-58": {
+    list: "Disputes (SELL-20)",
+    title: "No disputes",
+    body: "Refund requests and disputes appear here while their sale is still in its hold.",
+    illustration: "code:piece-lime",
+  },
+  "ES-59": {
+    list: "Subscriptions (SELL-21, demo)",
+    title: "No subscription campaigns",
+    body: "Reward renewals of a subscription, up to a lifetime cap you set.",
+    actions: ["New subscription campaign"],
+  },
+  "ES-60": {
+    list: "Partnerships (SELL-22, demo)",
+    title: "No partnerships",
+    body: "Agree recurring terms with a distributor you’ve worked with.",
+    actions: ["Propose a partnership"],
+  },
+  "ES-61": {
+    list: "Billing invoices (SELL-23)",
+    title: "No invoices",
+    body: "Spoke charges no protocol fee on Monad Testnet.",
+  },
+} as const satisfies Record<string, EmptyStateCopy>;
