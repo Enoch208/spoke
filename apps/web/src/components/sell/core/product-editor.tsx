@@ -1,5 +1,6 @@
 "use client";
 
+import { Select } from "@/components/ui/select";
 import { formText } from "@/lib/forms";
 import { useState, type SubmitEvent } from "react";
 import { useRouter } from "next/navigation";
@@ -14,6 +15,22 @@ import { useClientMutation, useClientQuery } from "@/lib/query/use-client";
 import { publicEnv } from "@/lib/public-env";
 import { useModeStore } from "@/lib/stores/mode";
 
+type Fulfillment = "manual" | "external" | "download";
+
+const categoryOptions = [
+  { value: "digital", label: "Digital" },
+  { value: "education", label: "Education" },
+  { value: "software", label: "Software" },
+  { value: "design", label: "Design" },
+  { value: "other", label: "Other" },
+] as const;
+
+const fulfillmentOptions: readonly { value: Fulfillment; label: string }[] = [
+  { value: "manual", label: "Manual instructions" },
+  { value: "external", label: "External product URL" },
+  { value: "download", label: "Private download" },
+];
+
 export function ProductEditor({ productId }: { productId?: string }) {
   const existing = useClientQuery(
     "products.get",
@@ -26,6 +43,10 @@ export function ProductEditor({ productId }: { productId?: string }) {
   const mode = useModeStore((state) => state.mode);
   const [id] = useState(() => productId ?? crypto.randomUUID());
   const [deliverable, setDeliverable] = useState("");
+  const [pickedCategory, setCategory] = useState<string | null>(null);
+  const [pickedFulfillment, setFulfillment] = useState<Fulfillment | null>(null);
+  const category = pickedCategory ?? existing.data?.category ?? "digital";
+  const fulfillment = pickedFulfillment ?? existing.data?.fulfillmentMode ?? "manual";
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const submit = async (event: SubmitEvent<HTMLFormElement>) => {
@@ -126,27 +147,25 @@ export function ProductEditor({ productId }: { productId?: string }) {
                 />
               </Field>
               <Field label="Category">
-                <select
+                <Select
                   name="category"
-                  defaultValue={existing.data?.category ?? "digital"}
-                  className="border-line bg-surface h-10 rounded-xl border px-3"
-                >
-                  {["digital", "education", "software", "design", "other"].map((category) => (
-                    <option key={category}>{category}</option>
-                  ))}
-                </select>
+                  value={category}
+                  onValueChange={setCategory}
+                  options={
+                    categoryOptions.some((option) => option.value === category)
+                      ? categoryOptions
+                      : [...categoryOptions, { value: category, label: category }]
+                  }
+                />
               </Field>
             </div>
             <Field label="Delivery method">
-              <select
+              <Select
                 name="fulfillment"
-                defaultValue={existing.data?.fulfillmentMode ?? "manual"}
-                className="border-line bg-surface h-10 rounded-xl border px-3"
-              >
-                <option value="manual">Manual instructions</option>
-                <option value="external">External product URL</option>
-                <option value="download">Private download</option>
-              </select>
+                value={fulfillment}
+                onValueChange={setFulfillment}
+                options={fulfillmentOptions}
+              />
             </Field>
             <Field
               label="Delivery instructions, URL or asset ID"

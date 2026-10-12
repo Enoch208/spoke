@@ -43,5 +43,9 @@ export {
   txResumption,
   txSheet,
   txSheetTitles,
+  txOverallStatus,
+  txSheetMisc,
+  txStepLines,
+  txStepNames,
 } from "./sheet";
 export { txConfirmedSyncing, txReportProblem, txStepStates } from "./sheet-steps";

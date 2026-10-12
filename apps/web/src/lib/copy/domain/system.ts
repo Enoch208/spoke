@@ -50,3 +50,9 @@ export const modeBadgeCopy = {
   live: { label: "Live testnet", icon: DotIcon, tone: "lime" },
   demo: { label: "Demo", icon: TestTube01Icon, tone: "lilac" },
 } as const satisfies Record<Mode, Chip>;
+
+export const endpointAvailabilityLabels = {
+  live: "Live",
+  designed: "Designed",
+  requires_contract: "Needs contract",
+} as const;

@@ -1,5 +1,6 @@
 "use client";
 
+import { formatHoldPhrase } from "@/lib/format";
 import Link from "next/link";
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
@@ -172,10 +173,11 @@ export function CheckoutPage({ campaignId }: { campaignId: string }) {
                 <Card>
                   <h2 className="font-medium">Settlement and refunds</h2>
                   <p className="text-body mt-2 text-sm">
-                    Hold: {quote?.holdSeconds ?? data.policy.holdSeconds} seconds. Until it ends,
-                    the merchant can refund you in full. After that the sale is final and can’t be
-                    refunded through Spoke. Refunds are sent by the merchant; Spoke can’t send them
-                    for you.
+                    This purchase has{" "}
+                    {formatHoldPhrase(quote?.holdSeconds ?? data.policy.holdSeconds)}. Until it
+                    ends, the merchant can refund you in full. After that the sale is final and
+                    can’t be refunded through Spoke. Refunds are sent by the merchant; Spoke can’t
+                    send them for you.
                   </p>
                   <p className="text-body mt-3 text-sm">{data.product.refundPolicy}</p>
                   <p className="text-subtle mt-4 text-sm">

@@ -24,4 +24,9 @@ export const shellCopy = {
   signIn: "Sign in",
   signInPrompt: "Sign in to share, earn and sell.",
   close: "Close",
+  demoPersonas: {
+    merchant: "Merchant · sample",
+    distributor: "Distributor · sample",
+    buyer: "Buyer · sample",
+  },
 } as const;

@@ -1,5 +1,6 @@
 "use client";
 
+import { useNow } from "@/lib/use-now";
 import Link from "next/link";
 import { earningsBuckets } from "@spoke/protocol";
 import { ProductPage, QueryState, PageLink, Stat } from "@/components/product/page";
@@ -8,7 +9,10 @@ import { Button } from "@/components/ui/button";
 import { useClientQuery } from "@/lib/query/use-client";
 import { useChainAction } from "@/lib/tx/use-action";
 import { asAddress } from "@/lib/tx/calls";
-import { formatAmount } from "@/lib/format";
+import { formatAmount, formatDateTime } from "@/lib/format";
+import { MoneyReceive01Icon } from "@hugeicons/core-free-icons";
+import { ShareStateChip } from "@/components/product/state-chips";
+import { EmptyState } from "@/components/ui/empty-state";
 
 const labels = {
   atRisk: "At risk",
@@ -20,6 +24,7 @@ const labels = {
 };
 
 export function EarningsPage() {
+  const now = useNow();
   const summary = useClientQuery("earnings.summary", {}, { refetchInterval: 10_000 });
   const claimable = useClientQuery("earnings.claimable", {}, { refetchInterval: 10_000 });
   const campaigns = useClientQuery("earnings.byCampaign", {});
@@ -96,21 +101,31 @@ export function EarningsPage() {
               <Link
                 key={`${conversion.saleId}-${String(conversion.level)}`}
                 href={`/receipts/10143/${conversion.saleId}`}
-                className="flex flex-wrap justify-between gap-3 py-3"
+                className="hover:bg-soft ease-spring -mx-3 flex flex-wrap items-center justify-between gap-3 rounded-xl px-3 py-3 transition-colors duration-[423ms]"
               >
-                <div>
-                  <p>
+                <div className="min-w-0">
+                  <p className="text-ink font-medium">
                     Sale #{conversion.saleId} · Level {conversion.level}
                   </p>
                   <p className="text-subtle text-sm">
-                    {conversion.state} · Hold ends {new Date(conversion.unlockAt).toLocaleString()}
+                    {Date.parse(conversion.unlockAt) > now ? "Hold ends" : "Hold ended"}{" "}
+                    {formatDateTime(new Date(conversion.unlockAt))}
                   </p>
                 </div>
-                <span className="font-mono">{conversion.amount} base units</span>
+                <div className="flex items-center gap-3">
+                  <ShareStateChip state={conversion.state} unlockAt={conversion.unlockAt} />
+                  <span className="text-ink font-mono tabular-nums">
+                    {formatAmount(BigInt(conversion.amount), conversion.token)}
+                  </span>
+                </div>
               </Link>
             ))}
             {conversions.data?.items.length === 0 ? (
-              <p className="text-subtle">No conversions yet.</p>
+              <EmptyState
+                icon={MoneyReceive01Icon}
+                title="No earnings yet"
+                body="When someone buys through your link, or a link shared from it, your share appears here."
+              />
             ) : null}
             {conversions.error ? (
               <p className="text-pink-ink">{conversions.error.message}</p>

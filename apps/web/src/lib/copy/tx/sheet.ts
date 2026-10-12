@@ -154,3 +154,67 @@ export const txDemo = {
     indexerBehind: "Indexer behind",
   },
 } as const satisfies SheetCopy;
+
+export const txStepNames = {
+  approve: "Allow SDUSD",
+  createCampaign: "Create campaign",
+  fundCampaign: "Deposit reward budget",
+  activateCampaign: "Go live",
+  createNode: "Create link",
+  purchase: "Pay",
+  refund: "Refund sale",
+  finalize: "Finalize sale",
+  claimRewards: "Claim earnings",
+  claimProceeds: "Claim proceeds",
+  withdrawUnused: "Withdraw unused budget",
+  pause: "Pause campaign",
+  resume: "Resume campaign",
+  end: "End campaign",
+  registerPolicyVersion: "Publish new terms",
+  mintDemoTokens: "Get test SDUSD",
+} as const;
+
+export const txStepLines = {
+  not_submitted: "Up next",
+  wallet_confirmation: "Waiting for you",
+  submitted: "Sent",
+  included: "Included in a block",
+  confirmed: "Confirmed",
+  indexed: "Recorded",
+  done: "Done",
+  rejected: "Cancelled",
+  failed: "Didn’t go through",
+  unknown: "Unconfirmed",
+  replaced: "Replaced in your wallet",
+  skipped: "Already allowed",
+  interrupted: "Not sent",
+} as const;
+
+export const txOverallStatus = {
+  checking: "Checking",
+  queued: "Waiting for another action",
+  interrupted: "Ready to continue",
+  needs_confirmation: "Confirm to continue",
+  running: "Waiting for the network",
+  syncing: "Confirmed · syncing activity",
+  done: "Done",
+  already_done: "Already done",
+  rejected: "Cancelled. Nothing was sent.",
+  failed: "Didn’t go through",
+  unknown: "Still checking the transaction",
+  replaced: "Replaced in your wallet",
+  expired: "Expired",
+} as const;
+
+export const txSheetMisc = {
+  listTitle: "Your transactions",
+  demoSubtitle: "Sample transaction · demo",
+  liveSubtitle: "Monad Testnet",
+  empty: "No transactions yet.",
+  feesPaid: "Network fees paid: {fee}",
+  continue: "Continue",
+  checkAgain: "Check again",
+  viewPurchase: "View purchase",
+  viewCampaign: "View campaign",
+  viewLink: "View link",
+} as const;

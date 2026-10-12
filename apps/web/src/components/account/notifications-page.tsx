@@ -1,5 +1,6 @@
 "use client";
 
+import { formatRelative } from "@/lib/format";
 import Link from "next/link";
 import { ProductPage, QueryState } from "@/components/product/page";
 import { Card } from "@/components/ui/card";
@@ -42,7 +43,7 @@ export function NotificationsPage() {
                 <h2 className="font-medium">{notification.title}</h2>
                 <p className="text-body mt-2">{notification.body}</p>
                 <p className="text-subtle mt-3 text-xs">
-                  {new Date(notification.createdAt).toLocaleString()}
+                  {formatRelative(new Date(notification.createdAt))}
                 </p>
               </Card>
             </Link>

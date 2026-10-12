@@ -8,24 +8,9 @@ import { useTxStore } from "@/lib/stores/tx";
 import { overallStatus, totalFeePaid } from "@/lib/tx/records";
 import { txLabel } from "@/lib/tx/labels";
 import { formatMonFee } from "@/lib/format";
-import { activeChain } from "@/lib/wagmi";
+import { common, fill, txOverallStatus, txSheet, txSheetMisc } from "@/lib/copy";
+import { StepList } from "./step-list";
 import { useTxEngine } from "./tx-provider";
-
-const statusLabels = {
-  checking: "Checking",
-  queued: "Waiting for another action",
-  interrupted: "Ready to continue",
-  needs_confirmation: "Confirm in your wallet",
-  running: "Waiting for confirmation",
-  syncing: "Confirmed · syncing activity",
-  done: "Done",
-  already_done: "Already done",
-  rejected: "Request declined",
-  failed: "Action failed",
-  unknown: "Still checking the transaction",
-  replaced: "Transaction replaced",
-  expired: "Action expired",
-};
 
 export default function TransactionSheet({ props, close }: ModalComponentProps<"M-11">) {
   const records = useTxStore((state) => state.records);
@@ -43,8 +28,8 @@ export default function TransactionSheet({ props, close }: ModalComponentProps<"
       onOpenChange={(open) => {
         if (!open) close();
       }}
-      title={record ? txLabel(record) : "Your transactions"}
-      subtitle={record?.mode === "demo" ? "Sample transaction · demo" : "Monad Testnet"}
+      title={record ? txLabel(record) : txSheetMisc.listTitle}
+      subtitle={record?.mode === "demo" ? txSheetMisc.demoSubtitle : txSheetMisc.liveSubtitle}
       footer={
         record ? (
           <>
@@ -55,7 +40,7 @@ export default function TransactionSheet({ props, close }: ModalComponentProps<"
                 close();
               }}
             >
-              {finished ? "Close" : "Hide"}
+              {finished ? common.close : common.hide}
             </Button>
             {status === "failed" || status === "rejected" || status === "replaced" ? (
               <Button
@@ -63,7 +48,7 @@ export default function TransactionSheet({ props, close }: ModalComponentProps<"
                   engine.retry(record.id);
                 }}
               >
-                Try again
+                {common.tryAgain}
               </Button>
             ) : null}
             {status === "interrupted" ? (
@@ -72,7 +57,7 @@ export default function TransactionSheet({ props, close }: ModalComponentProps<"
                   engine.continueInterrupted(record.id);
                 }}
               >
-                Continue
+                {txSheetMisc.continue}
               </Button>
             ) : null}
             {status === "unknown" ? (
@@ -81,27 +66,27 @@ export default function TransactionSheet({ props, close }: ModalComponentProps<"
                   engine.checkAgain(record.id);
                 }}
               >
-                Check again
+                {txSheetMisc.checkAgain}
               </Button>
             ) : null}
             {finished && saleId ? (
               <Button asChild>
                 <Link href={`/purchases/${saleId}`} onClick={close}>
-                  View purchase
+                  {txSheetMisc.viewPurchase}
                 </Link>
               </Button>
             ) : null}
             {finished && campaignId ? (
               <Button asChild>
                 <Link href={`/sell/campaigns/${campaignId}`} onClick={close}>
-                  View campaign
+                  {txSheetMisc.viewCampaign}
                 </Link>
               </Button>
             ) : null}
             {finished && nodeId ? (
               <Button asChild>
                 <Link href={`/earn/links/${nodeId}`} onClick={close}>
-                  View link
+                  {txSheetMisc.viewLink}
                 </Link>
               </Button>
             ) : null}
@@ -111,49 +96,21 @@ export default function TransactionSheet({ props, close }: ModalComponentProps<"
     >
       {record && status ? (
         <div className="grid gap-4">
-          <p className="font-medium" aria-live="polite">
-            {statusLabels[status]}
+          <p className="text-ink font-medium" aria-live="polite">
+            {txOverallStatus[status]}
           </p>
-          {record.steps.map((step, index) => (
-            <div key={step.id} className="bg-soft rounded-xl p-3">
-              <div className="flex items-center justify-between gap-3">
-                <span>
-                  {index + 1}. {step.kind.replace(/([A-Z])/g, " $1")}
-                </span>
-                <span className="text-subtle text-sm">
-                  {step.skipped ? "Already approved" : step.status.replaceAll("_", " ")}
-                </span>
-              </div>
-              {step.error ? (
-                <p role="alert" className="text-pink-ink mt-2 text-sm">
-                  {step.error.message}
-                </p>
-              ) : null}
-              {step.hash && record.mode === "live" ? (
-                <a
-                  className="mt-2 block truncate text-sm underline"
-                  target="_blank"
-                  rel="noreferrer"
-                  href={`${activeChain.blockExplorers?.default.url ?? "https://testnet.monadvision.com"}/tx/${step.hash}`}
-                >
-                  View transaction
-                </a>
-              ) : null}
-            </div>
-          ))}
+          <StepList steps={record.steps} live={record.mode === "live"} />
           {record.mode === "live" ? (
-            <p className="text-subtle text-sm">
-              Network fees paid: {formatMonFee(totalFeePaid(record))}
+            <p className="text-subtle border-hairline border-t pt-4 text-sm">
+              {fill(txSheetMisc.feesPaid, { fee: formatMonFee(totalFeePaid(record)) })}
             </p>
           ) : null}
-          <p className="text-subtle text-sm">
-            You can hide this sheet. Sent transactions keep running and resume after a reload.
-          </p>
+          <p className="text-subtle text-sm">{txSheet.reassurance}</p>
         </div>
       ) : (
         <div className="grid gap-2">
           {records.length === 0 ? (
-            <p>No transactions yet.</p>
+            <p className="text-subtle">{txSheetMisc.empty}</p>
           ) : (
             records.toReversed().map((item) => (
               <button
@@ -161,10 +118,10 @@ export default function TransactionSheet({ props, close }: ModalComponentProps<"
                 onClick={() => {
                   engine.show(item.id);
                 }}
-                className="bg-soft rounded-xl p-3 text-left"
+                className="bg-soft hover:bg-pill ease-spring rounded-xl p-3 text-left transition-colors duration-[423ms]"
               >
                 <span className="block">{txLabel(item)}</span>
-                <span className="text-subtle text-sm">{statusLabels[overallStatus(item)]}</span>
+                <span className="text-subtle text-sm">{txOverallStatus[overallStatus(item)]}</span>
               </button>
             ))
           )}

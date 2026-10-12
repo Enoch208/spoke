@@ -1,5 +1,6 @@
 "use client";
 
+import { formatDateTime, formatRelative } from "@/lib/format";
 import { Card } from "@/components/ui/card";
 import { useClientQuery } from "@/lib/query/use-client";
 import { isAddress } from "viem";
@@ -42,7 +43,7 @@ export function InsightsPanel({ address }: { address: string | null }) {
                 <p className="text-sm">
                   {data.activitySummary.transactions ?? "Unknown"} transactions · Last active{" "}
                   {data.activitySummary.lastActiveAt
-                    ? new Date(data.activitySummary.lastActiveAt).toLocaleDateString()
+                    ? formatDateTime(new Date(data.activitySummary.lastActiveAt))
                     : "not reported"}
                 </p>
               ) : null}
@@ -56,7 +57,7 @@ export function InsightsPanel({ address }: { address: string | null }) {
           )}
           {data.fetchedAt ? (
             <p className="text-subtle mt-4 text-xs">
-              {data.source ?? "Wallet data"} · Cached {new Date(data.fetchedAt).toLocaleString()}.
+              {data.source ?? "Wallet data"} · Cached {formatRelative(new Date(data.fetchedAt))}.
               Page views do not request a refresh.
             </p>
           ) : null}

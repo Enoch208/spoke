@@ -1,5 +1,6 @@
 "use client";
 
+import { SaleStateChip } from "@/components/product/state-chips";
 import { useState } from "react";
 import Link from "next/link";
 import { ProductPage, QueryState, PageLink } from "@/components/product/page";
@@ -107,9 +108,10 @@ export function NetworkPage({ campaignId }: { campaignId?: string }) {
               <Link
                 key={sale.saleId}
                 href={`/receipts/10143/${sale.saleId}`}
-                className="bg-pill rounded-full px-4 py-2 text-sm"
+                className="bg-surface border-hairline hover:border-line ease-spring inline-flex items-center gap-2 rounded-full border py-1 pr-1 pl-3 text-sm transition-colors duration-[423ms]"
               >
-                Sale #{sale.saleId} · {sale.state}
+                Sale #{sale.saleId}
+                <SaleStateChip status={sale.state} />
               </Link>
             ))}
           </div>

@@ -1,5 +1,7 @@
 "use client";
 
+import { Select } from "@/components/ui/select";
+import { formatDateTime } from "@/lib/format";
 import { formText } from "@/lib/forms";
 import { useState, type SubmitEvent } from "react";
 import { PreferenceSettings } from "./preference-settings";
@@ -104,19 +106,15 @@ export function SettingsPage({ section = "profile" }: { section?: string }) {
               published fields with the choices below.
             </p>
             <Field label="New profile visibility" className="mt-4">
-              <select
+              <Select
                 value={level}
-                onChange={(event) => {
-                  const value = event.target.value;
-                  if (value === "private" || value === "pseudonymous" || value === "public")
-                    setLevel(value);
-                }}
-                className="border-line bg-surface h-10 rounded-xl border px-3"
-              >
-                <option value="private">Private · default</option>
-                <option value="pseudonymous">Pseudonymous</option>
-                <option value="public">Public</option>
-              </select>
+                onValueChange={setLevel}
+                options={[
+                  { value: "private", label: "Private · default" },
+                  { value: "pseudonymous", label: "Pseudonymous" },
+                  { value: "public", label: "Public" },
+                ]}
+              />
             </Field>
             <label className="my-4 flex items-start gap-3">
               <input
@@ -170,11 +168,12 @@ export function SettingsPage({ section = "profile" }: { section?: string }) {
               <h2 className="font-display text-h4">Passkeys and recovery</h2>
               {passkeys.data?.map((passkey) => (
                 <div key={passkey.credentialId} className="border-hairline mt-3 border-t pt-3">
-                  <p>
-                    {passkey.label} · {passkey.kind}
+                  <p className="text-ink font-medium">
+                    {passkey.label} ·{" "}
+                    {passkey.kind === "original" ? "Original passkey" : "Added passkey"}
                   </p>
                   <p className="text-subtle text-sm">
-                    Added {new Date(passkey.createdAt).toLocaleString()}
+                    Added {formatDateTime(new Date(passkey.createdAt))}
                   </p>
                 </div>
               ))}

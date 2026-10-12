@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useClientQuery, useClientMutation } from "@/lib/query/use-client";
 import { useChainAction } from "@/lib/tx/use-action";
-import { formatAmount, formatMonBalance } from "@/lib/format";
-import { demoToken } from "@spoke/protocol";
+import { formatAmount, formatMonBalance, formatRelative } from "@/lib/format";
+import { demoToken, formatTokenAmount } from "@spoke/protocol";
+import { fill, gasStateLines } from "@/lib/copy";
 
 export function FundsPanel() {
   const funding = useClientQuery("funding.status", {}, { refetchInterval: 5000 });
@@ -66,10 +67,12 @@ export function FundsPanel() {
             </Button>
           </div>
           <p className="text-subtle mt-3 text-xs">
-            Gas support: {data.gas.state.replaceAll("_", " ")}
-            {data.gas.nextEligibleAt
-              ? ` · Next eligible ${new Date(data.gas.nextEligibleAt).toLocaleString()}`
-              : ""}
+            {fill(gasStateLines[data.gas.state], {
+              amount: data.gas.dripAmount ? formatTokenAmount(BigInt(data.gas.dripAmount), 18) : "",
+              nextRequestAt: data.gas.nextEligibleAt
+                ? formatRelative(new Date(data.gas.nextEligibleAt))
+                : "later",
+            })}
           </p>
         </>
       ) : (

@@ -104,3 +104,32 @@ export const saleHoldLines = {
   hold: required.pendingHold,
   countdown: "Hold ends in {countdown}",
 } as const;
+
+export const receiptCopy = {
+  description:
+    "An onchain receipt. Rewards are merchant funded and only become claimable after the sale is finalized.",
+  viewPath: "View the path",
+  buyerPaid: "Buyer paid",
+  reward: "Merchant-funded reward",
+  holdEnds: "Hold ends",
+  holdEnded: "Hold ended",
+  paidPath: "Paid path",
+  level: "Level {level}",
+  direct: "Direct purchase. Nobody earns a commission on this purchase.",
+  timeline: "Settlement timeline",
+  proof: "Proof",
+  verified: "Verified against the contract at block {block}.",
+  catchingUp: "Read from the contract at block {block}. The activity index is catching up.",
+  verifying: "Checking this receipt against the contract…",
+  simulated: "Simulated in demo mode. Sample receipts are never checked against a chain.",
+  policyHash: "Policy hash",
+  orderKey: "Order key",
+  purchaseTx: "Purchase transaction",
+  viewOnExplorer: "View on explorer",
+  events: {
+    PENDING: "Purchased · reward reserved",
+    FINALIZED: "Finalized · shares claimable",
+    REFUNDED: "Refunded · shares cancelled",
+    CLAIMED: "Claimed",
+  },
+} as const;

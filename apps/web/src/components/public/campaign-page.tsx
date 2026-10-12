@@ -6,9 +6,20 @@ import { ProductPage, QueryState, Stat, PageLink } from "@/components/product/pa
 import { Card, Panel } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useClientQuery } from "@/lib/query/use-client";
-import { formatAmount, formatBps, formatSplit } from "@/lib/format";
+import {
+  formatAmount,
+  formatBps,
+  formatDateTime,
+  formatHoldPhrase,
+  formatSplit,
+} from "@/lib/format";
+import { CampaignArt } from "@/components/product/campaign-art";
+import { CampaignStateChip } from "@/components/product/campaign-state-chip";
+import { campaignStateKey, publicExplainer } from "@/lib/domain/campaign-state";
 import { useChainAction } from "@/lib/tx/use-action";
 import { useSessionStore } from "@/lib/stores/session";
+import { useClientContext } from "@/lib/client/provider";
+import { fill, joinEligibilityLines } from "@/lib/copy";
 
 export function CampaignPage({
   campaignId,
@@ -22,13 +33,15 @@ export function CampaignPage({
   const campaign = useClientQuery("campaigns.get", { campaignId });
   const join = useClientQuery("links.previewJoin", { campaignId, parent: parentNodeId });
   const address = useSessionStore((state) => state.address);
+  const { mode } = useClientContext();
   const start = useChainAction();
   const data = campaign.data;
   return (
     <ProductPage
       title={data?.product.title ?? "Campaign"}
       description={data?.product.summary}
-      actions={<PageLink href="/explore">Explore campaigns</PageLink>}
+      breadcrumbs={[{ label: "Explore", href: "/explore" }]}
+      actions={data ? <CampaignStateChip campaign={data} size="md" /> : undefined}
     >
       <QueryState
         pending={campaign.isPending}
@@ -39,11 +52,12 @@ export function CampaignPage({
           <>
             <div className="grid gap-6 lg:grid-cols-[1.5fr_1fr]">
               <div className="space-y-5">
-                <div className="bg-lilac-soft flex min-h-56 items-center justify-center rounded-3xl">
-                  <p className="font-display text-h2 text-olive">
-                    {data.product.title.slice(0, 1)}
-                  </p>
-                </div>
+                <CampaignArt
+                  seed={data.campaignId}
+                  imageUrl={data.product.media.find((asset) => asset.kind === "image")?.url}
+                  title={data.product.title}
+                  className="border-hairline h-64 rounded-3xl border"
+                />
                 <p className="text-body whitespace-pre-wrap">{data.product.description}</p>
                 <p className="text-sm">
                   By{" "}
@@ -55,9 +69,9 @@ export function CampaignPage({
                 <Card>
                   <h2 className="font-display text-h4">Settlement and refunds</h2>
                   <p className="text-body mt-3">
-                    Settlement hold: {data.policy.holdSeconds} seconds. Until it ends, the merchant
-                    can refund you in full. After that the sale is final and can’t be refunded
-                    through Spoke.
+                    Every sale has {formatHoldPhrase(data.policy.holdSeconds)}. Until it ends, the
+                    merchant can refund you in full. After that the sale is final and can’t be
+                    refunded through Spoke.
                   </p>
                   <p className="text-body mt-3">{data.product.refundPolicy}</p>
                 </Card>
@@ -73,9 +87,9 @@ export function CampaignPage({
                   </p>
                   {data.state !== "FUNDED_ACTIVE" ? (
                     <p className="bg-amber-soft mt-4 rounded-xl p-3">
-                      {data.state === "CREATED_UNFUNDED"
-                        ? "This campaign isn’t open yet."
-                        : `This campaign is ${data.state}. New purchases and links are closed.`}
+                      {fill(publicExplainer(campaignStateKey(data)), {
+                        endsAt: formatDateTime(new Date(data.endsAt)),
+                      })}
                     </p>
                   ) : null}
                   {data.state === "FUNDED_ACTIVE" ? (
@@ -129,21 +143,23 @@ export function CampaignPage({
                   join.data.eligibility !== "ok" &&
                   join.data.eligibility !== "already_joined" ? (
                     <p className="text-subtle mt-2 text-sm">
-                      {join.data.eligibility.replaceAll("_", " ")}
+                      {joinEligibilityLines[join.data.eligibility]}
                     </p>
                   ) : null}
                 </Card>
                 <PageLink href={`/c/${campaignId}/network`}>
                   Inspect the distribution graph
                 </PageLink>
-                <a
-                  className="block text-sm underline"
-                  href={data.onchainUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  View campaign onchain
-                </a>
+                {mode === "demo" ? null : (
+                  <a
+                    className="text-ink block text-sm underline underline-offset-2"
+                    href={data.onchainUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    View campaign onchain
+                  </a>
+                )}
               </div>
             </div>
             <Panel title="An inspectable record">

@@ -6,6 +6,8 @@ import { ProductPage, QueryState, PageLink, Stat } from "@/components/product/pa
 import { Card } from "@/components/ui/card";
 import { useClientQuery } from "@/lib/query/use-client";
 import { formatAmount } from "@/lib/format";
+import { CampaignStateKeyChip } from "@/components/product/campaign-state-chip";
+import { merchantRowStateKey } from "@/lib/domain/campaign-state";
 
 export function MerchantCampaignsPage({ overview = false }: { overview?: boolean }) {
   const campaigns = useClientQuery("campaigns.mine", {});
@@ -58,10 +60,13 @@ export function MerchantCampaignsPage({ overview = false }: { overview?: boolean
                       {campaign.productTitle}
                     </Link>
                   </h2>
-                  <p className="text-subtle mt-2 text-sm">
-                    {campaign.state} · {campaign.sales.finalized} settled · {campaign.pendingSales}{" "}
-                    pending · {campaign.links} links
-                  </p>
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    <CampaignStateKeyChip stateKey={merchantRowStateKey(campaign)} />
+                    <span className="text-subtle text-sm">
+                      {campaign.sales.finalized} settled · {campaign.pendingSales} pending ·{" "}
+                      {campaign.links} {campaign.links === 1 ? "link" : "links"}
+                    </span>
+                  </div>
                 </div>
                 <PageLink
                   href={

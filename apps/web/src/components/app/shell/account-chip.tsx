@@ -36,7 +36,7 @@ function AccountChipMenu({ compact }: { compact: boolean }) {
   const persona = useModeStore((state) => state.persona);
   const [open, setOpen] = useState(false);
   const AccountMenu = modalRegistry["M-07"];
-  const name = mode === "demo" ? persona : formatPerson({ address });
+  const name = mode === "demo" ? shellCopy.demoPersonas[persona] : formatPerson({ address });
   const seed = mode === "demo" ? `demo-${persona}` : (address ?? "anonymous");
   const chip = (
     <button

@@ -1,5 +1,7 @@
 "use client";
 
+import { CampaignStateChip } from "@/components/product/campaign-state-chip";
+import { formatDateTime, formatHoldPhrase } from "@/lib/format";
 import { ProductPage, QueryState, PageLink, Stat } from "@/components/product/page";
 import { Card } from "@/components/ui/card";
 import { CopyField } from "@/components/ui/copy-field";
@@ -30,7 +32,7 @@ export function MerchantCampaignPage({ campaignId }: { campaignId: string }) {
         {data ? (
           <>
             <div className="grid gap-3 sm:grid-cols-3">
-              <Stat label="Sale state" value={data.state} />
+              <Stat label="Campaign" value={<CampaignStateChip campaign={data} size="md" />} />
               <Stat label="Settled sales" value={data.counts.finalized} />
               <Stat label="Links" value={data.nodeCount} />
             </div>
@@ -41,7 +43,7 @@ export function MerchantCampaignPage({ campaignId }: { campaignId: string }) {
               <p className="text-body mt-3">
                 {formatBps(data.policy.commissionBps)} commission · Up to{" "}
                 {data.policy.maxRewardedAncestors} levels · {formatSplit(data.policy.weightsBps)}{" "}
-                nearest first · Hold {data.policy.holdSeconds} seconds
+                nearest first · {formatHoldPhrase(data.policy.holdSeconds)}
               </p>
               <p className="text-body mt-3">
                 Per-sale cap: {formatAmount(BigInt(data.policy.perSaleCap), data.token)} · Liability
@@ -57,7 +59,7 @@ export function MerchantCampaignPage({ campaignId }: { campaignId: string }) {
               {policy.data?.scheduled ? (
                 <p className="bg-amber-soft mt-4 rounded-xl p-3">
                   New terms are already scheduled for{" "}
-                  {new Date(policy.data.scheduled.effectiveAt).toLocaleString()}. Sales before then
+                  {formatDateTime(new Date(policy.data.scheduled.effectiveAt))}. Sales before then
                   keep today’s terms.
                 </p>
               ) : (

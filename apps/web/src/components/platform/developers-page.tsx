@@ -11,6 +11,7 @@ import { CopyField } from "@/components/ui/copy-field";
 import { Input } from "@/components/ui/input";
 import { useClientQuery } from "@/lib/query/use-client";
 import { publicEnv } from "@/lib/public-env";
+import { endpointAvailabilityLabels } from "@/lib/copy";
 
 export function DevelopersPage({ section = "overview" }: { section?: string }) {
   const contracts = useClientQuery("system.contracts", {}, { live: true });
@@ -140,7 +141,7 @@ export function DevelopersPage({ section = "overview" }: { section?: string }) {
                       <td className="p-2 font-mono">{endpoint.method}</td>
                       <td className="p-2 font-mono">{endpoint.path}</td>
                       <td className="p-2">{endpoint.auth}</td>
-                      <td className="p-2">{endpoint.availability.replaceAll("_", " ")}</td>
+                      <td className="p-2">{endpointAvailabilityLabels[endpoint.availability]}</td>
                     </tr>
                   ))}
               </tbody>

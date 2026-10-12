@@ -1,5 +1,6 @@
 "use client";
 
+import { Select } from "@/components/ui/select";
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { parseUnits, formatUnits, zeroHash } from "viem";
@@ -13,8 +14,23 @@ import { useClientQuery } from "@/lib/query/use-client";
 import { useSpokeClient } from "@/lib/client/provider";
 import { useChainAction } from "@/lib/tx/use-action";
 import { asBytes32 } from "@/lib/tx/calls";
-import { formatAmount } from "@/lib/format";
+import { formatAmount, formatDateTime, formatRelative } from "@/lib/format";
 import { FundsPanel } from "@/components/buy/funds-panel";
+
+const shortPathOptions = [
+  { value: "RENORMALIZE_EXISTING", label: "Renormalize across existing contributors" },
+  { value: "RETURN_UNUSED", label: "Return unused share to the reward budget" },
+] as const;
+
+const holdOptions = [
+  { value: "60", label: "1 minute · testnet walkthrough" },
+  { value: "600", label: "10 minutes" },
+  { value: "3600", label: "1 hour" },
+  { value: "86400", label: "1 day" },
+  { value: "259200", label: "3 days" },
+  { value: "604800", label: "7 days" },
+  { value: "1209600", label: "14 days" },
+] as const;
 
 export function ComposerPage() {
   const search = useSearchParams();
@@ -151,19 +167,14 @@ function ComposerEditor({ draft }: { draft?: ClientOutput<"campaigns.getDraft"> 
                 <PageLink href="/sell/products/new">Add your first product</PageLink>
               ) : (
                 <Field label="Product">
-                  <select
-                    value={productId || product?.id || ""}
-                    onChange={(event) => {
-                      setProductId(event.target.value);
-                    }}
-                    className="border-line bg-surface h-10 rounded-xl border px-3"
-                  >
-                    {products.data?.items.map((item) => (
-                      <option key={item.id} value={item.id}>
-                        {item.title} · Version {item.version}
-                      </option>
-                    ))}
-                  </select>
+                  <Select
+                    value={productId || product?.id || undefined}
+                    onValueChange={setProductId}
+                    options={(products.data?.items ?? []).map((item) => ({
+                      value: item.id,
+                      label: `${item.title} · Version ${String(item.version)}`,
+                    }))}
+                  />
                 </Field>
               )}
               {product ? (
@@ -221,22 +232,7 @@ function ComposerEditor({ draft }: { draft?: ClientOutput<"campaigns.getDraft"> 
               </p>
             ) : null}
             <Field label="When the path has fewer contributors" className="mt-4">
-              <select
-                value={shortPath}
-                onChange={(event) => {
-                  setShortPath(
-                    event.target.value === "RETURN_UNUSED"
-                      ? "RETURN_UNUSED"
-                      : "RENORMALIZE_EXISTING",
-                  );
-                }}
-                className="border-line bg-surface h-10 rounded-xl border px-3"
-              >
-                <option value="RENORMALIZE_EXISTING">
-                  Renormalize across existing contributors
-                </option>
-                <option value="RETURN_UNUSED">Return unused share to the reward budget</option>
-              </select>
+              <Select value={shortPath} onValueChange={setShortPath} options={shortPathOptions} />
             </Field>
           </Card>
           <Card>
@@ -245,20 +241,7 @@ function ComposerEditor({ draft }: { draft?: ClientOutput<"campaigns.getDraft"> 
             </h2>
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Settlement hold">
-                <select
-                  value={hold}
-                  onChange={(event) => {
-                    setHold(event.target.value);
-                  }}
-                  className="border-line bg-surface h-10 rounded-xl border px-3"
-                >
-                  <option value="60">1 minute · testnet walkthrough</option>
-                  <option value="600">10 minutes</option>
-                  <option value="3600">1 hour</option>
-                  <option value="86400">1 day</option>
-                  <option value="604800">7 days</option>
-                  <option value="1209600">14 days</option>
-                </select>
+                <Select value={hold} onValueChange={setHold} options={holdOptions} />
               </Field>
               <Field label="Campaign ends" helper="Default: 30 days. Maximum: 365 days.">
                 <Input
@@ -312,7 +295,7 @@ function ComposerEditor({ draft }: { draft?: ClientOutput<"campaigns.getDraft"> 
             {policies.data?.scheduled && newVersion ? (
               <p className="bg-amber-soft mt-3 rounded-xl p-3 text-sm">
                 New terms are already scheduled for{" "}
-                {new Date(policies.data.scheduled.effectiveAt).toLocaleString()}. You can change
+                {formatDateTime(new Date(policies.data.scheduled.effectiveAt))}. You can change
                 terms again after they apply.
               </p>
             ) : null}
@@ -330,7 +313,7 @@ function ComposerEditor({ draft }: { draft?: ClientOutput<"campaigns.getDraft"> 
             </div>
             {savedAt ? (
               <p className="text-subtle mt-3 text-xs">
-                Saved {new Date(savedAt).toLocaleTimeString()} · Version {version}
+                Saved {formatRelative(new Date(savedAt))} · Version {version}
               </p>
             ) : null}
             {error ? (

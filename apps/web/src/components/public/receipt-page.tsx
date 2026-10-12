@@ -1,27 +1,57 @@
 "use client";
 
-import { ProductPage, QueryState, PageLink, Stat } from "@/components/product/page";
+import {
+  ArrowTurnBackwardIcon,
+  CheckmarkBadge01Icon,
+  Clock01Icon,
+  Wallet01Icon,
+} from "@hugeicons/core-free-icons";
+import { PageLink, ProductPage, QueryState, Stat } from "@/components/product/page";
+import { SaleStateChip, ShareStateChip } from "@/components/product/state-chips";
 import { Card } from "@/components/ui/card";
 import { CopyField } from "@/components/ui/copy-field";
-import { useNow } from "@/lib/use-now";
+import { Timeline, type TimelineItem } from "@/components/ui/timeline";
+import { useClientContext } from "@/lib/client/provider";
+import { fill, receiptCopy } from "@/lib/copy";
+import { formatAmount, formatBps, formatDateTime, formatPerson } from "@/lib/format";
 import { useClientQuery } from "@/lib/query/use-client";
-import { formatAmount, formatBps, formatPerson } from "@/lib/format";
+import { useNow } from "@/lib/use-now";
+
+const eventLook = (state: string): Pick<TimelineItem, "icon" | "tone"> => {
+  if (state === "REFUNDED") return { icon: ArrowTurnBackwardIcon, tone: "pink" };
+  if (state === "FINALIZED") return { icon: CheckmarkBadge01Icon, tone: "lime" };
+  if (state === "CLAIMED") return { icon: Wallet01Icon, tone: "lime" };
+  return { icon: Clock01Icon, tone: "amber" };
+};
+
+const eventTitle = (state: string) =>
+  state in receiptCopy.events
+    ? receiptCopy.events[state as keyof typeof receiptCopy.events]
+    : state.charAt(0) + state.slice(1).toLowerCase();
 
 export function ReceiptPage({ saleId, chainId = 10143 }: { saleId: string; chainId?: number }) {
   const now = useNow();
+  const { mode } = useClientContext();
+  const demo = mode === "demo";
   const receipt = useClientQuery("receipts.get", { saleId, chainId });
   const verify = useClientQuery(
     "receipts.verify",
     { saleId, chainId },
-    { enabled: Boolean(receipt.data), refetchInterval: 15_000 },
+    { enabled: Boolean(receipt.data) && !demo, refetchInterval: 15_000 },
   );
   const data = receipt.data;
+  const holdOver = data ? now >= Date.parse(data.unlockAt) : false;
   return (
     <ProductPage
       title={`Sale #${saleId}`}
-      description="An onchain receipt. Rewards are merchant funded and are only claimable after finalization."
+      description={receiptCopy.description}
       actions={
-        data ? <PageLink href={`/c/${data.campaignId}/network`}>View the path</PageLink> : undefined
+        data ? (
+          <>
+            <SaleStateChip status={data.state} unlockAt={data.unlockAt} size="md" />
+            <PageLink href={`/c/${data.campaignId}/network`}>{receiptCopy.viewPath}</PageLink>
+          </>
+        ) : undefined
       }
     >
       <QueryState
@@ -33,100 +63,106 @@ export function ReceiptPage({ saleId, chainId = 10143 }: { saleId: string; chain
           <>
             <div className="grid gap-4 sm:grid-cols-3">
               <Stat
-                label="Sale state"
-                value={
-                  data.state === "PENDING" && now >= Date.parse(data.unlockAt)
-                    ? "Ready to finalize"
-                    : data.state
-                }
+                label={receiptCopy.buyerPaid}
+                value={formatAmount(BigInt(data.price), data.token)}
               />
-              <Stat label="Buyer paid" value={formatAmount(BigInt(data.price), data.token)} />
               <Stat
-                label="Merchant-funded reward"
+                label={receiptCopy.reward}
                 value={formatAmount(BigInt(data.rewardReserved), data.token)}
               />
+              <Stat
+                label={holdOver ? receiptCopy.holdEnded : receiptCopy.holdEnds}
+                value={formatDateTime(new Date(data.unlockAt))}
+              />
+            </div>
+            <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">
+              <Card>
+                <h2 className="font-display text-h4">{receiptCopy.paidPath}</h2>
+                {data.allocations.length === 0 ? (
+                  <p className="text-body mt-3">{receiptCopy.direct}</p>
+                ) : (
+                  <ul className="divide-hairline mt-3 divide-y">
+                    {data.allocations.map((allocation) => (
+                      <li
+                        key={allocation.level}
+                        className="flex flex-wrap items-center justify-between gap-3 py-3"
+                      >
+                        <div className="min-w-0">
+                          <p className="text-ink font-medium">
+                            {fill(receiptCopy.level, { level: String(allocation.level) })} ·{" "}
+                            {formatPerson(allocation.recipient)}
+                          </p>
+                          <p className="text-subtle text-sm">
+                            {formatBps(allocation.effectiveWeightBps)} of the reward
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <ShareStateChip state={allocation.state} unlockAt={data.unlockAt} />
+                          <span className="text-ink font-mono tabular-nums">
+                            {formatAmount(BigInt(allocation.amount), data.token)}
+                          </span>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </Card>
+              <Card>
+                <h2 className="font-display text-h4">{receiptCopy.timeline}</h2>
+                <Timeline
+                  className="mt-4"
+                  label={receiptCopy.timeline}
+                  items={data.timeline.map((event) => ({
+                    key: `${event.state}-${event.tx.hash}`,
+                    title: eventTitle(event.state),
+                    time: formatDateTime(new Date(event.at)),
+                    ...eventLook(event.state),
+                  }))}
+                />
+              </Card>
             </div>
             <Card>
-              <h2 className="font-display text-h4">Paid path</h2>
-              <div className="mt-3 divide-y divide-hairline">
-                {data.allocations.map((allocation) => (
-                  <div
-                    key={allocation.level}
-                    className="flex flex-wrap items-center justify-between gap-3 py-3"
-                  >
-                    <div>
-                      <p>
-                        Level {allocation.level} · {formatPerson(allocation.recipient)}
-                      </p>
-                      <p className="text-subtle text-sm">
-                        {formatBps(allocation.effectiveWeightBps)} · {allocation.state}
-                      </p>
-                    </div>
-                    <p className="font-mono">
-                      {formatAmount(BigInt(allocation.amount), data.token)}
-                    </p>
-                  </div>
-                ))}
+              <h2 className="font-display text-h4">{receiptCopy.proof}</h2>
+              <p className="text-body mt-2 text-sm">
+                {demo
+                  ? receiptCopy.simulated
+                  : verify.data
+                    ? fill(
+                        verify.data.matchesIndex ? receiptCopy.verified : receiptCopy.catchingUp,
+                        {
+                          block: verify.data.blockNumber,
+                        },
+                      )
+                    : receiptCopy.verifying}
+              </p>
+              <div className="mt-4 grid gap-3 md:grid-cols-2">
+                <div className="min-w-0">
+                  <p className="text-subtle mb-1.5 text-sm">{receiptCopy.policyHash}</p>
+                  <CopyField
+                    value={data.policyHash}
+                    label={receiptCopy.policyHash}
+                    copiedMessage="Policy hash copied"
+                  />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-subtle mb-1.5 text-sm">{receiptCopy.orderKey}</p>
+                  <CopyField
+                    value={data.orderKey}
+                    label={receiptCopy.orderKey}
+                    copiedMessage="Order key copied"
+                  />
+                </div>
               </div>
-              {data.allocations.length === 0 ? (
-                <p className="text-body mt-3">
-                  Direct purchase. Nobody earns a commission on this purchase.
-                </p>
+              {!demo && data.purchaseTx.explorerUrl ? (
+                <a
+                  href={data.purchaseTx.explorerUrl}
+                  className="text-ink mt-4 inline-block text-sm underline underline-offset-2"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {receiptCopy.purchaseTx} · {receiptCopy.viewOnExplorer}
+                </a>
               ) : null}
-            </Card>
-            <Card>
-              <h2 className="font-display text-h4">Settlement timeline</h2>
-              <p className="text-body mt-3">
-                Purchased {new Date(data.purchasedAt).toLocaleString()}. Hold ends{" "}
-                {new Date(data.unlockAt).toLocaleString()}.
-              </p>
-              <ol className="mt-4 space-y-3">
-                {data.timeline.map((event) => (
-                  <li
-                    key={`${event.state}-${event.tx.hash}`}
-                    className="flex flex-wrap justify-between gap-2"
-                  >
-                    <span>{event.state}</span>
-                    <a
-                      href={event.tx.explorerUrl ?? "#"}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-sm underline"
-                    >
-                      {new Date(event.at).toLocaleString()}
-                    </a>
-                  </li>
-                ))}
-              </ol>
-            </Card>
-            <Card>
-              <p className="text-sm">
-                {verify.data
-                  ? verify.data.matchesIndex
-                    ? `Verified against the contract at block ${verify.data.blockNumber}.`
-                    : `Contract read at block ${verify.data.blockNumber}; the activity index is catching up.`
-                  : "Contract verification is loading."}
-              </p>
-              <div className="mt-4 grid grid-cols-1 gap-3">
-                <CopyField
-                  value={data.policyHash}
-                  label="Immutable policy hash"
-                  copiedMessage="Policy hash copied"
-                />
-                <CopyField
-                  value={data.orderKey}
-                  label="Order key"
-                  copiedMessage="Order key copied"
-                />
-              </div>
-              <a
-                href={data.purchaseTx.explorerUrl ?? "#"}
-                className="mt-4 block underline"
-                target="_blank"
-                rel="noreferrer"
-              >
-                View purchase transaction
-              </a>
             </Card>
           </>
         ) : null}

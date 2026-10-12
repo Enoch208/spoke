@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useNow } from "@/lib/use-now";
 import { useClientQuery } from "@/lib/query/use-client";
 import { useChainAction } from "@/lib/tx/use-action";
-import { formatAmount } from "@/lib/format";
+import { formatAmount, formatDateTime } from "@/lib/format";
 import { activeChain } from "@/lib/wagmi";
 import { useSessionStore } from "@/lib/stores/session";
 import { AccessPanel } from "./access-panel";
@@ -54,9 +54,7 @@ export function PurchasePage({ saleId, merchant = false }: { saleId: string; mer
               <Stat label="Paid" value={formatAmount(BigInt(data.price), data.token)} />
               <Stat
                 label="Hold ends"
-                value={
-                  <span className="text-base">{new Date(data.unlockAt).toLocaleString()}</span>
-                }
+                value={<span className="text-base">{formatDateTime(new Date(data.unlockAt))}</span>}
               />
             </div>
             <Card>

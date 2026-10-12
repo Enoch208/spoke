@@ -1,5 +1,6 @@
 "use client";
 
+import { CampaignStateChip } from "@/components/product/campaign-state-chip";
 import Link from "next/link";
 import { ProductPage, QueryState, PageLink } from "@/components/product/page";
 import { Card } from "@/components/ui/card";
@@ -30,10 +31,12 @@ export function LinksPage({ nodeId }: { nodeId?: string }) {
                   <h2 className="font-display text-h4">
                     <Link href={`/earn/links/${row.nodeId}`}>{row.campaign.product.title}</Link>
                   </h2>
-                  <p className="text-subtle mt-2 text-sm">
-                    {row.campaign.merchant.name} · {row.campaignStatus} · Level{" "}
-                    {row.levelFromMerchant}
-                  </p>
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    <CampaignStateChip campaign={row.campaign} />
+                    <span className="text-subtle text-sm">
+                      {row.campaign.merchant.name} · Level {row.levelFromMerchant}
+                    </span>
+                  </div>
                 </div>
                 <PageLink href={`/c/${row.campaign.campaignId}/network`}>View network</PageLink>
               </div>

@@ -101,3 +101,17 @@ export const referralLandingCopy = {
     line: "This is a link to your own campaign. Merchants can’t create links in their own campaigns.",
   },
 } as const satisfies Record<string, ReferralLandingCase>;
+
+export const joinEligibilityLines = {
+  ok: "You can create a link for this campaign.",
+  already_joined: "You already have a link for this campaign.",
+  is_merchant: "This is your campaign. Merchants don’t create links for their own campaigns.",
+  invitation_required: "This campaign is invitation only. Ask the merchant for an invitation.",
+  paused: "The merchant paused this campaign. New links open again when it resumes.",
+  ended: "This campaign has ended. It doesn’t accept new links.",
+  capacity_reached: "This campaign has reached its limit of links.",
+  invalid_parent: "The link you came from can’t take new links under it.",
+  not_deployed: "Spoke’s contracts aren’t deployed on this network yet.",
+} as const;
+
+export type JoinEligibility = keyof typeof joinEligibilityLines;

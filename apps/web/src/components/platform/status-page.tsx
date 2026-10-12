@@ -1,5 +1,6 @@
 "use client";
 
+import { formatDateTime, formatRelative } from "@/lib/format";
 import { ProductPage, QueryState, Stat } from "@/components/product/page";
 import { Card } from "@/components/ui/card";
 import { useClientQuery } from "@/lib/query/use-client";
@@ -32,7 +33,7 @@ export function StatusPage() {
           <p className="text-subtle mt-2 text-sm">
             Lag: {status.data?.indexer.lagBlocks ?? "unknown"} blocks. Chain time{" "}
             {status.data?.indexer.chainTime
-              ? new Date(status.data.indexer.chainTime).toLocaleString()
+              ? formatDateTime(new Date(status.data.indexer.chainTime))
               : "unavailable"}
             .
           </p>
@@ -47,7 +48,7 @@ export function StatusPage() {
               <h2 className="font-display text-h4">{incident.title}</h2>
               <p className="text-body mt-3">{incident.impact}</p>
               <p className="text-subtle mt-3 text-sm">
-                {incident.severity} · Updated {new Date(incident.updatedAt).toLocaleString()}
+                {incident.severity} · Updated {formatRelative(new Date(incident.updatedAt))}
               </p>
             </Card>
           ))

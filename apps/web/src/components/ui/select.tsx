@@ -19,6 +19,7 @@ export function Select<Value extends string>({
   options,
   placeholder,
   disabled,
+  name,
   className,
 }: {
   value: Value | undefined;
@@ -26,6 +27,7 @@ export function Select<Value extends string>({
   options: readonly SelectOption<Value>[];
   placeholder?: string;
   disabled?: boolean;
+  name?: string;
   className?: string | undefined;
 }) {
   const field = useField();
@@ -35,7 +37,12 @@ export function Select<Value extends string>({
   };
 
   return (
-    <RadixSelect.Root value={value ?? ""} onValueChange={choose} disabled={disabled ?? false}>
+    <RadixSelect.Root
+      value={value ?? ""}
+      onValueChange={choose}
+      disabled={disabled ?? false}
+      {...(name ? { name } : {})}
+    >
       <RadixSelect.Trigger
         id={field?.controlId}
         aria-describedby={field?.describedBy}
