@@ -39,7 +39,7 @@ export function Switch({
         onCheckedChange={onCheckedChange}
         disabled={disabled}
         aria-describedby={description ? descriptionId : undefined}
-        className="data-[state=checked]:bg-ink bg-pill-edge ease-spring relative h-6 w-10 shrink-0 rounded-full transition-colors duration-[423ms] disabled:opacity-45"
+        className="data-[state=checked]:bg-ink bg-control-edge ease-spring relative h-6 w-10 shrink-0 rounded-full transition-colors duration-[423ms] disabled:opacity-45"
       >
         <RadixSwitch.Thumb className="bg-surface ease-spring block size-5 translate-x-0.5 rounded-full shadow-[0_1px_2px_rgba(0,0,0,0.2)] transition-transform duration-[423ms] data-[state=checked]:translate-x-[18px]" />
       </RadixSwitch.Root>

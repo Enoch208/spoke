@@ -24,11 +24,17 @@ export const buttonSizes = {
 export type ButtonVariant = keyof typeof buttonVariants;
 export type ButtonSize = keyof typeof buttonSizes;
 
-export const buttonClass = (variant: ButtonVariant, size: ButtonSize, block = false) =>
+export const buttonClass = (
+  variant: ButtonVariant,
+  size: ButtonSize,
+  block = false,
+  loading = false,
+) =>
   cx(
     "relative inline-flex shrink-0 items-center justify-center gap-2 rounded-3xl font-medium whitespace-nowrap select-none",
     "[transition-duration:423ms] [transition-property:background-color,border-color,color,opacity] [transition-timing-function:var(--ease-spring)]",
-    "disabled:pointer-events-none disabled:opacity-45",
+    "disabled:pointer-events-none",
+    !loading && "disabled:opacity-45",
     buttonVariants[variant],
     buttonSizes[size],
     block && "w-full",
@@ -64,7 +70,7 @@ export function Button({
   const reasonId = useId();
   const isDisabled = Boolean(disabled) || loading;
   const showReason = Boolean(disabled) && !loading && Boolean(disabledReason);
-  const classes = cx(buttonClass(variant, size, block), className);
+  const classes = cx(buttonClass(variant, size, block, loading), className);
 
   if (asChild) {
     return (

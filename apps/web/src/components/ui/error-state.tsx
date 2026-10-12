@@ -16,12 +16,17 @@ const layouts = {
   inline: "items-start gap-2 rounded-xl bg-pink-soft px-4 py-3 text-left",
 } as const;
 
-function Details({ details }: { details: ErrorDetails }) {
+function Details({ details, centered }: { details: ErrorDetails; centered: boolean }) {
   const summary = [details.code, details.requestId].filter(Boolean).join(" · ");
   if (!summary) return null;
   return (
-    <details className="group w-full max-w-[420px] text-left">
-      <summary className="text-subtle hover:text-ink flex cursor-pointer list-none items-center gap-1 text-sm">
+    <details className={cx("group w-full max-w-[420px] text-left", centered && "mx-auto")}>
+      <summary
+        className={cx(
+          "text-subtle hover:text-ink flex cursor-pointer list-none items-center gap-1 text-sm",
+          centered && "justify-center",
+        )}
+      >
         {common.details}
         <HugeiconsIcon
           icon={ArrowDown01Icon}
@@ -116,7 +121,7 @@ export function ErrorState({
           {actions}
         </div>
       ) : null}
-      {details ? <Details details={details} /> : null}
+      {details ? <Details details={details} centered={!inline} /> : null}
     </div>
   );
 }

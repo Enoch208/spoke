@@ -53,7 +53,7 @@ export function RadioGroup<Value extends string>({
               value={option.value}
               disabled={option.disabled ?? false}
               aria-describedby={option.description ? `${itemId}-description` : undefined}
-              className="data-[state=checked]:border-ink bg-surface ease-spring mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border border-pill-edge transition-colors duration-[423ms] hover:border-ink disabled:opacity-45"
+              className="data-[state=checked]:border-ink bg-surface ease-spring mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border border-control-edge transition-colors duration-[423ms] hover:border-ink disabled:opacity-45"
             >
               <RadixRadioGroup.Indicator className="bg-ink block size-2.5 rounded-full" />
             </RadixRadioGroup.Item>

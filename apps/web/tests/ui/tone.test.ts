@@ -40,4 +40,11 @@ describe("tone classes", () => {
       expect(contrast(text, fill), tone).toBeGreaterThanOrEqual(4.5);
     }
   });
+
+  it("keeps unchecked control edges at 3:1 on every surface they sit on", () => {
+    const edge = tokenHex("control-edge");
+    for (const surface of ["surface", "page", "soft", "pill"]) {
+      expect(contrast(edge, tokenHex(surface)), surface).toBeGreaterThanOrEqual(3);
+    }
+  });
 });

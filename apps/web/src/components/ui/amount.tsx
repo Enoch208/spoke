@@ -41,7 +41,7 @@ export function Amount({
       <span className="whitespace-nowrap">{`${sign}${digits}`}</span>
       <span className="whitespace-nowrap">
         {token.symbol}
-        {testnet ? <span className="text-subtle">{testnetSuffix}</span> : null}
+        {testnet ? <span className="font-ui text-subtle text-sm">{testnetSuffix}</span> : null}
       </span>
     </span>
   );

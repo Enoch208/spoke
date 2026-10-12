@@ -33,7 +33,7 @@ export function Checkbox({
         }}
         disabled={disabled}
         aria-describedby={description ? descriptionId : undefined}
-        className="data-[state=checked]:bg-ink data-[state=checked]:border-ink bg-surface ease-spring mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-md border border-pill-edge transition-colors duration-[423ms] hover:border-ink disabled:opacity-45"
+        className="data-[state=checked]:bg-ink data-[state=checked]:border-ink bg-surface ease-spring mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-md border border-control-edge transition-colors duration-[423ms] hover:border-ink disabled:opacity-45"
       >
         <RadixCheckbox.Indicator className="text-page">
           <HugeiconsIcon icon={Tick02Icon} size={14} strokeWidth={2.4} aria-hidden="true" />
