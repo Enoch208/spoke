@@ -21,7 +21,9 @@ export const shellCopy = {
   demoOnly: "Demo only",
   demoTag: "Demo",
   discover: { explore: "Explore", distributors: "Distributors", demo: "Try the demo" },
-  signIn: "Sign in",
+  signIn: "Log in",
+  createAccount: "Create account",
+  haveAccount: "Already have an account? Log in",
   signInPrompt: "Sign in to share, earn and sell.",
   close: "Close",
   demoPersonas: {

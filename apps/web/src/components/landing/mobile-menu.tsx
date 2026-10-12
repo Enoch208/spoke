@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { ArrowLink } from "@/components/ui/arrow-link";
+import { PillLink } from "@/components/ui/pill-link";
 import { routes } from "@/lib/routes";
 import { navLinks } from "./nav-links";
 
@@ -67,6 +69,12 @@ export function MobileMenu() {
             </li>
           ))}
         </ul>
+        <div className="border-hairline mt-6 flex flex-col gap-3 border-t pt-6">
+          <ArrowLink href={routes.start}>Get started</ArrowLink>
+          <PillLink href={routes.login} size="lg">
+            Log in
+          </PillLink>
+        </div>
       </nav>
     </div>
   );

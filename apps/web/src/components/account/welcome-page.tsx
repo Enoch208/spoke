@@ -7,7 +7,7 @@ import {
   SecurityCheckIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -17,6 +17,8 @@ import { Input } from "@/components/ui/input";
 import { useClientMutation } from "@/lib/query/use-client";
 import { useSessionStore } from "@/lib/stores/session";
 import { useUiStore } from "@/lib/stores/ui";
+import { internalPath } from "@/lib/demo/landing";
+import { isAuthIntent } from "@/lib/routes";
 
 type Intent = "buy" | "earn" | "sell";
 
@@ -44,7 +46,10 @@ const intents: readonly { value: Intent; title: string; body: string; icon: Icon
 const destination = { buy: "/explore", earn: "/earn/opportunities", sell: "/sell/setup" } as const;
 
 export function WelcomePage() {
-  const [intent, setIntent] = useState<Intent>("earn");
+  const params = useSearchParams();
+  const next = internalPath(params.get("next"));
+  const requested = params.get("intent");
+  const [intent, setIntent] = useState<Intent>(isAuthIntent(requested) ? requested : "earn");
   const [handle, setHandle] = useState("");
   const update = useClientMutation("account.updateProfile", ["account.me"]);
   const kind = useSessionStore((state) => state.accountKind);
@@ -53,7 +58,7 @@ export function WelcomePage() {
     const result = await update
       .mutateAsync({ intent, ...(handle ? { handle } : {}), onboardingCompleted: true })
       .catch(() => null);
-    if (result) router.push(destination[intent]);
+    if (result) router.push(next ?? destination[intent]);
   };
   return (
     <div className="mx-auto flex w-full max-w-xl flex-col gap-8 py-4">

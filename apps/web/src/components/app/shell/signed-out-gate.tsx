@@ -1,41 +1,44 @@
 "use client";
 
-import { FingerPrintIcon, Wallet01Icon } from "@hugeicons/core-free-icons";
+import { FingerPrintIcon, LockKeyIcon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
-import { fill, globalStates } from "@/lib/copy";
-import { useUiStore } from "@/lib/stores/ui";
+import { fill, globalStates, shellCopy } from "@/lib/copy";
+import { authHref, routes } from "@/lib/routes";
 import { signedOutThingFor } from "./use-area";
 
 export function SignedOutGate() {
   const pathname = usePathname();
-  const open = useUiStore((state) => state.open);
   const copy = globalStates.signedOut;
-  const [passkeyLabel, walletLabel] = copy.actions;
   return (
     <EmptyState
       variant="gate"
+      icon={LockKeyIcon}
       title={fill(copy.title, { thing: signedOutThingFor(pathname) })}
       body={copy.body}
       actions={
         <>
-          <Button
-            icon={FingerPrintIcon}
-            onClick={() => {
-              open("M-01", { reason: "open", returnTo: pathname });
-            }}
-          >
-            {passkeyLabel}
+          <Button asChild>
+            <Link href={authHref("signup", { next: pathname })}>
+              <HugeiconsIcon
+                icon={FingerPrintIcon}
+                size={18}
+                strokeWidth={1.8}
+                aria-hidden="true"
+              />
+              {shellCopy.createAccount}
+            </Link>
           </Button>
-          <Button
-            variant="secondary"
-            icon={Wallet01Icon}
-            onClick={() => {
-              open("M-03", { reason: "open", returnTo: pathname });
-            }}
-          >
-            {walletLabel}
+          <Button asChild variant="secondary">
+            <Link href={authHref("login", { next: pathname })}>{shellCopy.signIn}</Link>
+          </Button>
+          <Button asChild variant="ghost">
+            <Link href={`${routes.demo}?next=${encodeURIComponent(pathname)}`}>
+              {shellCopy.discover.demo}
+            </Link>
           </Button>
         </>
       }

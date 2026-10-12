@@ -23,8 +23,8 @@ export function SiteHeader() {
           </ul>
         </nav>
         <div className="hidden items-center gap-4 lg:flex">
-          <PillLink href={routes.explore}>Explore</PillLink>
-          <ArrowLink href={routes.launch}>Launch</ArrowLink>
+          <PillLink href={routes.login}>Log in</PillLink>
+          <ArrowLink href={routes.start}>Get started</ArrowLink>
         </div>
         <MobileMenu />
       </div>

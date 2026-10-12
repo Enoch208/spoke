@@ -1,4 +1,10 @@
+import { Suspense } from "react";
 import { WelcomePage } from "@/components/account/welcome-page";
+
 export default function Page() {
-  return <WelcomePage />;
+  return (
+    <Suspense>
+      <WelcomePage />
+    </Suspense>
+  );
 }

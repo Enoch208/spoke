@@ -1,7 +1,9 @@
 export const routes = {
   home: "/",
   explore: "/explore",
-  launch: "/sell/campaigns/new",
+  launch: "/signup?intent=sell",
+  start: "/signup",
+  startSharing: "/signup?intent=earn",
   docs: "/developers",
   howItWorks: "/how-it-works",
   trust: "/trust",
@@ -19,6 +21,8 @@ export const routes = {
     disclosures: "/legal/disclosures",
     merchantAgreement: "/legal/merchant-agreement",
   },
+  login: "/login",
+  signup: "/signup",
   welcome: "/welcome",
   recover: "/recover",
   wallet: "/wallet",
@@ -149,3 +153,44 @@ export const sections = {
 } as const;
 
 export const anchor = (id: string) => `#${id}`;
+
+export type AuthIntent = "earn" | "sell" | "buy";
+
+export const isAuthIntent = (value: string | null | undefined): value is AuthIntent =>
+  value === "earn" || value === "sell" || value === "buy";
+
+export const authHref = (
+  kind: "login" | "signup",
+  options: { next?: string | undefined; intent?: AuthIntent | undefined } = {},
+) => {
+  const params = new URLSearchParams();
+  if (options.next) params.set("next", options.next);
+  if (options.intent) params.set("intent", options.intent);
+  const query = params.toString();
+  return `${kind === "login" ? routes.login : routes.signup}${query ? `?${query}` : ""}`;
+};
+
+export const intentHome: Record<AuthIntent, string> = {
+  earn: routes.earn.home,
+  sell: routes.sell.setup,
+  buy: routes.explore,
+};
+
+export const afterAuthPath = ({
+  isNewAccount,
+  next,
+  intent,
+}: {
+  isNewAccount: boolean;
+  next: string | null;
+  intent: AuthIntent | null;
+}) => {
+  if (isNewAccount) {
+    const params = new URLSearchParams();
+    if (next) params.set("next", next);
+    if (intent) params.set("intent", intent);
+    const query = params.toString();
+    return `${routes.welcome}${query ? `?${query}` : ""}`;
+  }
+  return next ?? (intent ? intentHome[intent] : routes.earn.home);
+};

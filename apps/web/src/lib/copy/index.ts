@@ -18,3 +18,4 @@ export * from "./toasts";
 export * from "./modals";
 export { flows } from "./flows";
 export { shellCopy } from "./shell";
+export { authCopy } from "./auth";

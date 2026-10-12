@@ -43,7 +43,7 @@ const features: Feature[] = [
       { label: "QR share kit", icon: QrCodeIcon },
       { label: "Network Explorer", icon: HierarchyIcon },
     ],
-    cta: { label: "Start sharing", href: routes.explore },
+    cta: { label: "Start sharing", href: routes.startSharing },
     tone: "sky",
     screen: <NetworkScreen />,
   },

@@ -1,12 +1,23 @@
 import { describe, expect, it } from "vitest";
 import { features, featureKeys, isFeatureKey, isLive } from "@/lib/features";
-import { isSafeNext, routeTo, routes, withNext } from "@/lib/routes";
+import { afterAuthPath, authHref, isSafeNext, routeTo, routes, withNext } from "@/lib/routes";
 
 describe("routes", () => {
   it("points the landing constants at real screens", () => {
     expect(routes.explore).toBe("/explore");
     expect(routes.docs).toBe("/developers");
-    expect(routes.launch).toBe("/sell/campaigns/new");
+    expect(routes.launch).toBe("/signup?intent=sell");
+    expect(routes.start).toBe("/signup");
+  });
+
+  it("sends new accounts through onboarding and returning ones to where they were going", () => {
+    expect(afterAuthPath({ isNewAccount: true, next: "/c/7", intent: "buy" })).toBe(
+      "/welcome?next=%2Fc%2F7&intent=buy",
+    );
+    expect(afterAuthPath({ isNewAccount: false, next: "/c/7", intent: null })).toBe("/c/7");
+    expect(afterAuthPath({ isNewAccount: false, next: null, intent: "sell" })).toBe("/sell/setup");
+    expect(afterAuthPath({ isNewAccount: false, next: null, intent: null })).toBe("/earn");
+    expect(authHref("login", { next: "/earn/links" })).toBe("/login?next=%2Fearn%2Flinks");
   });
 
   it("builds dynamic routes with encoded segments", () => {

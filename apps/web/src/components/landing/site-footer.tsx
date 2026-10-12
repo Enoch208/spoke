@@ -27,6 +27,8 @@ const columns = [
   {
     title: "Get started",
     links: [
+      { label: "Create an account", href: routes.start },
+      { label: "Log in", href: routes.login },
       { label: "Explore campaigns", href: routes.explore },
       { label: "Launch a campaign", href: routes.launch },
     ],
