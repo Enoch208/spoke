@@ -2,7 +2,7 @@
 
 import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react";
 import { Slot } from "radix-ui";
-import { useId, type ButtonHTMLAttributes, type ReactNode } from "react";
+import { useId, type ButtonHTMLAttributes, type ReactNode, type Ref } from "react";
 import { cx } from "./cx";
 import { Spinner } from "./spinner";
 import { Tooltip } from "./tooltip";
@@ -49,6 +49,7 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   loadingLabel?: ReactNode;
   disabledReason?: string;
   asChild?: boolean;
+  ref?: Ref<HTMLButtonElement>;
 };
 
 export function Button({
@@ -65,6 +66,7 @@ export function Button({
   children,
   type = "button",
   "aria-describedby": describedBy,
+  ref,
   ...rest
 }: ButtonProps) {
   const reasonId = useId();
@@ -82,6 +84,7 @@ export function Button({
 
   const button = (
     <button
+      ref={ref}
       type={type}
       disabled={isDisabled}
       aria-busy={loading || undefined}
