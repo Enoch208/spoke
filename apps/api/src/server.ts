@@ -11,6 +11,6 @@ const app = createApp({
   config: { chainId: env.CHAIN_ID, protocolAddress: env.PROTOCOL_ADDRESS },
 });
 
-serve({ fetch: app.fetch, port: env.PORT }, (info) => {
-  process.stdout.write(`Spoke API listening on http://localhost:${String(info.port)}\n`);
+serve({ fetch: app.fetch, port: env.PORT, hostname: env.HOST }, (info) => {
+  process.stdout.write(`Spoke API listening on http://${info.address}:${String(info.port)}\n`);
 });
