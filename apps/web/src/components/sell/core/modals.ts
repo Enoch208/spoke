@@ -1,3 +1,6 @@
+import { lazy } from "react";
 import type { ModalFragment } from "@/components/app/modal-types";
 
-export const sellCoreModals: ModalFragment = {};
+export const sellCoreModals: ModalFragment = {
+  "M-23": lazy(() => import("./modals/add-budget-modal")),
+};
