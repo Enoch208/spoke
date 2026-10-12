@@ -30,6 +30,27 @@
   --color-sky-soft: #e3f0ff;
   --color-amber-soft: #fff1d6;
   --color-amber-deep: #b26b00;
+  --color-lilac-deep: #6a52c9;
+
+  --color-lime-ink: #57780e;
+  --color-amber-ink: #9b5d00;
+  --color-pink-ink: #ad3595;
+  --color-sky-ink: #1d68c4;
+
+  --color-chart-settled: #6f9a12;
+  --color-chart-reserved: #7a5ae0;
+  --color-chart-refunded: #b8389f;
+  --color-chart-pending: #b26b00;
+  --color-chart-context: #a1a1aa;
+  --color-chart-depth-1: #a3a696;
+  --color-chart-depth-2: #848776;
+  --color-chart-depth-3: #676b59;
+  --color-chart-depth-4: #4c503e;
+  --color-chart-depth-5: #333724;
+
+  --shadow-frame:
+    0 1px 1px rgba(0, 0, 0, 0.08), 0 3px 6px -2px rgba(0, 0, 0, 0.08),
+    0 12px 32px -6px rgba(0, 0, 0, 0.12);
 
   --font-display: "Urbanist Variable", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Jost Variable", ui-sans-serif, system-ui, sans-serif;
@@ -233,6 +254,79 @@
   --animate-orbit-outer-counter: orbit 64s linear infinite reverse;
   --animate-orbit-inner: orbit 48s linear infinite reverse;
   --animate-orbit-inner-counter: orbit 48s linear infinite;
+  --animate-overlay-in: fade-in 0.4s var(--ease-fade) both;
+  --animate-overlay-out: fade-in 0.4s var(--ease-fade) reverse both;
+  --animate-dialog-in: dialog-in 423ms var(--ease-spring) both;
+  --animate-dialog-out: dialog-in 423ms var(--ease-spring) reverse both;
+  --animate-drawer-in: drawer-in 423ms var(--ease-spring) both;
+  --animate-drawer-out: drawer-in 423ms var(--ease-spring) reverse both;
+  --animate-sheet-in: sheet-in 423ms var(--ease-spring) both;
+  --animate-sheet-out: sheet-in 423ms var(--ease-spring) reverse both;
+  --animate-pop-in: pop-in 423ms var(--ease-spring) both;
+  --animate-pop-out: pop-in 423ms var(--ease-spring) reverse both;
+  --animate-toast-in: toast-in 423ms var(--ease-spring) both;
+  --animate-toast-out: toast-in 423ms var(--ease-spring) reverse both;
+  --animate-shimmer: shimmer 1.6s var(--ease-fade) infinite;
+
+  @keyframes dialog-in {
+    from {
+      opacity: 0;
+      transform: scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes drawer-in {
+    from {
+      transform: translate3d(calc(100% + 16px), 0, 0);
+    }
+    to {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @keyframes sheet-in {
+    from {
+      transform: translate3d(0, 100%, 0);
+    }
+    to {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @keyframes pop-in {
+    from {
+      opacity: 0;
+      transform: translate3d(0, -4px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @keyframes toast-in {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 16px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @keyframes shimmer {
+    from {
+      transform: translate3d(-100%, 0, 0);
+    }
+    to {
+      transform: translate3d(100%, 0, 0);
+    }
+  }
 
   @keyframes rock {
     0%,
