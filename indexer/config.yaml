@@ -29,6 +29,14 @@ chains:
   - id: 10143
     start_block: 70445279
     block_lag: 2
+    rpc:
+      url: "${MONAD_RPC_URL}"
+      for: realtime
+      polling_interval: 5000
+      initial_block_interval: 5
+      interval_ceiling: 5
+      query_timeout_millis: 20000
+      backoff_millis: 2000
     contracts:
       - name: SpokeProtocol
         address: "0x1Fa5e94e44DB2101664C0a24dBf1e52912af3eca"
