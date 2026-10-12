@@ -3,6 +3,8 @@ import "@fontsource-variable/jost";
 import "@fontsource-variable/inter";
 import "@fontsource-variable/geist-mono";
 import "./globals.css";
+import { MotionRoot } from "@/components/motion/motion-root";
+import { motionFlagScript } from "@/components/motion/motion-flag";
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import type { ReactNode } from "react";
@@ -19,9 +21,13 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: { children: ReactNode }) {
   const initialState = cookieToInitialState(wagmiConfig, (await headers()).get("cookie"));
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: motionFlagScript }} />
+      </head>
       <body>
         <Providers initialState={initialState}>{children}</Providers>
+        <MotionRoot />
       </body>
     </html>
   );

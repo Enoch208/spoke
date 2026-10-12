@@ -1,0 +1,1 @@
+export const motionFlagScript = `(function(){var d=document.documentElement;if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;d.dataset.motion="on";setTimeout(function(){if(d.dataset.motionReady!=="true")d.dataset.motion="off"},4000)})()`;
