@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #161a16;
+  --color-canvas: #f7f9f2;
+  --color-surface: #ffffff;
+  --color-line: #e3e7dc;
+  --color-muted: #4f5d56;
+  --color-lime: #cbf36a;
+  --color-lavender: #d8c8fc;
+  --color-periwinkle: #a7b4f3;
+  --color-slate: #64746d;
+
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, monospace;
+}
+
+@layer base {
+  body {
+    @apply bg-canvas text-ink font-sans antialiased;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ink;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
