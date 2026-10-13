@@ -12,4 +12,7 @@ export const accountModals: ModalFragment = {
   "M-08": lazy(() => import("./session-expired-modal")),
   "M-07": lazy(() => import("./account-menu")),
   "M-09": lazy(() => import("./quick-actions-modal")),
+  "M-40": lazy(() => import("./notifications/notifications-panel")),
+  "M-38": lazy(() => import("./privacy/data-rights-modal")),
+  "M-42": lazy(() => import("./demo-mode-modal")),
 };
