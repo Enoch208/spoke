@@ -7,5 +7,6 @@ export const sellCoreModals: ModalFragment = {
   "M-24": lazy(() => import("./modals/withdraw-modal")),
   "M-25": lazy(() => import("./modals/pause-modal")),
   "M-26": lazy(() => import("./modals/end-modal")),
+  "M-27": lazy(() => import("./studio/policy-simulator")),
   "M-30": lazy(() => import("./modals/upload-modal")),
 };
