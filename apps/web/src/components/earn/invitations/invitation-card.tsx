@@ -22,6 +22,7 @@ export function InvitationCard({
   const campaign = useClientQuery("campaigns.get", { campaignId: invitation.campaignId });
   const withdraw = useInvitationsWithdrawMutation();
   const status = invitationStatus(invitation);
+  const joined = status === "accepted" && Boolean(invitation.joinedNodeId);
   return (
     <Card className="grid min-w-0 gap-4 wrap-anywhere">
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -35,7 +36,7 @@ export function InvitationCard({
             {campaign.data?.product.title ?? `Campaign ${invitation.campaignId}`}
           </h2>
         </div>
-        <Badge>{invitation.joinedNodeId ? "Joined" : invitationLabels[status]}</Badge>
+        <Badge>{joined ? "Joined" : invitationLabels[status]}</Badge>
       </div>
       {invitation.message ? (
         <p className="text-body whitespace-pre-wrap">{invitation.message}</p>
@@ -46,7 +47,7 @@ export function InvitationCard({
       </p>
       {status === "accepted" ? (
         <p className="text-sm">
-          {invitation.joinedNodeId
+          {joined
             ? "Campaign link confirmed and indexed."
             : "Accepted. Joining is complete when the distributor creates their campaign link."}
         </p>
@@ -58,7 +59,7 @@ export function InvitationCard({
           >
             {status === "pending"
               ? "Review and accept"
-              : invitation.joinedNodeId
+              : joined
                 ? "Open my link"
                 : status === "accepted"
                   ? "Create my link"
@@ -84,7 +85,7 @@ export function InvitationCard({
         <Button asChild variant="secondary">
           <Link href={routeTo.campaign(invitation.campaignId)}>View campaign</Link>
         </Button>
-        {sent && invitation.joinedNodeId ? (
+        {sent && joined ? (
           <Button asChild variant="ghost">
             <Link href={`/sell/campaigns/${invitation.campaignId}?tab=distributors`}>
               View campaign distributors
