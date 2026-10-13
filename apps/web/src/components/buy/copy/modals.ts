@@ -6,6 +6,7 @@ export const sheetCopy = {
 
 export const refundCopy = {
   title: "Ask {merchant} for a refund",
+  fallbackMerchant: "the merchant",
   body: "Only {merchant} can issue a refund, and only before the sale settles on {unlockAt}. If they refund, {price} goes back to your account in the same transaction.",
   closes: "Refund window closes {relative}",
   reason: "Reason",
