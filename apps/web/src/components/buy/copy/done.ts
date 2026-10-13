@@ -1,0 +1,40 @@
+import { required } from "@/lib/copy/required";
+
+export const doneCopy = {
+  heading: "Purchase confirmed",
+  paid: "Paid {price} · Sale #{saleId}",
+  paidNoSale: "Paid {price}",
+  observed: required.pendingSale,
+  observedDemo: "Simulated purchase in demo mode. Rewards are reserved, not yet withdrawable.",
+  refundUntil: "The merchant can refund you until {unlockTime}. After that the sale is final.",
+  refundHold:
+    "The merchant can refund you for {hold} after purchase. After that the sale is final.",
+  alreadyWent: "This order already went through.",
+  syncing: "Your purchase is confirmed onchain. Your receipt will finish syncing in a moment.",
+  syncingChip: "Syncing",
+  openFiles: "Open your files",
+  viewPurchase: "View purchase",
+  publicReceipt: "Public receipt",
+  copyReceipt: "Copy public receipt link",
+  receiptCopied: "Receipt link copied",
+  viewTransaction: "View transaction",
+  shareTitle: "Liked it? Share it and earn",
+  shareBody: "Create your own link to {product}. You won’t earn from your own purchase.",
+  createLink: "Create my link",
+  notNow: "Not now",
+  backupLine: "Back up your account so you don’t lose access to this purchase.",
+  backupNow: "Back up now",
+  modalTitle: "You bought {product}",
+  modalBody: "Payment confirmed onchain.",
+  modalSyncing:
+    "Payment confirmed onchain. We are syncing recent transactions; your receipt will appear in a moment.",
+  modalSlow:
+    "Your payment is confirmed onchain. Your receipt is taking longer than usual to appear.",
+  referredBy: "Referred by {referrer}",
+  getProduct: "Get your product",
+  viewReceipt: "View receipt",
+  proof: "Proof",
+  simulated: "Simulated in demo mode",
+  reportProblem: "Report a problem",
+  viewOnExplorer: "View on explorer",
+} as const;
