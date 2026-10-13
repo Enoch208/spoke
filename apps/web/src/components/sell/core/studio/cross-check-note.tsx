@@ -7,7 +7,15 @@ import { useUiStore } from "@/lib/stores/ui";
 import { crossCheckCopy } from "./copy-errors";
 import type { CrossCheck } from "./split";
 
-export function CrossCheckNote({ result }: { result: CrossCheck | null }) {
+export type CrossCheckMessages = { readonly mismatch: string; readonly unavailable: string };
+
+export function CrossCheckNote({
+  result,
+  messages = crossCheckCopy,
+}: {
+  result: CrossCheck | null;
+  messages?: CrossCheckMessages;
+}) {
   const open = useUiStore((state) => state.open);
   if (!result || result.kind === "match") return null;
   if (result.kind === "unavailable")
@@ -19,7 +27,7 @@ export function CrossCheckNote({ result }: { result: CrossCheck | null }) {
           strokeWidth={1.8}
           className="mt-0.5 shrink-0"
         />
-        {crossCheckCopy.unavailable}
+        {messages.unavailable}
       </p>
     );
   return (
@@ -29,7 +37,7 @@ export function CrossCheckNote({ result }: { result: CrossCheck | null }) {
     >
       <p className="flex items-start gap-2">
         <HugeiconsIcon icon={Alert01Icon} size={16} strokeWidth={1.8} className="mt-0.5 shrink-0" />
-        {crossCheckCopy.mismatch}
+        {messages.mismatch}
       </p>
       <Button
         variant="danger"

@@ -19,6 +19,7 @@ import { SaveIndicator } from "./save-indicator";
 import { useComposer, type ComposerSetup } from "./use-composer";
 import { useComposerUrl, useLaunchedRedirect } from "./use-composer-effects";
 import { useLaunch } from "./use-launch";
+import { useSimulate } from "./use-simulate";
 import { useStepFlow } from "./use-step-flow";
 import { useVersionPublish } from "./use-version-publish";
 import { effectiveError, versionChanges } from "./version-diff";
@@ -30,6 +31,7 @@ export function Composer({ setup }: { setup: ComposerSetup }) {
   const open = useUiStore((state) => state.open);
   const model = useComposer(setup);
   const flow = useStepFlow(model);
+  const simulate = useSimulate(model);
   const launchState = launchStateOf(useLaunchRecord(setup.draftId));
   const launch = useLaunch({
     draftId: setup.draftId,
@@ -164,11 +166,13 @@ export function Composer({ setup }: { setup: ComposerSetup }) {
             onBack={launching ? null : flow.back}
             primary={primary}
             note={
-              model.step === "product" ? null : <SummaryHandle model={model} onEdit={flow.select} />
+              model.step === "product" ? null : (
+                <SummaryHandle model={model} onEdit={flow.select} onSimulate={simulate} />
+              )
             }
           />
         </div>
-        <ComposerAside model={model} onEdit={flow.select} />
+        <ComposerAside model={model} onEdit={flow.select} onSimulate={simulate} />
       </div>
     </ProductPage>
   );

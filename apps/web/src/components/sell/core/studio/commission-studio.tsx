@@ -30,6 +30,7 @@ export type CommissionStudioProps = {
   variant: TermsVariant;
   framed?: boolean;
   slider?: boolean;
+  showHold?: boolean;
   disabled?: boolean | undefined;
 };
 
@@ -126,7 +127,7 @@ export function CommissionStudio(props: CommissionStudioProps) {
           }}
         />
       </Section>
-      {variant === "template" ? (
+      {(props.showHold ?? variant === "template") ? (
         <Section title={studioCopy.hold.label} framed={framed}>
           <HoldField
             value={terms.hold}

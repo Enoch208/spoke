@@ -10,7 +10,7 @@ import { CommissionStudio } from "./commission-studio";
 import { studioPageCopy } from "./copy-page";
 import { CrossCheckNote } from "./cross-check-note";
 import { EditorHeader } from "./editor-header";
-import { templatePolicy } from "./policy";
+import { templatePolicy, termsFromPolicy } from "./policy";
 import { SaveTemplateDialog } from "./save-template-dialog";
 import { SplitPreviews } from "./split-previews";
 import type { LibraryTemplate } from "./starting-points";
@@ -142,7 +142,20 @@ export function StudioWorkspace({
           {selected ? <TemplateDetails template={selected} token={token} /> : null}
         </div>
         <aside className="min-w-0 lg:col-start-2 xl:sticky xl:top-24 xl:col-start-auto">
-          <SplitPreviews policy={policy} defaultPriceMinor={samplePriceMinor} token={token} />
+          <SplitPreviews
+            policy={policy}
+            defaultPriceMinor={samplePriceMinor}
+            token={token}
+            onOpenSimulator={() => {
+              open("M-27", {
+                mode: "edit",
+                ...(policy ? { policy } : {}),
+                onApply: (applied) => {
+                  setTerms({ ...termsFromPolicy(applied, token, null), hold: terms.hold });
+                },
+              });
+            }}
+          />
         </aside>
       </div>
       {actions.dialogName !== null ? (
