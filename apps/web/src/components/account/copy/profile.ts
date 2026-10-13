@@ -1,0 +1,38 @@
+export const profileCopy = {
+  cardTitle: "Profile",
+  cardDescription: "Your name, handle, avatar and a short line about what you share.",
+  handleHelp: "You can change your handle once every 30 days.",
+  handleTooSoon: "You changed your handle on {date}. You can change it again on {next}.",
+  handleChangeNote:
+    "Your old handle @{old} stays reserved for you for 30 days and redirects to @{new}. Links you've shared keep working because they use link codes, not your handle.",
+  handleKeep: "You can change your handle, but not remove it.",
+  bio: {
+    label: "Bio",
+    placeholder: "What do you like to share?",
+    counter: "{n}/160",
+    tooLong: "Keep your bio to 160 characters.",
+  },
+  website: {
+    label: "Website",
+    placeholder: "https://",
+    invalid: "Use a full https:// address.",
+    tooLong: "Use a web address of up to 100 characters.",
+  },
+  preview: {
+    title: "Preview",
+    description: "Updates as you type.",
+    onLinks: "On your links",
+    sharedBy: "Shared by {name}",
+    onProfile: "On your public profile",
+    noHandle: "No handle yet",
+    unnamed: "Unnamed account",
+    visibility: "Public profile: {level}",
+    change: "Change in Privacy",
+    levels: { public: "Public", pseudonymous: "Pseudonymous", private: "Off" },
+    pseudonymousNote: "Pseudonymous profiles show only your handle and chosen stats.",
+  },
+  business: "Your business name and logo are set in Sell → Settings.",
+  businessLink: "Open Sell settings",
+  saved: "Profile saved",
+  leaveSubject: "your profile",
+} as const;

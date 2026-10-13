@@ -5,7 +5,7 @@ import { formatDateTime } from "@/lib/format";
 import { formText } from "@/lib/forms";
 import { useState, type SubmitEvent } from "react";
 import { PreferenceSettings } from "./preference-settings";
-import { ProductPage, QueryState, PageLink } from "@/components/product/page";
+import { QueryState } from "@/components/product/page";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
@@ -15,7 +15,7 @@ import { useClientQuery, useClientMutation } from "@/lib/query/use-client";
 import { chooseQuickActions } from "@/lib/accounts/quick-actions";
 import { useUiStore } from "@/lib/stores/ui";
 
-export function SettingsPage({ section = "profile" }: { section?: string }) {
+export function LegacySettings({ section = "profile" }: { section?: string }) {
   const me = useClientQuery("account.me", {});
   const record = useClientQuery("reputation.mine", {}, { enabled: section === "privacy" });
   const profile = useClientMutation("account.updateProfile", ["account.me", "reputation"]);
@@ -43,20 +43,7 @@ export function SettingsPage({ section = "profile" }: { section?: string }) {
     if (result) setSaved(true);
   };
   return (
-    <ProductPage
-      title={`Account ${section}`}
-      actions={
-        <div className="flex flex-wrap gap-2">
-          {["profile", "privacy", "security", "wallets", "notifications", "preferences"]
-            .filter((item) => item !== section)
-            .map((item) => (
-              <PageLink key={item} href={`/settings/${item}`}>
-                {item}
-              </PageLink>
-            ))}
-        </div>
-      }
-    >
+    <>
       <QueryState pending={me.isPending} error={me.error} retry={() => void me.refetch()}>
         {section === "profile" && me.data ? (
           <Card className="max-w-2xl">
@@ -231,6 +218,6 @@ export function SettingsPage({ section = "profile" }: { section?: string }) {
           </Card>
         ) : null}
       </QueryState>
-    </ProductPage>
+    </>
   );
 }
