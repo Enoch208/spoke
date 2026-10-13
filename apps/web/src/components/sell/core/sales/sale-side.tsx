@@ -9,9 +9,8 @@ import { fill } from "@/lib/copy";
 import { formatAmount, formatDateTime } from "@/lib/format";
 import { useClientQuery } from "@/lib/query/use-client";
 import { useUiStore } from "@/lib/stores/ui";
-import { useChainAction } from "@/lib/tx/use-action";
 import { proceedsStateCopy, saleDetailCopy as copy, salesCopy } from "../copy/sales";
-import { useActiveTx, useCampaignNames } from "../shared/hooks";
+import { useActiveTx } from "../shared/hooks";
 import { openClaimProceeds, openFinalize } from "../shared/settle";
 import { canFinalizeSale, canRefundSale } from "./sale-chip";
 
@@ -61,9 +60,7 @@ export function SaleSummary({ receipt, demo }: { receipt: SaleReceipt; demo: boo
 }
 
 export function SaleActions({ receipt, now }: { receipt: SaleReceipt; now: number }) {
-  const start = useChainAction();
   const vault = useClientQuery("vault.get", { campaignId: receipt.campaignId });
-  const { names } = useCampaignNames();
   const refunding = useActiveTx(`refund:${receipt.saleId}`);
   const finalizing = useActiveTx(`finalize:${receipt.saleId}`);
   const refundable = canRefundSale(receipt.state, receipt.unlockAt, now);
@@ -107,7 +104,7 @@ export function SaleActions({ receipt, now }: { receipt: SaleReceipt; now: numbe
         <Button
           block
           onClick={() => {
-            openFinalize([receipt.saleId], start);
+            openFinalize([receipt.saleId]);
           }}
         >
           {salesCopy.finalize}
@@ -116,7 +113,7 @@ export function SaleActions({ receipt, now }: { receipt: SaleReceipt; now: numbe
         <Button
           block
           onClick={() => {
-            openClaimProceeds(vault.data.campaigns, start, (id) => names.get(id) ?? null);
+            openClaimProceeds(vault.data.campaigns);
           }}
         >
           {copy.claim}

@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { useUiStore } from "@/lib/stores/ui";
-import { useChainAction } from "@/lib/tx/use-action";
 import { salesCopy as copy } from "../copy/sales";
 import { useActiveTx } from "../shared/hooks";
 import { openFinalize } from "../shared/settle";
@@ -18,7 +17,6 @@ export function SaleRowAction({
   now: number;
   block?: boolean;
 }) {
-  const start = useChainAction();
   const refunding = useActiveTx(`refund:${row.saleId}`);
   const finalizing = useActiveTx(`finalize:${row.saleId}`);
   if (refunding || finalizing)
@@ -48,7 +46,7 @@ export function SaleRowAction({
         block={block}
         onClick={(event) => {
           event.stopPropagation();
-          openFinalize([row.saleId], start);
+          openFinalize([row.saleId]);
         }}
       >
         {copy.finalize}

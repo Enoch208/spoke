@@ -7,17 +7,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { fill, vaultProceedsCopy } from "@/lib/copy";
 import { formatAmount } from "@/lib/format";
 import { useClientQuery } from "@/lib/query/use-client";
-import { useChainAction } from "@/lib/tx/use-action";
 import { salesCopy as copy } from "../copy/sales";
 import { vaultCopy } from "../copy/vault";
-import { useCampaignNames, useIsDemo } from "../shared/hooks";
+import { useIsDemo } from "../shared/hooks";
 import { proceedsBuckets, proceedsKeys } from "../shared/ledger";
 import { openClaimProceeds, proceedsCampaigns } from "../shared/settle";
 
 export function ProceedsStrip() {
   const vault = useClientQuery("vault.get", {}, { refetchInterval: 15_000 });
-  const { names } = useCampaignNames();
-  const start = useChainAction();
   const demo = useIsDemo();
   const total = vault.data?.totals[0];
   const entries = vault.data?.campaigns ?? [];
@@ -38,7 +35,7 @@ export function ProceedsStrip() {
             variant={ready ? "primary" : "secondary"}
             disabled={!ready}
             onClick={() => {
-              openClaimProceeds(entries, start, (id) => names.get(id) ?? null);
+              openClaimProceeds(entries);
             }}
           >
             {buckets.proceedsClaimable > 0n

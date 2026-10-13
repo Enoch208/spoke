@@ -130,7 +130,7 @@ export default function RefundModal({ props, isTop, close }: ModalComponentProps
             <Button
               onClick={() => {
                 close();
-                openFinalize([props.saleId], start);
+                openFinalize([props.saleId]);
               }}
             >
               {copy.finalizeInstead}

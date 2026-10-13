@@ -10,7 +10,6 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { TabList, Tabs } from "@/components/ui/tabs";
 import { merchantRowStateKey } from "@/lib/domain/campaign-state";
 import { useClientQuery } from "@/lib/query/use-client";
-import { useChainAction } from "@/lib/tx/use-action";
 import { vaultCopy as copy } from "../copy/vault";
 import { useCampaignNames } from "../shared/hooks";
 import { proceedsBuckets, rewardBuckets } from "../shared/ledger";
@@ -25,7 +24,6 @@ import { WalletCard } from "./wallet-card";
 export function VaultPage() {
   const vault = useClientQuery("vault.get", {}, { refetchInterval: 15_000 });
   const { mine, names } = useCampaignNames();
-  const start = useChainAction();
   const [picked, setPicked] = useState<string | null>(null);
   const totals = vault.data?.totals ?? [];
   const tokenKey = picked ?? totals[0]?.token.address ?? "";
@@ -85,7 +83,7 @@ export function VaultPage() {
               </Tabs>
             ) : null}
             <div className="grid gap-6 lg:grid-cols-3">
-              <div className="lg:col-span-2">
+              <div className="min-w-0 lg:col-span-2">
                 <VaultBuckets
                   buckets={rewardBuckets(total.rewards)}
                   token={total.token}
@@ -105,7 +103,7 @@ export function VaultPage() {
               token={total.token}
               readyToFinalize={readyToFinalize}
               onClaim={() => {
-                openClaimProceeds(entries, start, (id) => names.get(id) ?? null);
+                openClaimProceeds(entries);
               }}
             />
             <MovementsLedger names={names} />

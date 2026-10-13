@@ -11,7 +11,6 @@ import { ErrorState } from "@/components/ui/error-state";
 import { Pagination } from "@/components/ui/pagination";
 import { SkeletonRows } from "@/components/ui/skeleton";
 import { fill } from "@/lib/copy";
-import { useChainAction } from "@/lib/tx/use-action";
 import { useNow } from "@/lib/use-now";
 import { salesCopy as copy } from "../copy/sales";
 import { Callout } from "../shared/callout";
@@ -25,7 +24,6 @@ import { SaleCards, SaleTableRows } from "./sales-rows";
 export function SalesTable({ campaignId }: { campaignId?: string }) {
   const now = useNow();
   const router = useRouter();
-  const start = useChainAction();
   const query = useSalesQuery(campaignId, now);
   const { names } = useCampaignNames();
   const [selected, setSelected] = useState<readonly string[]>([]);
@@ -104,7 +102,7 @@ export function SalesTable({ campaignId }: { campaignId?: string }) {
                 size="sm"
                 variant="secondary"
                 onClick={() => {
-                  openFinalize(chosen, start);
+                  openFinalize(chosen);
                   setSelected([]);
                 }}
               >
