@@ -42,6 +42,7 @@ export const refundCopy = {
 export const proofCopy = {
   title: "Proof for sale #{saleId}",
   native: "Paid onchain through Spoke’s checkout.",
+  demoSource: "Simulated sale in demo mode. Nothing here is onchain.",
   attested: required.merchantAttested,
   facts: "Facts",
   keys: {
@@ -68,9 +69,12 @@ export const proofCopy = {
     SaleFinalized: "Sale finalized",
     SaleRefunded: "Sale refunded",
     RewardClaimed: "Reward claimed",
+    RewardVested: "Reward became claimable",
+    MerchantProceedsClaimed: "Merchant proceeds claimed",
+    SurplusReturned: "Unused share returned",
   },
   block: "Block {block}",
-  indexed: "Indexed up to block {block} · {relative}",
+  indexed: "Indexed up to block {block}.",
   syncing: required.syncing,
   checkTitle: "Check it yourself",
   checkSteps: [
