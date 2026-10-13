@@ -13,7 +13,7 @@ export function ReportButton({
   context,
 }: {
   label: string;
-  target: { kind: TargetKind; id: string; name: string };
+  target?: { kind: TargetKind; id: string; name: string };
   context?: Readonly<Record<string, string>>;
 }) {
   const open = useUiStore((state) => state.open);
@@ -23,7 +23,7 @@ export function ReportButton({
       size="sm"
       icon={Flag01Icon}
       onClick={() => {
-        open("M-41", { target, ...(context ? { context } : {}) });
+        open("M-41", { ...(target ? { target } : {}), ...(context ? { context } : {}) });
       }}
     >
       {label}
