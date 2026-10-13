@@ -170,7 +170,11 @@ function PublicProfile({ handle }: { handle: string }) {
       error={profile.error}
       retry={() => void profile.refetch()}
     >
-      {data ? <ProfileBody profile={data} owner={owner} /> : null}
+      {data ? (
+        <ProfileBody profile={data} owner={owner}>
+          {me?.isMerchant && data.subject ? <InsightsPanel address={data.subject} /> : null}
+        </ProfileBody>
+      ) : null}
     </QueryState>
   );
 }
