@@ -1,0 +1,42 @@
+export const sharedCopy = {
+  demo: "Demo",
+  sample: "Sample",
+  simulated: {
+    passkey: {
+      title: "Simulated passkey prompt",
+      body: "Demo mode doesn't use a real passkey. Choose what your device's prompt does.",
+      approve: "Approve",
+      cancel: "Close the prompt",
+      noPrf: "Passkey without PRF",
+    },
+    wallet: {
+      title: "Simulated wallet prompt",
+      body: "Demo mode doesn't use a real wallet. Choose what your wallet does with this signature.",
+      approve: "Sign",
+      cancel: "Reject",
+    },
+  },
+  ceremony: {
+    cancelled: "The passkey prompt closed before it finished. Nothing changed.",
+    walletCancelled: "You cancelled this in your wallet. Nothing was sent.",
+    prf: "This passkey can't hold a Spoke account. It was saved somewhere that doesn't support what Spoke needs. On desktop Chrome this usually means it went to the Chrome profile instead of Google Password Manager. Try again and save it to iCloud Keychain, Google Password Manager or 1Password, or use a wallet.",
+    prfOrphan: "You can delete the unused usespoke.xyz passkey from your password manager.",
+    crypto: "This browser can't use passkeys on this page.",
+    failed: "Your passkey didn't respond. Try again.",
+  },
+  stepUp: {
+    passkey: "Confirm with passkey",
+    wallet: "Confirm in wallet",
+    hint: "This proves it's you. It doesn't move any funds.",
+    cancelled: "Not confirmed. Nothing changed.",
+  },
+  tryAgain: "Try again",
+  retry: "Retry",
+  saved: "Saved",
+  saveFailed: "Couldn't save. Try again.",
+  testnet: "testnet",
+  devChip: "Development account",
+  devTip: "This passkey works only on localhost. It's a separate account from usespoke.xyz.",
+  copyAddress: "Copy address",
+  addressCopied: "Address copied",
+} as const;
