@@ -1,6 +1,7 @@
 import { z } from "zod";
 import * as m from "./models";
 import * as p from "./platform";
+import * as a from "./aurora";
 import * as i from "../api-v3";
 import { addressString, bytes32String, health, isoTimestamp, uintString } from "./common";
 import { commissionPolicy } from "../policy";
@@ -184,6 +185,10 @@ export const clientMethodSchemas = {
   ),
   "funding.status": method(address.partial(), m.fundingStatus),
   "funding.requestGas": method(empty, m.gasDrip),
+  "funding.auroraConfig": method(empty, a.auroraConfig),
+  "funding.auroraPreview": method(a.auroraQuoteInput, a.auroraQuote),
+  "funding.auroraCreateDeposit": method(a.auroraCreateInput, a.auroraDeposit),
+  "funding.auroraDeposit": method(z.object({ id: z.uuid() }), a.auroraDeposit),
   "notifications.list": method(
     pagination.extend({ unreadOnly: z.boolean().optional(), category: z.string().optional() }),
     m.pagedSchema(m.notification),

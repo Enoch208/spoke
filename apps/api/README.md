@@ -19,7 +19,7 @@ Use a private RPC endpoint for production. `RPC_REQUESTS_PER_SECOND` defaults to
 
 ## Contract
 
-The shared `@spoke/protocol` package exports `clientMethodSchemas`, `clientRoutes`, `ClientInput<M>` and `ClientOutput<M>`. These define all 185 client methods: 135 core methods and 50 designed methods. Designed methods reject live calls with `FEATURE_NOT_AVAILABLE`. `/v1/system/endpoints` lists the HTTP transport, authentication and availability.
+The shared `@spoke/protocol` package exports `clientMethodSchemas`, `clientRoutes`, `ClientInput<M>` and `ClientOutput<M>`. These define all 189 client methods: 135 core methods, four optional mainnet funding methods and 50 designed methods. Designed methods reject live calls with `FEATURE_NOT_AVAILABLE`. `/v1/system/endpoints` lists the HTTP transport, authentication and availability.
 
 Successful responses contain `requestId`, `timestamp`, `schemaVersion`, `chainId`, `contractAddress`, `blockNumber`, `indexingStatus` and `data`. Every canonical successful method response is validated against its shared output schema. Errors contain a typed `error.code`, `message`, `retryable` and `requestId`. Amounts are integer base-unit strings.
 
@@ -34,6 +34,23 @@ Uploads accept one file with bounded size. Images are decoded, stripped of metad
 `GAS_STATION_PRIVATE_KEY` enables a Monad Testnet-only native MON drip for low-balance passkey accounts. Signed transfers are durably recorded before broadcast; ambiguous retries resend the same transaction. Account, device, network and daily station budgets limit use. This wallet never pays commissions.
 
 Nansen is server-side, cached and limited to configured demonstration addresses. `NANSEN_CREDIT_BUDGET` is a durable conservative lifetime ceiling; `NANSEN_REFRESH_ON_START=false` prevents page views or restarts from purchasing new queries. Refresh explicitly with `pnpm --filter @spoke/api exec tsx --env-file-if-exists=.env src/refresh-insights.ts`. Insights describe the address's supported mainnet history, never testnet revenue or payout eligibility. No history is limited context, not a safety verdict.
+
+## Mainnet wallet funding
+
+This optional route remains separate from testnet settlement. Set `AURORA_APP_KEY` to your application's key and `AURORA_MONAD_RPC_URL` to an HTTPS Monad Mainnet RPC. The RPC defaults to the public Monad endpoint and has its own bounded queue. An absent key returns `configured: false`; Demo refuses real funding instructions.
+
+| Client method                 | HTTP path                             | Access                                                                 |
+| ----------------------------- | ------------------------------------- | ---------------------------------------------------------------------- |
+| `funding.auroraConfig`        | `GET /v1/funding/aurora`              | Public token catalog, cached for five minutes                          |
+| `funding.auroraPreview`       | `POST /v1/funding/aurora/preview`     | External-wallet session and CSRF                                       |
+| `funding.auroraCreateDeposit` | `POST /v1/funding/aurora/deposits`    | External-wallet session, CSRF, request UUID and mainnet acknowledgment |
+| `funding.auroraDeposit`       | `GET /v1/funding/aurora/deposits/:id` | Owning account only                                                    |
+
+The server fixes the destination to the session signer and canonical Circle USDC on chain 143. Creating instructions also checks `expectedRecipient` against the reviewed quote. Reusing a request UUID with identical details restores the same record; changed details conflict. The API never signs or broadcasts a funding transaction. Users transfer from their own source wallets after reviewing the final amount, token, network, recipient, refund address and deadline at `/wallet/fund`.
+
+Saved instructions survive reloads and provider outages. `statusAvailable: false` preserves the last observed provider state and disables sending instructions in the UI. Expiry disables sending while reconciliation continues. Provider success alone does not mark funds received: the independent RPC must show a successful canonical USDC transfer to the recipient, after request creation and at least two blocks deep. Durable amount reservations prevent duplicate attribution and support batch payouts. Funding locks have a separate pool so provider delays cannot exhaust settlement locks. A verified receipt is a wallet funding record, never a testnet payout or ledger credit.
+
+Passkey signing currently supports testnet, so new mainnet instructions require an external-wallet session. Users need MON on Monad Mainnet to spend received USDC. The feature needs an application key and a user-executed mainnet transfer for live verification; deterministic provider/RPC tests do not establish a completed live transfer.
 
 ## Verify
 

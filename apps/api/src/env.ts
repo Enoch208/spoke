@@ -19,6 +19,14 @@ const envSchema = z.object({
     z.string().min(1).optional(),
   ),
   NANSEN_CREDIT_BUDGET: z.coerce.number().int().min(0).max(100).default(50),
+  AURORA_APP_KEY: z.preprocess(
+    (value) => (value === "" ? undefined : value),
+    z.string().min(1).max(256).optional(),
+  ),
+  AURORA_MONAD_RPC_URL: z
+    .url()
+    .refine((value) => new URL(value).protocol === "https:")
+    .default("https://rpc.monad.xyz"),
   NANSEN_REFRESH_ON_START: z
     .enum(["true", "false"])
     .default("false")

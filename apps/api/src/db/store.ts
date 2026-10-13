@@ -24,6 +24,13 @@ export const connectStore = (url: string) => {
     idle_timeout: 20,
     onnotice: () => undefined,
   });
+  const fundingLockClient = postgres(url, {
+    max: 2,
+    connect_timeout: 5,
+    idle_timeout: 20,
+    onnotice: () => undefined,
+  });
+  let activeFunding = 0;
   const store = {
     db,
     async migrate() {
@@ -60,23 +67,44 @@ export const connectStore = (url: string) => {
       });
     },
     async close() {
-      await Promise.all([client.end({ timeout: 5 }), lockClient.end({ timeout: 5 })]);
+      await Promise.all([
+        client.end({ timeout: 5 }),
+        lockClient.end({ timeout: 5 }),
+        fundingLockClient.end({ timeout: 5 }),
+      ]);
     },
-    async exclusive<T>(key: string, work: () => Promise<T>): Promise<T> {
-      const connection = await lockClient.reserve();
+    async exclusive<T>(
+      key: string,
+      work: () => Promise<T>,
+      scope: "settlement" | "funding" = "settlement",
+    ): Promise<T> {
+      if (scope === "funding" && activeFunding >= 2)
+        throw new ApiProblem(
+          429,
+          "RATE_LIMITED",
+          "Wallet funding is busy. Try again shortly.",
+          true,
+          { retryAfterSeconds: 5 },
+        );
+      if (scope === "funding") activeFunding += 1;
       try {
-        const [lock] = await connection<{ acquired: boolean }[]>`
+        const connection = await (scope === "funding" ? fundingLockClient : lockClient).reserve();
+        try {
+          const [lock] = await connection<{ acquired: boolean }[]>`
           SELECT pg_try_advisory_lock(hashtextextended(${key}, 0)) AS acquired
         `;
-        if (!lock?.acquired)
-          throw new ApiProblem(409, "TX_PENDING", "This operation is already in progress.", true);
-        try {
-          return await work();
+          if (!lock?.acquired)
+            throw new ApiProblem(409, "TX_PENDING", "This operation is already in progress.", true);
+          try {
+            return await work();
+          } finally {
+            await connection`SELECT pg_advisory_unlock(hashtextextended(${key}, 0))`;
+          }
         } finally {
-          await connection`SELECT pg_advisory_unlock(hashtextextended(${key}, 0))`;
+          connection.release();
         }
       } finally {
-        connection.release();
+        if (scope === "funding") activeFunding -= 1;
       }
     },
     async get(kind: string, id: string) {

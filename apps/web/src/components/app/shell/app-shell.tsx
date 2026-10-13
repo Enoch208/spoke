@@ -23,12 +23,14 @@ const useSellWithoutBusinessRedirect = (area: string) => {
   const status = useSessionStore((state) => state.status);
   const isMerchant = useSessionStore((state) => state.isMerchant);
   useEffect(() => {
+    if (pathname === "/wallet/fund") return;
     if (area !== "sell" || mode !== "live" || status !== "signedIn" || isMerchant) return;
     router.replace(withNext(routes.sell.setup, pathname));
   }, [area, mode, status, isMerchant, pathname, router]);
 };
 
 export function AppShell({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
   const area = useShellArea();
   const mode = useModeStore((state) => state.mode);
   const status = useSessionStore((state) => state.status);
@@ -36,7 +38,12 @@ export function AppShell({ children }: { children: ReactNode }) {
   const publicPage = useIsPublicPage();
   useSellWithoutBusinessRedirect(area);
   const gated =
-    !publicPage && mode === "live" && bootstrapped && status !== "signedIn" && status !== "expired";
+    pathname !== "/wallet/fund" &&
+    !publicPage &&
+    mode === "live" &&
+    bootstrapped &&
+    status !== "signedIn" &&
+    status !== "expired";
   return (
     <div className="bg-page flex min-h-dvh">
       <a
@@ -48,7 +55,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <Sidebar area={area} />
       <div className="flex min-w-0 flex-1 flex-col">
         <TopBar area={area} />
-        <BannerStack surface="app" />
+        <BannerStack surface="app" mainnetFunding={pathname === "/wallet/fund"} />
         <main
           id={contentId}
           tabIndex={-1}

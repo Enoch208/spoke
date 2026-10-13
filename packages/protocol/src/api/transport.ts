@@ -54,6 +54,12 @@ export const clientRoutes = {
   "account.deleteAccount": own("DELETE", "/me"),
   "funding.status": own("GET", "/funding/status"),
   "funding.requestGas": own("POST", "/funding/gas"),
+  "funding.auroraConfig": open("GET", "/funding/aurora"),
+  "funding.auroraPreview": own("POST", "/funding/aurora/preview"),
+  "funding.auroraCreateDeposit": own("POST", "/funding/aurora/deposits", {
+    idempotencyField: "requestId",
+  }),
+  "funding.auroraDeposit": own("GET", "/funding/aurora/deposits/:id"),
   "notifications.list": own("GET", "/me/notifications"),
   "notifications.markRead": own("POST", "/me/notifications/read"),
   "notifications.preferences": own("GET", "/me/notification-preferences"),

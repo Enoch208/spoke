@@ -9,9 +9,13 @@ import { createInsightsService } from "./services/insights.js";
 import { createIndexer } from "./services/indexer.js";
 import { createRpcFetch } from "./http/rpc-fetch.js";
 import { createIndexerHealthProbes } from "./services/indexer-health.js";
+import { createAuroraProvider } from "./services/aurora-provider.js";
+import { createAuroraService } from "./services/aurora.js";
+import { createAuroraConfirmation } from "./services/aurora-confirmation.js";
 
 const env = parseEnv(process.env);
 const rpc = createRpcFetch({ requestsPerSecond: env.RPC_REQUESTS_PER_SECOND });
+const fundingRpc = createRpcFetch({ requestsPerSecond: 2 });
 const store = connectStore(env.DATABASE_URL);
 await store.migrate();
 const prune = () =>
@@ -43,6 +47,11 @@ if (env.NANSEN_REFRESH_ON_START)
   void insights.refreshConfigured().catch(() => process.stderr.write("insights_refresh_failed\n"));
 
 const app = createApp({
+  aurora: createAuroraService(
+    store,
+    env.AURORA_APP_KEY ? createAuroraProvider(env.AURORA_APP_KEY) : null,
+    createAuroraConfirmation(env.AURORA_MONAD_RPC_URL, fundingRpc.fetch),
+  ),
   webOrigin: env.WEB_ORIGIN,
   probes: {
     rpc: rpcProbe(env.RPC_URL, env.CHAIN_ID, rpc.fetch),
@@ -84,6 +93,7 @@ for (const signal of ["SIGTERM", "SIGINT"] as const)
     clearInterval(maintenance);
     indexer.stop();
     rpc.stop();
+    fundingRpc.stop();
     server.close(() => {
       void store.close().then(() => process.exit(0));
     });

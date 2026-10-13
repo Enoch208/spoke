@@ -11,7 +11,12 @@ export function WalletPage() {
     <ProductPage
       title="Your testnet wallet"
       description="MON pays network fees. SDUSD is a demo settlement token with no cash value."
-      actions={<PageLink href="/settings/wallets">Linked addresses</PageLink>}
+      actions={
+        <>
+          <PageLink href="/wallet/fund">Mainnet funding</PageLink>
+          <PageLink href="/settings/wallets">Linked addresses</PageLink>
+        </>
+      }
     >
       {address ? (
         <CopyField value={address} label="Copy your address" copiedMessage="Address copied" />

@@ -14,6 +14,9 @@ const setups: MethodSetups = { ...coreSetups };
 
 const refusals: Partial<Record<ClientMethod, ErrorCode>> = {
   "account.deleteAccount": "NOT_AUTHORIZED",
+  "funding.auroraPreview": "FEATURE_NOT_AVAILABLE",
+  "funding.auroraCreateDeposit": "FEATURE_NOT_AVAILABLE",
+  "funding.auroraDeposit": "FEATURE_NOT_AVAILABLE",
 };
 
 const callAny = async (method: ClientMethod, input: unknown) => {
@@ -26,8 +29,18 @@ const callAny = async (method: ClientMethod, input: unknown) => {
 };
 
 describe("every demo client method answers with its protocol output shape", () => {
-  it("has an input fixture for all 185 methods", () => {
+  it("has an input fixture for every client method", () => {
     expect(methods.filter((method) => !(method in methodInputs))).toEqual([]);
+  });
+
+  it.each([
+    "funding.auroraPreview",
+    "funding.auroraCreateDeposit",
+    "funding.auroraDeposit",
+  ] as const)("never creates real mainnet funding instructions in Demo: %s", async (method) => {
+    await expect(callAny(method, methodInputs[method])).rejects.toMatchObject({
+      code: "FEATURE_NOT_AVAILABLE",
+    });
   });
 
   it("refuses to delete a demo account and points to Reset demo", async () => {

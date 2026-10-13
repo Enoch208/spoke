@@ -31,6 +31,8 @@ import { playgroundRoutes } from "./routes/playground.js";
 import { accountDataRoutes } from "./routes/account-data.js";
 import { invitationRoutes } from "./routes/invitations.js";
 import { fundingRoutes } from "./routes/funding.js";
+import { auroraRoutes } from "./routes/aurora.js";
+import type { AuroraService } from "./services/aurora.js";
 import { requestId, type AppVariables } from "./http/request-id.js";
 import { fail } from "./http/respond.js";
 import { healthRoutes, type HealthConfig, type HealthProbes } from "./routes/health.js";
@@ -44,6 +46,7 @@ export interface AppDeps {
   rpcFetch?: typeof fetch;
   deploymentBlock?: string;
   insights?: InsightsService;
+  aurora?: AuroraService;
 }
 
 export const createApp = (deps: AppDeps) => {
@@ -168,6 +171,7 @@ export const createApp = (deps: AppDeps) => {
       assetRoutes(services),
       fulfillmentRoutes(services),
       fundingRoutes(services),
+      auroraRoutes(services, deps.aurora),
       invitationRoutes(services),
       catalogRoutes(services),
       campaignRoutes(services),

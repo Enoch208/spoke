@@ -1,5 +1,6 @@
 export * from "./models";
 export * from "./platform";
+export * from "./aurora";
 export * from "./methods";
 export {
   challengeInput as authChallengeRequest,

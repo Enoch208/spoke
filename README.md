@@ -29,8 +29,8 @@ The core web app and API are deployed, with settlement on Monad Testnet:
 
 - Merchant setup, versioned products, campaign publication and management, referral links and graphs, checkout, buyer delivery, receipts, refunds and claims in the web app.
 - An immutable settlement contract with separate reward and buyer-payment ledgers, 1–5 commission levels, refunds, finalization, pull claims and future policy versions with 24 hours' notice.
-- A 6-decimal testnet demo token (`SpokeDemoUSD`, not a stablecoin and not redeemable), generated contract ABIs, shared reward math and schemas for all 185 client methods.
-- A PostgreSQL API implementing 135 core client methods for wallet sessions, immutable product versions, campaign publication, graph exploration, receipts, six earnings buckets, merchant vaults, reports and privacy-aware distributor records. Another 50 designed methods return an explicit unavailable error.
+- A 6-decimal testnet demo token (`SpokeDemoUSD`, not a stablecoin and not redeemable), generated contract ABIs, shared reward math and schemas for all 189 client methods.
+- A PostgreSQL API implementing 135 core client methods for wallet sessions, immutable product versions, campaign publication, graph exploration, receipts, six earnings buckets, merchant vaults, reports and privacy-aware distributor records. Four optional methods support separate mainnet wallet funding; another 50 designed methods return an explicit unavailable error.
 - Envio HyperIndex settlement and SDUSD event indexing, canonical replay and reorganization checks. HyperSync supplies history; native RPC supplies live events with TLS verification and bounded log ranges.
 - Cached Nansen context for four demonstration distributors, labelled as supported mainnet history. These new wallets have no observed history; page views do not purchase provider queries, and insights never determine payouts.
 - Private product uploads and buyer-only delivery that checks sale state directly onchain, plus a bounded testnet gas station with durable transaction retries.
@@ -38,6 +38,8 @@ The core web app and API are deployed, with settlement on Monad Testnet:
 - A scripted two-merchant testnet settlement proof with four rewarded levels, a branch, a separate refund, successful claims and protected unused-budget withdrawals.
 
 The contracts are source verified through Monad Sourcify, with exact matches for creation and runtime bytecode. Live pages use the deployed API and indexed contract state; Demo uses local fixtures. Prototype contract limits are 128 campaigns, 256 nodes and 100 sales per campaign. External commerce integrations, teams, webhooks and multi-currency settlement remain designed previews, with no live financial behavior.
+
+Optional mainnet wallet funding is disabled until its app key is configured. It accepts supported EVM source assets and quotes native USDC on Monad Mainnet to an authenticated external wallet. This separate route never credits testnet checkout, campaign budgets or earnings. Provider integration tests use deterministic responses; no real mainnet transfer has been verified for this release.
 
 ## Layout
 

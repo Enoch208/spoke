@@ -9,7 +9,13 @@ import { useSessionStore } from "@/lib/stores/session";
 import { useUiStore } from "@/lib/stores/ui";
 import { Button } from "../ui/button";
 
-export function BannerStack({ surface }: { surface: "app" | "public" | "marketing" }) {
+export function BannerStack({
+  surface,
+  mainnetFunding = false,
+}: {
+  surface: "app" | "public" | "marketing";
+  mainnetFunding?: boolean;
+}) {
   const mode = useModeStore((state) => state.mode);
   const persona = useModeStore((state) => state.persona);
   const { exitDemo } = useDemoMode();
@@ -42,10 +48,12 @@ export function BannerStack({ surface }: { surface: "app" | "public" | "marketin
   return (
     <>
       <aside
-        aria-label={banners.testnet.regionLabel}
+        aria-label={mainnetFunding ? "Mainnet funding notice" : banners.testnet.regionLabel}
         className="bg-lime-soft text-olive font-ui px-4 py-2 text-center text-sm"
       >
-        {banners.testnet.title} · {banners.testnet.body}
+        {mainnetFunding
+          ? "Mainnet wallet funding · Real assets. Spoke checkout remains on Monad Testnet."
+          : `${banners.testnet.title} · ${banners.testnet.body}`}
       </aside>
       {recovery ? (
         <aside className="bg-amber-soft font-ui flex flex-wrap items-center justify-center gap-3 px-4 py-2 text-sm">

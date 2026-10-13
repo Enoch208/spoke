@@ -1,6 +1,7 @@
 import { authReads, authWrites } from "./domains/auth";
 import { accountReads, accountWrites } from "./domains/account";
 import { fundingReads, fundingWrites } from "./domains/funding";
+import { auroraReads, auroraWrites } from "./domains/aurora";
 import { notificationsReads, notificationsWrites } from "./domains/notifications";
 import { supportReads, supportWrites } from "./domains/support";
 import { invitationsReads, invitationsWrites } from "./domains/invitations";
@@ -58,6 +59,7 @@ export const demoReads = {
   ...authReads,
   ...accountReads,
   ...fundingReads,
+  ...auroraReads,
   ...notificationsReads,
   ...supportReads,
   ...invitationsReads,
@@ -102,6 +104,7 @@ export const demoWrites = {
   ...authWrites,
   ...accountWrites,
   ...fundingWrites,
+  ...auroraWrites,
   ...notificationsWrites,
   ...supportWrites,
   ...invitationsWrites,
