@@ -7,11 +7,13 @@ import { useChainAction } from "@/lib/tx/use-action";
 import { formatAmount, formatMonBalance, formatRelative } from "@/lib/format";
 import { demoToken, formatTokenAmount } from "@spoke/protocol";
 import { fill, gasStateLines } from "@/lib/copy";
+import { useModeStore } from "@/lib/stores/mode";
 
 export function FundsPanel() {
   const funding = useClientQuery("funding.status", {}, { refetchInterval: 5000 });
   const drip = useClientMutation("funding.requestGas", ["funding.status", "account.balances"]);
   const start = useChainAction();
+  const demo = useModeStore((state) => state.mode === "demo");
   const data = funding.data;
   return (
     <Card>
@@ -45,7 +47,7 @@ export function FundsPanel() {
               >
                 Get test MON
               </Button>
-            ) : (
+            ) : demo ? null : (
               <Button variant="secondary" asChild>
                 <a href="https://faucet.monad.xyz" target="_blank" rel="noreferrer">
                   Monad MON faucet
