@@ -1,4 +1,5 @@
-import { InformationPage } from "@/components/platform/information-page";
+import { SupportPage } from "@/components/public/support/support-page";
+
 export default function Page() {
-  return <InformationPage section="support" />;
+  return <SupportPage />;
 }
