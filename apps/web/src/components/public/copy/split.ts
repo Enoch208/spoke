@@ -1,0 +1,20 @@
+export const splitCopy = {
+  heading: "How the reward splits",
+  merchant: "Merchant",
+  buyer: "Buyer",
+  level: "Level {level}",
+  nearest: "Shared the link",
+  fullPath: "This sale would allocate {split} across the {count} eligible contributors.",
+  fullPathOne: "This sale would allocate the whole reward to the one eligible contributor.",
+  capped: "{rate} of {price} is {uncapped}; this campaign caps rewards at {cap} per sale.",
+  shorterHeading: "Shorter paths",
+  shorterCaption: "What each person gets when fewer people are on the path",
+  people: "People on the path",
+  returned: "Returned to budget",
+  footnote:
+    "Every row sums to exactly {reward}. Any rounding remainder goes to the nearest person.",
+  footnoteReturn: "Unused shares return to the merchant’s budget.",
+  paidFrom: "Paid from {merchant}’s funded reward budget, not from the buyer’s price.",
+  howMath: "How the math works",
+  total: "Total {reward}",
+} as const;
