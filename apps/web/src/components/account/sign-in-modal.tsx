@@ -22,7 +22,7 @@ export default function SignInModal<K extends "M-01" | "M-02" | "M-03">({
     expectedAddress: props.expectedAddress,
     onSignedIn: ({ isNewAccount }) => {
       close();
-      if (props.reason !== "open" && !isNewAccount) return;
+      if (props.reason !== "open") return;
       router.push(afterAuthPath({ isNewAccount, next, intent }));
     },
   });
