@@ -28,7 +28,7 @@
     "@spoke/protocol": "workspace:*",
     "tsup": "8.5.1"
   },
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Validated, credential-free TypeScript client for the Spoke public read API.",
   "license": "MIT",
   "homepage": "https://docs.usespoke.xyz/developers/sdk",
@@ -38,7 +38,7 @@
     "directory": "packages/sdk"
   },
   "bugs": {
-    "url": "https://github.com/Enoch208/spoke/issues"
+    "url": "https://github.com/Enoch208/docs-madonna/issues"
   },
   "keywords": [
     "spoke",

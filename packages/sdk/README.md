@@ -1,13 +1,13 @@
 # Spoke public read SDK
 
-A typed, credential-free client for 32 public Spoke API methods. Version **0.1.0** targets API `/v1`, schema `3.0`, and the current Monad Testnet deployment. Monetary amounts remain base-unit strings.
+A typed, credential-free client for 32 public Spoke API methods. Version **0.1.1** targets API `/v1`, schema `3.0`, and the current Monad Testnet deployment. Monetary amounts remain base-unit strings.
 
 ## Install
 
 Install the versioned release package from GitHub:
 
 ```bash
-npm install https://github.com/Enoch208/spoke/releases/download/sdk-v0.1.0/spoke-sdk-0.1.0.tgz
+npm install https://github.com/Enoch208/docs-madonna/releases/download/sdk-v0.1.1/spoke-sdk-0.1.1.tgz
 ```
 
 The archive includes compiled ESM/CommonJS and TypeScript declarations. It bundles the shared protocol schemas, so consumers do not need the Spoke monorepo or `@spoke/protocol`. Node.js 22 or later is supported. Browser integrations require native `fetch` and `AbortSignal.timeout`; their API deployment must also allow the browser origin through CORS. A server-side integration works without browser CORS restrictions. Browser credentials are always omitted.
@@ -70,3 +70,5 @@ pnpm --filter @spoke/sdk exec npm pack --ignore-scripts
 ```
 
 `release:check` installs the actual packed archive in a temporary project, checks the file allowlist, loads both module formats and typechecks ESM/CommonJS consumers. Publish that verified archive, never the repository root. npm registry publication additionally requires access to the `@spoke` scope and a valid npm login. GitHub release assets provide a direct, versioned installation path independently of registry setup.
+
+The application source repository requires repository access. The SDK archive, documentation and release notes are public through the documentation repository.

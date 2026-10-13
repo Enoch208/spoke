@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.1 — 2026-10-13
+
+Publish the SDK archive through the public documentation repository, with corrected install and support links. Runtime behavior and the API contract are unchanged from 0.1.0.
+
 ## 0.1.0 — 2026-10-13
 
 First independently installable release of the public read SDK.
