@@ -2,7 +2,7 @@
 
 import { Search01Icon, UserGroupIcon } from "@hugeicons/core-free-icons";
 import Link from "next/link";
-import { Suspense, useCallback, useState } from "react";
+import { Suspense, useState } from "react";
 import { PageSkeleton, ProductPage, QueryState } from "@/components/product/page";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -69,16 +69,13 @@ function DirectoryContent() {
   const rows = [...(people.data?.items ?? []), ...(people.data?.newDistributors ?? [])].filter(
     (card) => matchesQuery(card, filters.q),
   );
-  const setParam = useCallback(
-    (key: string, value: string | null) => {
-      const next = directoryParams(parseDirectory(params));
-      if (value) next.set(key, value);
-      else next.delete(key);
-      setLimit(pageSize);
-      write(directoryParams(parseDirectory(next)), key === "q" ? "replace" : "push");
-    },
-    [params, write],
-  );
+  const setParam = (key: string, value: string | null) => {
+    const next = directoryParams(parseDirectory(params));
+    if (value) next.set(key, value);
+    else next.delete(key);
+    setLimit(pageSize);
+    write(directoryParams(parseDirectory(next)), key === "q" ? "replace" : "push");
+  };
   const clear = () => {
     setLimit(pageSize);
     write(directoryParams(defaultDirectoryFilters), "push");
