@@ -142,7 +142,13 @@ export const accountRoutes = (services: Services) => {
       .where(eq(sessions.accountId, accountId(c)));
     return ok(
       c,
-      rows.map((row) => ({ ...row, isCurrent: row.id === c.get("session").id })),
+      rows.map((row) => ({
+        ...row,
+        signedInAt: row.signedInAt.toISOString(),
+        lastActiveAt: row.lastActiveAt.toISOString(),
+        expiresAt: row.expiresAt.toISOString(),
+        isCurrent: row.id === c.get("session").id,
+      })),
     );
   });
   route(app, services, "DELETE", "/me/sessions", "session", async (c) => {

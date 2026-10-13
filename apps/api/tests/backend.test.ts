@@ -142,6 +142,32 @@ describe.skipIf(!databaseUrl)("persistent API security and lifecycle", () => {
       data: { address: wallet.address, isOperator: false },
     });
   });
+  it("lists only this account's sessions with canonical timestamps and current-device identity", async () => {
+    const first = await signIn(wallet, "passkey");
+    const current = await signIn(wallet, "passkey");
+    await signIn(other);
+    const response = await request("/me/sessions", "GET", undefined, current);
+    expect(response.status).toBe(200);
+    const { data } = z
+      .object({ data: clientMethodSchemas["account.sessions"].output })
+      .parse(await response.json());
+    expect(data).toHaveLength(2);
+    expect(data.filter((session) => session.isCurrent)).toHaveLength(1);
+    expect(data.every((session) => session.method === "passkey")).toBe(true);
+    const firstResponse = await request("/me/sessions", "GET", undefined, first);
+    const previous = z
+      .object({ data: clientMethodSchemas["account.sessions"].output })
+      .parse(await firstResponse.json());
+    expect(previous.data.find((session) => session.isCurrent)?.id).not.toBe(
+      data.find((session) => session.isCurrent)?.id,
+    );
+    for (const session of data) {
+      expect(Date.parse(session.expiresAt)).toBeGreaterThan(Date.parse(session.signedInAt));
+      expect(Date.parse(session.lastActiveAt)).toBeGreaterThanOrEqual(
+        Date.parse(session.signedInAt),
+      );
+    }
+  });
   it("rejects unauthenticated account and merchant reads", async () => {
     expect((await request("/me")).status).toBe(401);
     expect((await request("/merchant/products")).status).toBe(401);
