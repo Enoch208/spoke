@@ -39,6 +39,19 @@ describe("demo accounts", () => {
     ).rejects.toMatchObject({ code: "NOT_ELIGIBLE" });
   });
 
+  it("returns saved visibility fields so reopening privacy cannot silently replace them", async () => {
+    const { client } = createDemoTestClient({ persona: "distributor" });
+    const saved = {
+      level: "pseudonymous" as const,
+      fields: ["merchantCount", "refundAdjustment"] as const,
+      acceptsInvitations: false,
+    };
+    await client["reputation.updateVisibility"]({ ...saved, fields: [...saved.fields] });
+    const me = await client["account.me"]({});
+    expect(me.visibility).toEqual(saved);
+    expect(clientMethodSchemas["account.me"].output.parse(me).visibility).toEqual(saved);
+  });
+
   it("checks handles against sample people, reserved words and the 30-day rule", async () => {
     const { client, advance } = createDemoTestClient({ persona: "distributor" });
     const taken = await client["account.handleAvailable"]({ handle: "tomas" });

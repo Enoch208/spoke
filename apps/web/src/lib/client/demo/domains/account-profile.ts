@@ -1,4 +1,4 @@
-import { handle as handleSchema, type ClientOutput } from "@spoke/protocol";
+import { handle as handleSchema, visibilityInput, type ClientOutput } from "@spoke/protocol";
 import { DAY, iso } from "../../../../demo/world/ids";
 import { when } from "../../../../demo/world/seed-accounts-copy";
 import type { DemoAccount, DemoWorld } from "../../../../demo/world/world";
@@ -27,6 +27,7 @@ export const RESERVED_HANDLES: ReadonlySet<string> = new Set([
 
 export const meOf = (world: DemoWorld, account: DemoAccount, now: number): Me => {
   const { profile } = account;
+  const person = found(personById(world, account.personId), "Your profile");
   const workspaces = merchantsOwnedBy(world, account.personId).map((merchant) =>
     merchantOrgWire(world, merchant, now),
   );
@@ -49,6 +50,11 @@ export const meOf = (world: DemoWorld, account: DemoAccount, now: number): Me =>
     isMerchant: workspaces.length > 0,
     isOperator: profile.isOperator,
     createdAt: iso(profile.createdAt),
+    visibility: visibilityInput.parse({
+      level: person.visibility,
+      fields: profile.shownFields,
+      acceptsInvitations: person.acceptsInvitations,
+    }),
   };
 };
 
