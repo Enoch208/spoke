@@ -1,15 +1,40 @@
+<p align="center">
+  <img src="apps/web/src/assets/brand/spoke-mark.webp" alt="Spoke logo" width="88" />
+</p>
+
 # Spoke
 
-**Distribution is a network. Now everyone in it can earn.**
+**Turn product recommendations into a distribution network with rewards for settled sales.**
+
+[Website](https://usespoke.xyz) · [Documentation](https://docs.usespoke.xyz) · [Try the demo](https://usespoke.xyz/demo) · [X / @usespoke_](https://x.com/usespoke_) · [npm SDK](https://www.npmjs.com/package/@enochid/spoke-sdk)
 
 [![CI](https://github.com/Enoch208/spoke/actions/workflows/ci.yml/badge.svg)](https://github.com/Enoch208/spoke/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-Spoke is the distribution graph: an open distribution protocol on Monad. A merchant launches a campaign with public commission rules and pre-funds its rewards. Anyone can join and share it, and anyone who receives a link can buy or pass it on with a link of their own, so a product branches through people. When a real onchain purchase happens, the contract reserves the reward from the funded pool and splits it across the eligible people on that sale's path by the campaign's disclosed weights. After a settlement hold each person claims their share; before it, the merchant can refund the sale and nobody earns a commission. Settled sales then build a distributor record that travels across merchants, and the same campaigns, graphs and receipts are open to any app.
+Spoke is an open distribution protocol on Monad. Merchants publish products and fund campaign rewards. Distributors create referral links that can branch through other people. When a purchase settles, the eligible people on its referral path can claim the shares defined by the merchant’s public policy.
 
-Pay for revenue, not reach.
+The app brings campaign discovery, partner research, invitations, referral graphs, checkout, delivery and earnings into one place. Public receipts make attribution inspectable, and a distributor’s settled record can be shared across merchants.
 
-**Live:** [Explore campaigns](https://usespoke.xyz/explore), [developer tools](https://usespoke.xyz/developers) and the [API endpoint registry](https://api.usespoke.xyz/v1/system/endpoints). [Demo mode](https://usespoke.xyz/demo) provides a separate, labelled walkthrough.
+**Current deployment:** commerce runs on **Monad Testnet** using non-redeemable SDUSD. **Demo mode** is a separate, labelled walkthrough with sample data. Aurora wallet funding receives real USDC on **Monad Mainnet** and stays separate from testnet commerce.
+
+## Start here
+
+| I want to…                            | Start with                                                                   |
+| ------------------------------------- | ---------------------------------------------------------------------------- |
+| Understand the product                | [First five minutes](https://docs.usespoke.xyz/quickstart)                   |
+| Try the interface without transacting | [Demo walkthrough](https://usespoke.xyz/demo)                                |
+| Sell a product                        | [Merchant guide](https://docs.usespoke.xyz/guides/merchants)                 |
+| Share campaigns and earn              | [Distributor guide](https://docs.usespoke.xyz/guides/distributors)           |
+| Inspect a settled purchase            | [Example receipt](https://usespoke.xyz/receipts/10143/4)                     |
+| Build on Spoke                        | [Developer documentation](https://docs.usespoke.xyz/developers/architecture) |
+
+## How it works
+
+1. **Launch:** a merchant creates a product, sets commission terms and deposits a reward budget.
+2. **Distribute:** people join the campaign and create links. A link can branch from another link, preserving its ancestry.
+3. **Purchase:** the buyer approves checkout. The contract records the accepted policy and reserves any eligible reward from the merchant’s budget.
+4. **Settle:** the merchant may refund before the hold expires. After the hold, anyone can finalize an eligible sale.
+5. **Claim:** distributors claim their allocated rewards, and the merchant claims sale proceeds. Only settled sales contribute to public performance records.
 
 ## The rules
 
@@ -23,7 +48,7 @@ Pay for revenue, not reach.
 | Refund or finalize, never both             | A pending sale is refunded by the merchant before its unlock time, or finalized by anyone after it.                                                                                            |
 | Only settled sales count                   | Pending and refunded sales never reach a public profile.                                                                                                                                       |
 
-## Status
+## What is built
 
 The core web app and API are deployed, with settlement on Monad Testnet:
 
@@ -41,7 +66,7 @@ The core web app and API are deployed, with settlement on Monad Testnet:
 
 The contracts are source verified through Monad Sourcify, with exact matches for creation and runtime bytecode. Live pages use the deployed API and indexed contract state; Demo uses local fixtures. Prototype contract limits are 128 campaigns, 256 nodes and 100 sales per campaign. External commerce integrations, teams, webhooks and multi-currency settlement remain designed previews, with no live financial behavior.
 
-Optional mainnet wallet funding is configured in the hosted app. It accepts supported EVM source assets and quotes native USDC on Monad Mainnet to an authenticated external wallet. Deployments without an app key display an unavailable state. This separate route never credits testnet checkout, campaign budgets or earnings. Provider integration tests use deterministic responses; no real mainnet transfer has been verified for this release.
+Optional mainnet wallet funding is configured in the hosted app. It accepts supported EVM source assets and quotes native USDC on Monad Mainnet to an authenticated external wallet. Deployments without an app key display an unavailable state. This separate route never credits testnet checkout, campaign budgets or earnings. Spoke shows provider progress and independently verifies the destination USDC receipt before marking funding as received. Mainnet commerce settlement is not implemented.
 
 ## Research distribution partners
 
@@ -65,21 +90,68 @@ Mera evaluates `SHA-256("spoke.campaign-notes.v1")` as a dedicated WebAuthn PRF 
 
 Only ciphertext and the metadata needed to reopen it persist in this browser. Unlocked text stays in page memory until locked, navigation, sign-out or the five-minute limit. This is local storage, not cloud sync: keep both the browser data and the same passkey. Clearing browser data loses the notes, and a wallet recovery phrase cannot restore this separate namespace.
 
-## Layout
+## Architecture
 
+```mermaid
+flowchart LR
+  User[Merchant, distributor or buyer] --> Web[Next.js web app]
+  Web --> API[Hono API]
+  Web --> Wallet[Wallet / Mera passkey account]
+  Wallet --> Contracts[Spoke contracts on Monad Testnet]
+  Contracts --> Indexer[Envio HyperIndex]
+  Indexer --> API
+  API --> DB[(PostgreSQL)]
+  API --> Assets[Private product storage]
+  API --> Nansen[Cached Nansen research]
+  API --> Aurora[Aurora Intents funding]
+  Aurora --> Mainnet[External wallet on Monad Mainnet]
+  SDK[Public read SDK] --> API
 ```
-apps/web              Next.js app: landing, campaigns, network explorer, checkout, dashboards
-apps/api              Hono API: catalog, wallet sessions, read model, public read endpoints
-packages/contracts    Foundry: protocol interface, demo token, settlement contract, tests
-packages/protocol     Shared TypeScript: ABIs, chains, payout math, money, statuses, API schemas
-packages/sdk          Validated public read client
-indexer               Envio HyperIndex handlers and deployment container
-ops                   Private database and asset backup operations
+
+**Contracts own settlement.** They enforce reward coverage, accepted terms, refunds and claims. The API validates requests, manages sessions and application records, and prepares transactions for the user’s wallet. Indexing turns onchain events into queryable app views; it cannot create a payout. Mainnet funding and wallet research are separate integrations, outside the testnet settlement ledger.
+
+| Directory                                  | Responsibility                                                        |
+| ------------------------------------------ | --------------------------------------------------------------------- |
+| [`apps/web`](apps/web)                     | Next.js interface, account flows, transaction journeys and dashboards |
+| [`apps/api`](apps/api)                     | Hono API, authentication, product delivery and derived reads          |
+| [`packages/contracts`](packages/contracts) | Solidity settlement contracts, deployment scripts and Foundry tests   |
+| [`packages/protocol`](packages/protocol)   | Shared Zod schemas, generated ABIs, chain definitions and reward math |
+| [`packages/sdk`](packages/sdk)             | Published TypeScript client for public reads                          |
+| [`indexer`](indexer)                       | Envio HyperIndex configuration and event handlers                     |
+| [`ops`](ops)                               | Database and private-asset backup tooling                             |
+
+Read the [architecture](https://docs.usespoke.xyz/developers/architecture), [data model](https://docs.usespoke.xyz/developers/data-model) and [authentication boundaries](https://docs.usespoke.xyz/developers/authentication) for more detail.
+
+## Public API and SDK
+
+The published SDK supports 32 credential-free public methods with validated inputs and responses. It reads campaigns, graphs, receipts and profiles; it does not sign transactions or hold private keys.
+
+```sh
+npm install @enochid/spoke-sdk@0.1.2
 ```
 
-## Run it
+```ts
+import { createSpokeClient } from "@enochid/spoke-sdk";
 
-Requires Node 24, pnpm 10, Foundry and PostgreSQL 16. For a disposable local database:
+const spoke = createSpokeClient({ baseUrl: "https://api.usespoke.xyz" });
+const receipt = await spoke.read("receipts.get", { saleId: "4", chainId: 10143 });
+```
+
+Use the API origin without `/v1`. Monetary values are base-unit strings. See the [SDK guide](https://docs.usespoke.xyz/developers/sdk), [API reference](https://docs.usespoke.xyz/developers/api), [endpoint registry](https://api.usespoke.xyz/v1/system/endpoints) and [SDK changelog](packages/sdk/CHANGELOG.md).
+
+## Local development
+
+Requires Node.js 24+, pnpm 10.33.0, Foundry 1.5.1 and PostgreSQL 16. Docker is optional for running PostgreSQL. Install the pinned dependencies from the lockfile.
+
+```sh
+git clone https://github.com/Enoch208/spoke.git
+cd spoke
+pnpm install --frozen-lockfile
+cp apps/api/.env.example apps/api/.env
+cp apps/web/.env.example apps/web/.env.local
+```
+
+For a disposable local database:
 
 ```sh
 docker run --name spoke-postgres -d \
@@ -88,17 +160,34 @@ docker run --name spoke-postgres -d \
 ```
 
 ```sh
-pnpm install
-cp apps/api/.env.example apps/api/.env
-cp apps/web/.env.example apps/web/.env.local
-pnpm contracts:test
-pnpm test
+pnpm chain
+```
+
+Keep Anvil running. In another terminal, follow the [local contract deployment steps](packages/contracts/README.md#run-the-settlement-fixture), using an Anvil-funded development account. Set the returned protocol and token addresses in both environment files, then start the apps:
+
+```sh
 pnpm dev
 ```
 
-The web app runs on http://localhost:3040 and the API on http://localhost:8740. `pnpm abi` rebuilds the contracts and regenerates the TypeScript ABIs.
+Open [localhost:3040](http://localhost:3040); the API listens on [localhost:8740](http://localhost:8740). The API applies its database migrations on startup. Optional provider integrations require their own configuration; credentials belong in local environment files, never browser variables or commits.
 
-For local settlement, start Anvil and follow the [contract deployment commands](packages/contracts/README.md), then set the returned addresses in both app environment files. The API applies its database migrations on startup. See the [API guide](apps/api/README.md), [indexer setup](indexer/README.md), [read client](packages/sdk/README.md) and [operations](ops/README.md).
+See [local development](https://docs.usespoke.xyz/developers/local-development), [configuration](https://docs.usespoke.xyz/developers/configuration), the [API guide](apps/api/README.md), [indexer setup](indexer/README.md) and [operations guide](ops/README.md).
+
+## Validation
+
+```sh
+pnpm typecheck
+pnpm lint
+pnpm format:check
+pnpm contracts:test
+pnpm test
+pnpm build
+pnpm --filter @enochid/spoke-sdk release:check
+```
+
+`pnpm abi` regenerates the shared contract ABIs. Database and chain integration tests require the dedicated test services and environment variables defined in [CI](.github/workflows/ci.yml); a test run without those services does not cover the full journey.
+
+The latest application release passed **678 application tests and 33 contract tests**, plus formatting, lint, typechecks, ABI parity, indexer generation, production builds and isolated SDK installation. See the [verified CI run](https://github.com/Enoch208/spoke/actions/runs/38479115431). Browser checks covered desktop and narrow mobile layouts. Controlled testnet wallets exercised purchase, refund, finalization, claims and invitation-to-join journeys; these are demonstration transactions, not customer revenue.
 
 ## Network
 
@@ -115,7 +204,28 @@ The [settlement proof](packages/contracts/deployments/10143-proof.json) records 
 
 The [hosted API journey](packages/contracts/deployments/10143-production-journey.json) records 15 confirmed onchain transactions in a journey using the actual frontend client and HTTPS API: campaign publication and funding, two referral nodes, purchases, buyer delivery, refund access revocation, finalization and all claims. [Campaign 3](https://usespoke.xyz/c/3) remains active; [sale 4](https://usespoke.xyz/receipts/10143/4) finalized and [sale 5](https://usespoke.xyz/receipts/10143/5) refunded. Global reconciliation matched every campaign, and the contract's 4.9 SDUSD balance exactly covered its remaining liabilities. A fresh backup restored 90 indexed events, four insight caches and the unchanged credit reservation into a disposable database; the asset archive was readable. Backups are host-local.
 
-Release verification passed 551 application tests, 33 contract tests, typechecks, lint, formatting, ABI parity, production builds and [hosted CI](https://github.com/Enoch208/spoke/actions/runs/38313139691). Live browser checks covered public journeys at 390px and desktop widths, alongside an interactive Demo purchase and claim journey. Scripted EOA wallets signed the financial transactions; the frontend client and API prepared and verified the journey. Hardware passkey signing was not exercised by the browser check. Five final worker samples over a minute each reported five seconds of lag, with TLS verification enabled and no temporary mounts. This demonstrates the tested journey, rather than high-load capacity.
+## Roadmap
+
+Completed capabilities are described above. The next milestones are priorities, not release-date commitments.
+
+| Milestone                         | Status / remaining work                                                                                                                        |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| Testnet commerce and distribution | Deployed: campaigns, branching links, checkout, delivery, refunds and claims                                                                   |
+| Partner discovery and invitations | Deployed: compare shared records, send invitations, accept and confirm campaign participation                                                  |
+| Developer distribution            | Published SDK and [documentation](https://docs.usespoke.xyz); expand examples and integration coverage                                         |
+| Aurora mainnet journey            | Funding integration deployed; complete transfer evidence and a genuine in-app use of received mainnet funds                                    |
+| Operational readiness             | Extend load and recovery testing, move beyond prototype capacity limits, strengthen backup resilience and complete independent security review |
+| Broader commerce                  | External checkout integrations, webhooks, teams and additional settlement assets remain planned                                                |
+
+## Contributing
+
+Open an [issue](https://github.com/Enoch208/spoke/issues) with the behavior, reproduction steps and affected network before a substantial change. Keep pull requests focused, add tests for changed behavior and run the relevant checks. Never include credentials, private wallet material or customer data in an issue or commit.
+
+Product updates and discussion: [@usespoke_ on X](https://x.com/usespoke_). Guides and technical reference: [docs.usespoke.xyz](https://docs.usespoke.xyz).
+
+## License
+
+Spoke is released under the [MIT License](LICENSE). Third-party assets retain their respective licenses.
 
 ## Credits
 

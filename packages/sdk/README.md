@@ -71,6 +71,6 @@ pnpm --filter @enochid/spoke-sdk exec npm pack --ignore-scripts
 
 `release:check` installs the actual packed archive in a temporary project, checks the file allowlist, loads both module formats and typechecks ESM/CommonJS consumers. Publish that verified archive, never the repository root. npm registry publication requires access to the `@enochid` scope and a valid npm login. The [public release](https://github.com/Enoch208/docs-madonna/releases/tag/sdk-v0.1.2) also includes the same archive and a SHA-256 checksum.
 
-The application source repository requires repository access. The SDK archive, documentation and release notes are public through the documentation repository.
+The [application source](https://github.com/Enoch208/spoke), SDK package, [documentation](https://docs.usespoke.xyz) and release notes are public. Follow [@usespoke_ on X](https://x.com/usespoke_) for product updates.
 
 Version 0.1.2 moves public registry distribution to `@enochid/spoke-sdk`. If you installed the earlier GitHub archive as `@spoke/sdk`, uninstall that dependency, install the new package, and replace imports with `@enochid/spoke-sdk`. The client methods and runtime behavior are unchanged.
