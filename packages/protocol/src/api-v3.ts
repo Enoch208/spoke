@@ -48,7 +48,9 @@ export const preferencesUpdate = z.strictObject({
   language: z.literal("en").optional(),
   startWorkspace: z.enum(["buy", "earn", "sell"]).optional(),
   earnChecklistHidden: z.boolean().optional(),
+  sellChecklistHidden: z.boolean().optional(),
 });
+export const catalogCategories = ["digital", "education", "software", "design", "other"] as const;
 export const merchantInput = z.strictObject({
   name: z.string().min(2).max(100),
   slug: handle,
@@ -58,6 +60,9 @@ export const merchantInput = z.strictObject({
   region: z.string().min(2).max(80),
   agreementVersion: z.literal("1.0"),
   budgetAlertSales: z.number().int().min(1).max(50).default(5),
+  logo: publicUrl.nullable().optional(),
+  category: z.enum(catalogCategories).optional(),
+  showSupportEmail: z.boolean().optional(),
 });
 export const merchantUpdate = merchantInput.partial().omit({ agreementVersion: true });
 export const productInput = z.strictObject({
@@ -66,13 +71,16 @@ export const productInput = z.strictObject({
   summary: z.string().max(300),
   outcome: z.string().max(500).default(""),
   description: z.string().max(15000),
-  category: z.enum(["digital", "education", "software", "design", "other"]),
+  category: z.enum(catalogCategories),
   priceBaseUnits: uintString.refine((value) => BigInt(value) > 0n && BigInt(value) < 2n ** 128n),
   token: walletAddress,
   images: z.array(publicUrl).max(8).default([]),
   fulfillmentMode: z.enum(["download", "external", "manual"]),
   deliverable: z.string().min(1).max(2048),
   refundPolicy: z.string().min(10).max(3000),
+  coverAlt: z.string().max(140).optional(),
+  accessTiming: z.enum(["afterPurchase", "afterHold"]).optional(),
+  status: z.enum(["draft", "ready", "archived"]).optional(),
 });
 export const campaignDraftInput = z
   .strictObject({
@@ -86,6 +94,18 @@ export const campaignDraftInput = z
     mode: z.enum(["create", "newVersion"]),
     campaignId: z.union([uintString, z.string().regex(/^demo-[\w-]+$/)]).optional(),
     effectiveAt: z.iso.datetime().optional(),
+    name: z.string().max(80).optional(),
+    deposit: uintString.optional(),
+    budgetAlertSales: z.number().int().min(1).max(50).optional(),
+    endPreset: z.enum(["30d", "90d", "180d", "365d", "custom"]).optional(),
+    refundTerms: z.string().max(500).optional(),
+    regions: z
+      .array(z.string().regex(/^[A-Z]{2}$/))
+      .max(250)
+      .optional(),
+    disclosure: z.string().max(280).optional(),
+    cohort: z.array(addressString).max(200).optional(),
+    templateId: resourceId.optional(),
   })
   .superRefine((value, ctx) => {
     if (value.mode === "create" && !value.productId)

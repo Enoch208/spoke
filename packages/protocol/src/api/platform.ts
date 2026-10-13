@@ -35,6 +35,7 @@ export const activityItem = z.object({
   amount: uintString.nullable(),
   tx: txRef,
   at: isoTimestamp,
+  saleId: protocolId.optional(),
 });
 export const merchantCampaignRow = z.object({
   campaignId: protocolId.nullable(),
@@ -54,6 +55,12 @@ export const merchantCampaignRow = z.object({
   budgetAlertSales: z.number().int().min(1).max(50),
   endsAt: isoTimestamp,
   scheduledPolicyHash: bytes32String.nullable(),
+  productId: resourceId.optional(),
+  name: z.string().optional(),
+  savedAt: isoTimestamp.optional(),
+  stepReached: z.number().int().min(0).max(5).optional(),
+  settledValue: uintString.optional(),
+  updatedAt: isoTimestamp.optional(),
 });
 export const campaignDistributorRow = z.object({
   address: addressString,
@@ -91,6 +98,8 @@ export const purchaseRow = z.object({
   unlockAt: isoTimestamp,
   refundedAt: isoTimestamp.nullable(),
   refundRequestStatus: z.string().nullable(),
+  token: tokenInfo.optional(),
+  finalizedAt: isoTimestamp.nullable().optional(),
 });
 export const saleRow = purchaseRow.extend({
   orderKey: bytes32String,
@@ -99,6 +108,7 @@ export const saleRow = purchaseRow.extend({
   maxPaid: z.number().int().min(1).max(8),
   trustMode: z.string(),
   proceedsState: z.enum(["pending", "claimable", "claimed", "refunded"]),
+  buyer: addressString.optional(),
 });
 export const missedEarning = z.discriminatedUnion("kind", [
   z.object({
@@ -193,6 +203,22 @@ export const policyTemplate = z.object({
   policy: commissionPolicy,
   status: z.enum(["active", "archived"]),
   createdAt: isoTimestamp,
+  category: z.string().nullable().optional(),
+  description: z.string().optional(),
+  version: z.number().int().positive().optional(),
+  updatedAt: isoTimestamp.optional(),
+  history: z
+    .array(
+      z.object({
+        version: z.number().int().positive(),
+        policy: commissionPolicy,
+        savedAt: isoTimestamp,
+      }),
+    )
+    .optional(),
+  usedBy: z
+    .array(z.object({ campaignId: protocolId, version: z.number().int().positive() }))
+    .optional(),
 });
 export const simulationResult = z.object({
   policyHash: bytes32String,
@@ -205,6 +231,18 @@ export const simulationResult = z.object({
       unallocated: uintString,
     }),
   ),
+  contractChecks: z
+    .array(
+      z.object({
+        nodeId: protocolId,
+        pathLength: z.number().int().nonnegative(),
+        amounts: z.array(uintString),
+        rewardTotal: uintString,
+        matches: z.boolean(),
+        blockNumber: uintString,
+      }),
+    )
+    .optional(),
 });
 export const disputeEvent = z.object({
   id: resourceId,
@@ -570,7 +608,17 @@ export const client = z.object({
 });
 export const accessGrant = z.object({
   saleId: protocolId,
-  items: z.array(z.object({ id: resourceId, url: z.url(), expiresAt: isoTimestamp })),
+  items: z.array(
+    z.object({
+      id: resourceId,
+      url: z.url(),
+      expiresAt: isoTimestamp,
+      name: z.string().optional(),
+      kind: z.enum(["file", "link", "text"]).optional(),
+      mimeType: z.string().optional(),
+      sizeBytes: z.number().int().nonnegative().optional(),
+    }),
+  ),
 });
 export const partnerDetail = z.object({
   partner: partnerRow,

@@ -32,6 +32,8 @@ export const merchantView = async (store: Store, row: StoredRecord, privateField
   );
   const profile = {
     ...row.payload,
+    supportEmail:
+      privateFields || row.payload.showSupportEmail === true ? row.payload.supportEmail : undefined,
     id: row.id,
     logo: row.payload.logo ?? null,
     joinedAt: row.createdAt.toISOString(),

@@ -9,7 +9,7 @@ import {
 } from "../status";
 import { commissionPolicy } from "../policy";
 import { errorCodes } from "../errors";
-import { accountKind, resourceId } from "../api-v3";
+import { accountKind, resourceId, visibilityInput } from "../api-v3";
 
 export const protocolId = z.union([uintString, z.string().regex(/^demo-[\w-]+$/)]);
 export const pagedSchema = <T extends z.ZodType>(item: T) =>
@@ -65,6 +65,8 @@ export const policyVersion = commissionPolicy.safeExtend({
   effectiveAt: isoTimestamp,
   regions: z.array(z.string()),
   sharingRules: z.array(z.string()),
+  registrationTx: txRef.nullable().optional(),
+  salesCount: z.number().int().nonnegative().optional(),
 });
 export const campaignPolicy = z.object({
   current: policyVersion,
@@ -80,6 +82,16 @@ export const asset = z.object({
   width: z.number().int().positive().optional(),
   height: z.number().int().positive().optional(),
 });
+export const productMissing = [
+  "title",
+  "outcome",
+  "description",
+  "category",
+  "cover",
+  "coverAlt",
+  "price",
+  "deliverable",
+] as const;
 export const product = z.object({
   id: resourceId,
   merchantId: resourceId,
@@ -98,6 +110,23 @@ export const product = z.object({
   refundPolicy: z.string(),
   variants: z.array(z.object({ id: resourceId, name: z.string(), priceBaseUnits: uintString })),
   billingPeriod: z.enum(["monthly", "yearly"]).nullable(),
+  status: z.enum(["draft", "ready", "archived"]).optional(),
+  missing: z.array(z.enum(productMissing)).optional(),
+  coverUrl: z.url().nullable().optional(),
+  coverAlt: z.string().nullable().optional(),
+  accessTiming: z.enum(["afterPurchase", "afterHold"]).optional(),
+  liveCampaignCount: z.number().int().nonnegative().optional(),
+  usedBy: z
+    .array(
+      z.object({
+        campaignId: protocolId,
+        name: z.string(),
+        state: z.enum(campaignStates),
+        productVersion: z.number().int().positive(),
+      }),
+    )
+    .optional(),
+  updatedAt: isoTimestamp.optional(),
 });
 export const merchantProfile = z.object({
   id: resourceId,
@@ -111,6 +140,17 @@ export const merchantProfile = z.object({
   joinedAt: isoTimestamp,
   offersCount: z.number().int().nonnegative(),
   closedAt: isoTimestamp.nullable(),
+  category: z.string().nullable().optional(),
+  categories: z.array(z.string()).optional(),
+  supportEmail: z.email().optional(),
+  moderation: z
+    .object({
+      state: z.enum(["visible", "hidden"]),
+      actions: z.array(
+        z.object({ at: isoTimestamp, action: z.string(), reasonCategory: z.string() }),
+      ),
+    })
+    .optional(),
 });
 export const merchantOrg = merchantProfile.extend({
   supportEmail: z.email(),
@@ -124,6 +164,7 @@ export const merchantOrg = merchantProfile.extend({
     acceptedAt: isoTimestamp,
   }),
   businessWallet: addressString,
+  showSupportEmail: z.boolean().optional(),
 });
 export const campaignCard = z.object({
   campaignId: protocolId,
@@ -140,6 +181,8 @@ export const campaignCard = z.object({
   settledSales: z.number().int().nonnegative(),
   onchainUrl: z.url(),
   rankReasons: z.array(z.string()),
+  inviteOnly: z.boolean().optional(),
+  endsAt: isoTimestamp.optional(),
 });
 export const campaignDetail = campaignCard.extend({
   product,
@@ -159,6 +202,7 @@ export const campaignDetail = campaignCard.extend({
   creationTx: txRef,
   fundingTxs: z.array(txRef),
   indexedAt: isoTimestamp.nullable(),
+  metadataHash: bytes32String.optional(),
 });
 export const campaignStats = z.object({
   links: z.number().int().nonnegative(),
@@ -184,6 +228,15 @@ export const campaignDraft = z.object({
   endsAt: isoTimestamp,
   effectiveAt: isoTimestamp.optional(),
   inviteOnly: z.boolean(),
+  name: z.string().optional(),
+  deposit: uintString.optional(),
+  budgetAlertSales: z.number().int().min(1).max(50).optional(),
+  endPreset: z.enum(["30d", "90d", "180d", "365d", "custom"]).optional(),
+  refundTerms: z.string().optional(),
+  regions: z.array(z.string()).optional(),
+  disclosure: z.string().optional(),
+  cohort: z.array(addressString).optional(),
+  templateId: resourceId.optional(),
 });
 export const preparedCampaign = z.object({
   metadataHash: bytes32String,
@@ -219,6 +272,7 @@ export const me = z.object({
   isMerchant: z.boolean(),
   isOperator: z.boolean(),
   createdAt: isoTimestamp,
+  visibility: visibilityInput.optional(),
 });
 export const session = z.object({
   address: addressString,
@@ -239,6 +293,7 @@ export const preferences = z.object({
   language: z.literal("en"),
   startWorkspace: z.enum(["buy", "earn", "sell"]),
   earnChecklistHidden: z.boolean(),
+  sellChecklistHidden: z.boolean().optional(),
 });
 export const balances = z.object({
   monWei: uintString,
@@ -467,6 +522,14 @@ export const checkoutPreview = z.object({
       buyerIsMerchant: z.boolean(),
     })
     .optional(),
+  feeEstimate: z
+    .object({
+      gasUnits: uintString,
+      gasPriceWei: uintString,
+      feeWei: uintString,
+      basis: z.enum(["estimate", "recentPurchase", "sample"]),
+    })
+    .optional(),
 });
 export const checkoutIntent = z.object({
   id: resourceId,
@@ -549,6 +612,9 @@ export const conversionEarning = z.object({
   finalizedAt: isoTimestamp.nullable(),
   claimTxHash: bytes32String.nullable(),
   evidence: z.array(txRef),
+  productTitle: z.string().optional(),
+  purchasedAt: isoTimestamp.optional(),
+  refundRequested: z.boolean().optional(),
 });
 export const campaignEarnings = sixBuckets.extend({
   campaignId: protocolId,
@@ -589,6 +655,17 @@ export const vaultLedger = z.object({
   lastIndexedBlock: uintString.nullable(),
   blockNumber: uintString,
 });
+export const reputationGroupTotals = z.object({
+  name: z.string().optional(),
+  settledCommission: uintString.optional(),
+  refunded: z.number().int().nonnegative().optional(),
+  levels: z
+    .array(z.object({ level: z.number().int().positive(), count: z.number().int().positive() }))
+    .optional(),
+  lastSettledAt: isoTimestamp.nullable().optional(),
+  token: tokenInfo.optional(),
+});
+export const reputationPeriods = ["all", "90d", "30d"] as const;
 export const reputationProfile = z.object({
   subject: addressString.nullable(),
   handle: z.string().nullable(),
@@ -608,19 +685,39 @@ export const reputationProfile = z.object({
   verificationTier: z.string(),
   evidence: pagedSchema(saleReceipt),
   perMerchant: z.array(
-    z.object({
+    reputationGroupTotals.extend({
       merchantId: resourceId,
       receiptIds: z.array(protocolId),
       settledConversions: z.number().int().nonnegative(),
     }),
   ),
   perCampaign: z.array(
-    z.object({
+    reputationGroupTotals.extend({
       campaignId: protocolId,
       receiptIds: z.array(protocolId),
       settledConversions: z.number().int().nonnegative(),
     }),
   ),
+  perCategory: z
+    .array(
+      reputationGroupTotals.extend({
+        category: z.string(),
+        receiptIds: z.array(protocolId),
+        settledConversions: z.number().int().nonnegative(),
+      }),
+    )
+    .optional(),
+  period: z.enum(reputationPeriods).optional(),
+  totalsByToken: z
+    .array(
+      z.object({
+        token: tokenInfo,
+        netAttributedValue: uintString.nullable(),
+        settledCommission: uintString.nullable(),
+        refundAdjustment: uintString.nullable(),
+      }),
+    )
+    .optional(),
   pendingConversions: z.number().int().nonnegative(),
   visibility: z.enum(["public", "pseudonymous", "private"]),
   acceptsInvitations: z.boolean(),
