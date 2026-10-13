@@ -137,7 +137,7 @@ export function EarningsTiles({
       >
         {claimRecord ? (
           <p className="text-lime-ink text-sm">{txOverallStatus[overallStatus(claimRecord)]}</p>
-        ) : BigInt(claimable) > 0n || BigInt(row.readyToFinalize) > 0n ? (
+        ) : !compact && (BigInt(claimable) > 0n || BigInt(row.readyToFinalize) > 0n) ? (
           <Button
             size="sm"
             className="self-start max-sm:w-full"

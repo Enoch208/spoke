@@ -1,0 +1,68 @@
+export const homeCopy = {
+  title: "Earn",
+  description:
+    "Share products you believe in. You’re paid a share of real, settled sales, never for sign-ups.",
+  finish: {
+    title: "Finish setting up · {n} steps left",
+    one: "Finish setting up · 1 step left",
+    continue: "Continue",
+    dismiss: "Dismiss",
+  },
+  claim: {
+    ready: "ready to claim",
+    action: "Claim {amount}",
+    inProgress: "Claim in progress",
+    finalizeLine: "{n} sales finished their hold. Finalize them to make {amount} claimable.",
+    finalizeOne: "1 sale finished its hold. Finalize it to make {amount} claimable.",
+    finalize: "Finalize sales",
+    funds: "Get test funds to claim",
+  },
+  checklist: {
+    title: "Get your first link out",
+    progress: "{done} of {total}",
+    backup: "Back up your recovery phrase",
+    gas: "Get free testnet gas",
+    link: "Create your first link",
+    share: "Share it",
+    record: "Choose who sees your record",
+    hide: "Hide checklist",
+    done: "Done",
+  },
+  tiles: {
+    title: "Earnings by state",
+    nextHold: "Next hold ends {time}",
+    all: "See all earnings",
+    none: "Your earnings will show here once someone buys through your link.",
+  },
+  links: {
+    title: "Active links",
+    all: "All links",
+    visits: "{n} visits (estimate)",
+    sales: "{settled} settled · {pending} pending",
+    share: "Share",
+  },
+  sales: {
+    title: "Recent sales",
+    all: "All sales",
+    empty: "No sales through your links yet. Sales show here the moment they’re observed onchain.",
+  },
+  newcomer: {
+    title: "Find a product worth sharing",
+    body: "Pick something you’d recommend anyway, create your link and share it. You earn only when a purchase through it settles.",
+    action: "Browse campaigns",
+  },
+  opportunities: {
+    title: "Opportunities",
+    browse: "Browse campaigns",
+    invitations: "You have {n} invitations",
+    invitation: "You have 1 invitation",
+  },
+  record: {
+    title: "Your record",
+    open: "Open reputation",
+    settled: "Settled sales",
+    merchants: "Distinct merchants",
+    categories: "Top categories",
+    none: "No settled sales yet",
+  },
+} as const;
