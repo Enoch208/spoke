@@ -31,6 +31,11 @@ export const doneCopy = {
   modalSlow:
     "Your payment is confirmed onchain. Your receipt is taking longer than usual to appear.",
   referredBy: "Referred by {referrer}",
+  paidLabel: "Paid",
+  saleLabel: "Sale",
+  timeLabel: "Purchased",
+  referrerLabel: "Referred by",
+  merchantRefund: "{merchant} can refund this until {unlockAt}. After that the sale settles.",
   getProduct: "Get your product",
   viewReceipt: "View receipt",
   proof: "Proof",
