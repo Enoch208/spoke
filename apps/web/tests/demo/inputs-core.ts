@@ -123,7 +123,7 @@ export const coreInputs = {
   "earnings.claims": {},
   "vault.get": {},
   "vault.movements": { campaignId: "demo-c-1" },
-  "reputation.get": { addressOrHandle: "demo-mara" },
+  "reputation.get": { addressOrHandle: "mara" },
   "reputation.mine": {},
   "reputation.updateVisibility": {
     level: "public",

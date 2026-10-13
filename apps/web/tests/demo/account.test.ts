@@ -29,7 +29,7 @@ describe("demo accounts", () => {
     expect(merchant).toMatchObject({ address: main, isMerchant: true, payoutAddress: business });
     expect(merchant.workspaces.map((org) => org.id)).toEqual(["demo-m-1"]);
     const mara = await createDemoTestClient({ persona: "distributor" }).client["account.me"]({});
-    expect(mara).toMatchObject({ handle: "demo-mara", accountKind: "passkey", isMerchant: false });
+    expect(mara).toMatchObject({ handle: "mara", accountKind: "passkey", isMerchant: false });
     expect(mara.onboarding.intent).toBe("earn");
     expect(mara.recovery.checkedAt).not.toBeNull();
     const sam = await createDemoTestClient({ persona: "buyer" }).client["account.me"]({});
@@ -60,11 +60,13 @@ describe("demo accounts", () => {
     await expect(client["account.updateProfile"]({ handle: "support" })).rejects.toMatchObject({
       code: "HANDLE_RESERVED",
     });
+    const unchanged = await client["account.updateProfile"]({ handle: "mara", bio: "Hi." });
+    expect(unchanged).toMatchObject({ handle: "mara", handleChangeAvailableAt: null });
     const changed = await client["account.updateProfile"]({
-      handle: "mara",
+      handle: "mara_shares",
       bio: "Templates I use.",
     });
-    expect(changed).toMatchObject({ handle: "mara", bio: "Templates I use." });
+    expect(changed).toMatchObject({ handle: "mara_shares", bio: "Templates I use." });
     expect(changed.handleChangeAvailableAt).not.toBeNull();
     await expect(client["account.updateProfile"]({ handle: "mara_l" })).rejects.toMatchObject({
       code: "HANDLE_CHANGE_TOO_SOON",

@@ -58,7 +58,7 @@ const distributorRows: readonly Row[] = [
 
 const secondAddressOwners = new Set([7, 11]);
 
-const handleOf = (name: string) => `demo-${(name.split(" ")[0] ?? name).toLowerCase()}`;
+const handleOf = (name: string) => (name.split(" ")[0] ?? name).toLowerCase();
 
 const bioOf = (row: Row) =>
   `Shares ${row[2].join(" and ")} with a small newsletter and a few community channels.`;
@@ -113,7 +113,7 @@ export const merchantOwners = (anchor: number): DemoPerson[] =>
 export const buyerPersona = (anchor: number): DemoPerson => ({
   id: demoId("buyer", "persona"),
   addresses: [sampleAddress("buyer:persona")],
-  handle: "demo-sam",
+  handle: "sam",
   displayName: "Sam Achebe",
   visibility: "private",
   bio: "",

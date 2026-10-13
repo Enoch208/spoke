@@ -22,7 +22,7 @@ import { ReceiptsList } from "./profile/receipts-list";
 import { StatTiles } from "./profile/stat-tiles";
 import { methodologyLabel, profileName, type AnyProfile } from "./profile/types";
 import { Callout } from "./shared/callout";
-import { DemoLinkInLive, LiveLinkInDemo, useIdentifierMatch } from "./shared/demo-link";
+import { DemoLinkInLive, useIdentifierMatch } from "./shared/demo-link";
 import { hasModal } from "./shared/modals-ready";
 import { ReportButton } from "./shared/report-button";
 import { usePublicViewer } from "./shared/viewer";
@@ -181,12 +181,5 @@ export function ProfilePage({ handle, own = false }: { handle?: string; own?: bo
   if (!handle) return <UnknownProfile handle="" />;
   if (match === "pending") return <PageSkeleton />;
   if (match === "demoInLive") return <DemoLinkInLive />;
-  if (match === "liveInDemo")
-    return (
-      <LiveLinkInDemo
-        title={fill(profileCopy.unknownTitle, { handle: `@${handle}` })}
-        body={profileCopy.unknownBody}
-      />
-    );
   return <PublicProfile handle={handle} />;
 }
