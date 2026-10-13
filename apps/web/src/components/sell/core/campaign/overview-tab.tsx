@@ -30,7 +30,9 @@ function Kpi({ label, children, note }: { label: string; children: ReactNode; no
         <p className="text-subtle text-sm">{label}</p>
         {demo ? <ModeBadge mode="demo" /> : null}
       </div>
-      <div className="text-ink font-mono text-base tabular-nums sm:text-xl">{children}</div>
+      <div className="text-ink font-mono text-base tabular-nums [overflow-wrap:anywhere] sm:text-xl">
+        {children}
+      </div>
       {note ? <div className="text-subtle text-xs leading-relaxed">{note}</div> : null}
     </Card>
   );
