@@ -37,10 +37,12 @@ export const termsText = (policy: MerchantCampaignRow["policy"]) =>
     split: formatSplit(policy.weightsBps),
   });
 
+export const coveredCount = (covered: bigint) =>
+  covered === 1n ? copy.coveredOne : fill(copy.covered, { n: covered.toString() });
+
 export const coveredText = (available: bigint, reward: bigint) => {
   const covered = fullRewardsCovered(available, reward);
-  if (covered === null) return null;
-  return covered === 1n ? copy.coveredOne : fill(copy.covered, { n: covered.toString() });
+  return covered === null ? null : coveredCount(covered);
 };
 
 const compareBig = (a: bigint, b: bigint) => (a === b ? 0 : a > b ? -1 : 1);
