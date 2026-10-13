@@ -16,6 +16,7 @@ import { cx } from "@/components/ui/cx";
 import { Spinner } from "@/components/ui/spinner";
 import { useAccountAuth } from "@/lib/accounts/use-account-auth";
 import { authCopy } from "@/lib/copy";
+import { passkeyHint } from "../copy/auth";
 import { internalPath } from "@/lib/demo/landing";
 import { afterAuthPath, authHref, isAuthIntent, routes } from "@/lib/routes";
 
@@ -65,7 +66,7 @@ export function AuthPanel({ kind }: { kind: "login" | "signup" }) {
         >
           {copy.passkey}
         </Button>
-        <p className="text-subtle text-sm">{authCopy.passkeyHint}</p>
+        <p className="text-subtle text-sm">{passkeyHint}</p>
       </div>
 
       <div className="text-faint my-7 flex items-center gap-3 text-sm">

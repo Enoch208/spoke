@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { useAccountAuth } from "@/lib/accounts/use-account-auth";
 import { authCopy } from "@/lib/copy";
+import { passkeyHint } from "./copy/auth";
 import { internalPath } from "@/lib/demo/landing";
 import { afterAuthPath, authHref } from "@/lib/routes";
 
@@ -56,7 +57,7 @@ export default function SignInModal<K extends "M-01" | "M-02" | "M-03">({
         >
           {authCopy.signup.passkey}
         </Button>
-        <p className="text-subtle text-sm">{authCopy.passkeyHint}</p>
+        <p className="text-subtle text-sm">{passkeyHint}</p>
         <div className="border-hairline my-1 border-t" />
         {auth.connected ? (
           <Button
