@@ -1,0 +1,55 @@
+export const reportDialogCopy = {
+  title: "Report a problem",
+  titleTarget: "Report {target}",
+  kind: "What kind of problem?",
+  kindPlaceholder: "Choose one",
+  happened: "What happened?",
+  happenedHelper: "What did you do, and what did you expect?",
+  counter: "{count} / 2,000",
+  details: "Include technical details",
+  detailsShow: "See what’s included",
+  detailsSafe: "We never include your recovery phrase or keys.",
+  email: "Email for a reply",
+  replyInApp: "We’ll reply in your notifications.",
+  send: "Send report",
+  sending: "Sending…",
+  cancel: "Cancel",
+  done: "Done",
+  successRef: "Thanks. Your reference is {ticketId}.",
+  replyNotifications: "We’ll reply in your notifications.",
+  replyEmail: "We’ll reply by email.",
+  demoSent: "This report went to the Spoke team, not the sample world.",
+  subjectFallback: "this report",
+  errors: {
+    kind: "Choose what kind of problem.",
+    short: "Tell us a bit more (at least 20 characters).",
+    long: "Keep it under 2,000 characters.",
+    email: "Enter a valid email address.",
+    failed: "We couldn’t send your report. Your text is still here; try again.",
+    rateLimited: "You’ve sent several reports in a short time. Try again in a few minutes.",
+    offline: "You’re offline. Your report is saved here; send it when you’re back online.",
+  },
+  detailLabels: {
+    page: "Page",
+    mode: "Mode",
+    chain: "Chain ID",
+    browser: "Browser",
+  },
+  technical: "Technical details",
+} as const;
+
+export const problemKinds = [
+  { value: "broken", label: "Something didn’t work", category: "product" },
+  { value: "transaction", label: "A transaction problem", category: "payment" },
+  { value: "amount", label: "Wrong amount or status", category: "payment" },
+  { value: "person", label: "Report a campaign or person", category: "abuse" },
+  { value: "other", label: "Something else", category: "other" },
+] as const;
+
+export const moderationKinds = [
+  { value: "misleading", label: "Misleading product or terms", category: "fraud" },
+  { value: "spam", label: "Spam or abuse", category: "abuse" },
+  { value: "impersonation", label: "Pretending to be someone else", category: "fraud" },
+  { value: "selfDealing", label: "Fake or self-dealing sales", category: "fraud" },
+  { value: "other", label: "Something else", category: "other" },
+] as const;
