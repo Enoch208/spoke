@@ -101,7 +101,7 @@ export function CategoryChips({
   );
 }
 
-export function OrderingNote() {
+export function OrderingNote({ lines }: { lines: readonly string[] }) {
   const [open, setOpen] = useState(false);
   return (
     <Popover
@@ -117,8 +117,9 @@ export function OrderingNote() {
       }
     >
       <div className="text-body flex flex-col gap-3 px-4 pt-2 pb-4 text-sm">
-        <p>{exploreCopy.orderedBody}</p>
-        <p>{exploreCopy.orderedOther}</p>
+        {lines.map((line) => (
+          <p key={line}>{line}</p>
+        ))}
       </div>
     </Popover>
   );
@@ -187,7 +188,7 @@ export function ExploreToolbar({
             options={sortOptions}
           />
         </Field>
-        <OrderingNote />
+        <OrderingNote lines={[exploreCopy.orderedBody, exploreCopy.orderedOther]} />
       </div>
       <CategoryChips
         active={filters.category}
