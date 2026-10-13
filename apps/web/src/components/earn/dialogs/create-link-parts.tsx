@@ -13,21 +13,23 @@ type Join = ClientOutput<"links.previewJoin">;
 
 export function CreateLinkHeader({ campaign, demo }: { campaign: Campaign; demo: boolean }) {
   return (
-    <div className="flex items-center gap-3">
+    <div className="grid min-w-0 grid-cols-[3.5rem_minmax(0,1fr)] items-start gap-3">
       <CampaignArt
         seed={campaign.campaignId}
         imageUrl={campaign.product.media[0]?.url}
         title={campaign.product.title}
         className="size-14 shrink-0 rounded-xl"
       />
-      <div className="min-w-0 flex-1">
-        <p className="text-ink truncate font-medium">{campaign.product.title}</p>
-        <p className="text-subtle truncate text-sm">
+      <div className="grid min-w-0 gap-1">
+        <p className="text-ink font-medium wrap-anywhere">{campaign.product.title}</p>
+        <p className="text-subtle text-sm wrap-anywhere">
           {campaign.merchant.name}
           {demo ? ` · ${globalStates.demoMode.sampleLabel}` : ""}
         </p>
+        <div className="mt-1">
+          <CampaignStateChip campaign={campaign} />
+        </div>
       </div>
-      <CampaignStateChip campaign={campaign} />
     </div>
   );
 }

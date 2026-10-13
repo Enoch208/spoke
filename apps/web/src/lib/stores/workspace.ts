@@ -8,9 +8,11 @@ export type Workspace = (typeof workspaces)[number];
 type WorkspaceState = {
   workspace: Workspace;
   sidebarCollapsed: boolean;
+  sidebarGroupsClosed: Record<string, boolean>;
   setWorkspace: (workspace: Workspace) => void;
   setSidebarCollapsed: (collapsed: boolean) => void;
   toggleSidebar: () => void;
+  setSidebarGroupClosed: (id: string, closed: boolean) => void;
 };
 
 export const useWorkspaceStore = create<WorkspaceState>()(
@@ -18,6 +20,7 @@ export const useWorkspaceStore = create<WorkspaceState>()(
     (set) => ({
       workspace: "earn",
       sidebarCollapsed: false,
+      sidebarGroupsClosed: {},
       setWorkspace: (workspace) => {
         set({ workspace });
       },
@@ -27,13 +30,20 @@ export const useWorkspaceStore = create<WorkspaceState>()(
       toggleSidebar: () => {
         set((state) => ({ sidebarCollapsed: !state.sidebarCollapsed }));
       },
+      setSidebarGroupClosed: (id, closed) => {
+        set((state) => ({ sidebarGroupsClosed: { ...state.sidebarGroupsClosed, [id]: closed } }));
+      },
     }),
     {
       name: "spoke-workspace",
       version: 1,
       storage: localJsonStorage,
       skipHydration: true,
-      partialize: ({ workspace, sidebarCollapsed }) => ({ workspace, sidebarCollapsed }),
+      partialize: ({ workspace, sidebarCollapsed, sidebarGroupsClosed }) => ({
+        workspace,
+        sidebarCollapsed,
+        sidebarGroupsClosed,
+      }),
     },
   ),
 );

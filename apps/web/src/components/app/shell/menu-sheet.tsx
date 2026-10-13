@@ -3,9 +3,11 @@
 import { Dialog } from "@/components/ui/dialog";
 import { shellCopy } from "@/lib/copy";
 import { useSessionStore } from "@/lib/stores/session";
-import { accountNav, discoverNav, navForArea } from "../nav";
+import { accountNav, navForArea } from "../nav";
 import { NavLink } from "./nav-link";
 import type { ShellArea } from "./use-area";
+import { SidebarGroup } from "./sidebar-group";
+import { sidebarGroupsFor } from "./sidebar-groups";
 import { WorkspaceSwitcher } from "./workspace-switcher";
 
 export function MenuSheet({
@@ -25,23 +27,10 @@ export function MenuSheet({
     <Dialog open={open} onOpenChange={onOpenChange} title={shellCopy.menu}>
       <div className="flex flex-col gap-5">
         <WorkspaceSwitcher area={area} />
-        <nav aria-label={shellCopy.areas.discover}>
-          <ul className="flex flex-col gap-0.5">
-            {discoverNav.map((item) => (
-              <li key={item.id}>
-                <NavLink item={item} onNavigate={close} />
-              </li>
-            ))}
-          </ul>
-        </nav>
-        <nav aria-label={shellCopy.areas[area]} className="border-hairline border-t pt-4">
-          <ul className="flex flex-col gap-0.5">
-            {navForArea(area).map((item) => (
-              <li key={item.id}>
-                <NavLink item={item} onNavigate={close} />
-              </li>
-            ))}
-          </ul>
+        <nav aria-label={shellCopy.mainNav} className="flex flex-col gap-4">
+          {sidebarGroupsFor(area).map((group) => (
+            <SidebarGroup key={group.id} group={group} onNavigate={close} />
+          ))}
         </nav>
         {isOperator && area !== "ops" ? (
           <nav aria-label={shellCopy.areas.ops}>

@@ -164,6 +164,7 @@ export function ModalFrame({
               ) : null}
             </header>
             <div
+              data-lenis-prevent
               className={cx(
                 "min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-6 text-base sm:px-6",
                 bodyClassName,

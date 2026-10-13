@@ -7,40 +7,15 @@ import { cx } from "@/components/ui/cx";
 import { IconButton } from "@/components/ui/icon-button";
 import { shellCopy } from "@/lib/copy";
 import { useWorkspaceStore } from "@/lib/stores/workspace";
-import { accountNav, discoverNav, navForArea, type NavItem } from "../nav";
+import { accountNav } from "../nav";
 import { AccountChip } from "./account-chip";
 import { NavLink } from "./nav-link";
+import { SidebarGroup } from "./sidebar-group";
+import { sidebarGroupsFor } from "./sidebar-groups";
 import type { ShellArea } from "./use-area";
 import { workspaceHome } from "./workspace-switcher";
 
 const bottomIds = new Set(["settings", "help"]);
-
-function NavSection({
-  label,
-  items,
-  collapsed,
-}: {
-  label: string;
-  items: readonly NavItem[];
-  collapsed: boolean;
-}) {
-  return (
-    <div className="flex flex-col gap-0.5">
-      {collapsed ? (
-        <span aria-hidden="true" className="bg-hairline mx-3 my-2 h-px" />
-      ) : (
-        <span className="text-faint px-3 pt-3 pb-1.5 text-xs font-medium">{label}</span>
-      )}
-      <ul className="flex flex-col gap-0.5" aria-label={label}>
-        {items.map((item) => (
-          <li key={item.id}>
-            <NavLink item={item} collapsed={collapsed} />
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
 
 export function Sidebar({ area }: { area: ShellArea }) {
   const collapsed = useWorkspaceStore((state) => state.sidebarCollapsed);
@@ -49,11 +24,16 @@ export function Sidebar({ area }: { area: ShellArea }) {
   return (
     <aside
       className={cx(
-        "border-hairline bg-section sticky top-0 hidden h-dvh shrink-0 flex-col border-r lg:flex",
-        collapsed ? "w-16" : "w-[248px]",
+        "border-hairline bg-section sticky top-0 hidden h-dvh min-h-0 shrink-0 flex-col border-r lg:flex",
+        collapsed ? "w-[76px]" : "w-[264px]",
       )}
     >
-      <div className={cx("flex h-16 items-center gap-2 px-4", collapsed && "justify-center px-0")}>
+      <div
+        className={cx(
+          "flex shrink-0 items-center justify-between gap-3 px-5 py-5",
+          collapsed && "flex-col px-3 py-4",
+        )}
+      >
         <Link
           href={area === "ops" ? workspaceHome("earn") : workspaceHome(area)}
           className="inline-flex items-center gap-2"
@@ -67,16 +47,29 @@ export function Sidebar({ area }: { area: ShellArea }) {
             </span>
           )}
         </Link>
+        <IconButton
+          icon={SidebarLeftIcon}
+          label={collapsed ? shellCopy.expandSidebar : shellCopy.collapseSidebar}
+          title={collapsed ? shellCopy.expandSidebar : shellCopy.collapseSidebar}
+          size="sm"
+          onClick={toggle}
+          aria-expanded={!collapsed}
+          aria-controls="desktop-navigation"
+          className={cx(collapsed && "rotate-180")}
+        />
       </div>
       <nav
+        id="desktop-navigation"
         aria-label={shellCopy.mainNav}
-        className="no-scrollbar flex flex-1 flex-col gap-2 overflow-y-auto px-3 pb-4"
+        data-lenis-prevent
+        className="flex min-h-0 min-w-0 flex-1 flex-col gap-4 overflow-y-auto overscroll-contain px-3 pb-5 [scrollbar-width:thin]"
       >
-        <NavSection label={shellCopy.areas.discover} items={discoverNav} collapsed={collapsed} />
-        <NavSection label={shellCopy.areas[area]} items={navForArea(area)} collapsed={collapsed} />
+        {sidebarGroupsFor(area).map((group) => (
+          <SidebarGroup key={group.id} group={group} compact={collapsed} />
+        ))}
       </nav>
-      <div className="border-hairline flex flex-col gap-2 border-t px-3 py-3">
-        <ul className="flex flex-col gap-0.5">
+      <div className="border-hairline flex shrink-0 flex-col gap-3 border-t px-3 py-4">
+        <ul className="flex flex-col gap-1">
           {bottom.map((item) => (
             <li key={item.id}>
               <NavLink item={item} collapsed={collapsed} />
@@ -84,13 +77,6 @@ export function Sidebar({ area }: { area: ShellArea }) {
           ))}
         </ul>
         <AccountChip compact={collapsed} />
-        <IconButton
-          icon={SidebarLeftIcon}
-          label={collapsed ? shellCopy.expandSidebar : shellCopy.collapseSidebar}
-          size="sm"
-          onClick={toggle}
-          className={cx(collapsed ? "self-center" : "self-end")}
-        />
       </div>
     </aside>
   );

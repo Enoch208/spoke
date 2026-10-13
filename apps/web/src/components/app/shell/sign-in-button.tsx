@@ -14,8 +14,11 @@ export function SignInButton({ variant }: { variant: "sidebar" | "bar" | "icon" 
   const signup = authHref("signup", { next: pathname });
   if (variant === "icon")
     return (
-      <Button asChild size="sm">
-        <Link href={login}>{shellCopy.signIn}</Link>
+      <Button asChild size="md" variant="ghost" className="size-10 p-0">
+        <Link href={login} title={shellCopy.signIn} aria-label={shellCopy.signIn}>
+          <HugeiconsIcon icon={FingerPrintIcon} size={20} strokeWidth={1.8} aria-hidden="true" />
+          <span className="sr-only">{shellCopy.signIn}</span>
+        </Link>
       </Button>
     );
   if (variant === "bar")

@@ -151,6 +151,7 @@ export default function CreateLinkDialog({ props, isTop, close }: ModalComponent
         if (!next) close();
       }}
       size="md"
+      bodyClassName="min-w-0"
       inert={!isTop}
       initialFocus={primary}
       title={createLinkCopy.title}
@@ -172,7 +173,7 @@ export default function CreateLinkDialog({ props, isTop, close }: ModalComponent
         <DialogError error={preview.error} retry={() => void preview.refetch()} />
       ) : null}
       {data ? (
-        <div className="grid gap-4">
+        <div className="grid min-w-0 grid-cols-1 gap-4 wrap-anywhere">
           <CreateLinkHeader campaign={data} demo={mode === "demo"} />
           {notice ? <div className="grid gap-1">{notice}</div> : null}
           {ready || !join ? (

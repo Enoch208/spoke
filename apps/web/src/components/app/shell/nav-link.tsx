@@ -30,13 +30,19 @@ export function NavLink({
       {...(collapsed ? { title: item.label } : {})}
       {...(onNavigate ? { onClick: onNavigate } : {})}
       className={cx(
-        "font-ui flex h-10 items-center gap-3 rounded-xl px-3 text-sm font-medium",
+        "font-ui flex min-h-11 min-w-0 w-full items-center gap-3 rounded-xl px-3 text-sm font-medium lg:min-h-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink",
         "[transition-duration:423ms] [transition-property:background-color,color] [transition-timing-function:var(--ease-spring)]",
         active ? "bg-ink text-page" : "text-ink hover:bg-pill",
         collapsed && "justify-center px-0",
       )}
     >
-      <HugeiconsIcon icon={item.icon} size={20} strokeWidth={1.8} aria-hidden="true" />
+      <HugeiconsIcon
+        icon={item.icon}
+        size={20}
+        strokeWidth={1.8}
+        aria-hidden="true"
+        className="shrink-0"
+      />
       {collapsed ? (
         <span className="sr-only">{item.label}</span>
       ) : (

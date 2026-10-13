@@ -28,8 +28,8 @@ export function CreateLinkSplit({
   const reward = rewardFor(price, version);
   const short = eligible < max;
   return (
-    <section className="bg-soft grid gap-4 rounded-2xl p-4">
-      <div className="grid gap-1">
+    <section className="bg-soft grid min-w-0 grid-cols-1 gap-4 rounded-2xl p-4 wrap-anywhere">
+      <div className="grid min-w-0 grid-cols-1 gap-1">
         <h3 className="text-ink font-medium">{createLinkCopy.splitTitle}</h3>
         <p className="text-body text-sm">
           {fill(createLinkCopy.rewardLine, {
@@ -39,17 +39,19 @@ export function CreateLinkSplit({
           })}
         </p>
       </div>
-      <WeightsBar weights={version.weightsBps} />
-      <table className="w-full text-sm">
+      <WeightsBar weights={version.weightsBps} className="min-w-0" />
+      <table className="w-full table-fixed text-sm">
         <caption className="sr-only">{createLinkCopy.levelsTable}</caption>
         <tbody className="divide-hairline divide-y">
           {version.weightsBps.map((weight, index) => (
             <tr key={index}>
-              <th scope="row" className="text-body py-2 text-left font-normal">
+              <th scope="row" className="text-body w-[44%] py-2 pr-2 text-left font-normal">
                 {levelName(index)}
               </th>
-              <td className="text-subtle py-2 text-right tabular-nums">{formatBps(weight)}</td>
-              <td className="text-ink w-32 py-2 text-right font-mono tabular-nums">
+              <td className="text-subtle w-[20%] py-2 text-right tabular-nums">
+                {formatBps(weight)}
+              </td>
+              <td className="text-ink w-[36%] py-2 pl-2 text-right font-mono tabular-nums">
                 {formatAmount(full.amounts[index] ?? 0n, token)}
               </td>
             </tr>
