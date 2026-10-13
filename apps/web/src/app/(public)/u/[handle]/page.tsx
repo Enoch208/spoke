@@ -14,6 +14,7 @@ export async function generateMetadata({
   params: Promise<{ handle: string }>;
 }): Promise<Metadata> {
   const { handle } = await params;
+  if (handle.startsWith("demo-")) return { robots: { index: false, follow: false } };
   try {
     const response = await fetch(
       `${publicEnv.NEXT_PUBLIC_API_URL}/v1/distributors/${encodeURIComponent(handle)}/profile`,
@@ -24,7 +25,9 @@ export async function generateMetadata({
     const profile = parsed.success && !("hidden" in parsed.data.data) ? parsed.data.data : null;
     const index = profile !== null && "indexing" in profile && profile.indexing === "index";
     return {
-      title: profile?.displayName ?? `@${handle} · Spoke`,
+      title: profile?.displayName
+        ? `${profile.displayName} (@${handle}) on Spoke`
+        : `@${handle} on Spoke`,
       robots: { index, follow: index },
     };
   } catch {
