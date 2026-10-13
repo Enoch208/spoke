@@ -18,6 +18,7 @@ export const purchaseCopy = {
     direct: "Direct",
     openFiles: "Open files",
     loadMore: "Load more",
+    loadMoreFailed: "We couldn’t load more purchases. Try again.",
     emptyTitle: "No purchases yet",
     emptyBody: "When you buy something on Spoke, it shows up here with its receipt and files.",
     explore: "Explore campaigns",
@@ -35,7 +36,7 @@ export const purchaseCopy = {
     pending: "Refundable by the merchant until {unlockTime}.",
     holdEnded:
       "Hold ended {unlockTime}. It can no longer be refunded and is waiting to be finalized.",
-    settled: "Final since {time}.",
+    settled: "Final. The hold ended {unlockTime}.",
     refunded: "Refunded {time}. {price} returned to you.",
     syncing: "Confirmed onchain. Your receipt is syncing.",
   },
@@ -67,6 +68,7 @@ export const purchaseCopy = {
     whoEarned: "Who earned from this purchase",
     whoEarnedCollapsed: "{n} people earned {reward}",
     whoEarnedCollapsedOne: "1 person earned {reward}",
+    whoEarnedRefunded: "The refund cancelled the reserved rewards.",
     rewardTotal: "Merchant-funded reward {reward}",
     paidByMerchant:
       "Paid by the merchant from the campaign’s reward budget, not from your payment.",
