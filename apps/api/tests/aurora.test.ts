@@ -225,8 +225,72 @@ describe.skipIf(!databaseUrl)(
       });
     });
 
-    it("does not let a provider extend the approved deposit deadline", async () => {
+    it("rejects a provider that changes the requested funding window", async () => {
       fixture.state.alteredDeadline = true;
+      await expect(
+        client().call("funding.auroraCreateDeposit", {
+          ...quoteInput,
+          expectedRecipient: fundingRecipient,
+          requestId: randomUUID(),
+          acknowledgeMainnet: true,
+        }),
+      ).rejects.toMatchObject({ code: "UPSTREAM_UNAVAILABLE" });
+      expect((await store().list("aurora-deposit")).items).toEqual([]);
+    });
+
+    it("keeps a twenty-minute send window and restores status with Aurora's later refund deadline", async () => {
+      fixture.state.quoteDeadlineOffsetMs = 259200000;
+      fixture.state.inactiveOffsetMs = 259200000;
+      const now = Date.now();
+      const live = client();
+      const deposit = await live.call("funding.auroraCreateDeposit", {
+        ...quoteInput,
+        expectedRecipient: fundingRecipient,
+        requestId: randomUUID(),
+        acknowledgeMainnet: true,
+      });
+      expect(Date.parse(deposit.deadline)).toBeGreaterThanOrEqual(now + 1200000);
+      expect(Date.parse(deposit.deadline)).toBeLessThanOrEqual(Date.now() + 1200000);
+      expect(Date.parse(deposit.providerDeadline ?? "") - Date.parse(deposit.deadline)).toBe(
+        259200000,
+      );
+      const row = await store().require("aurora-deposit", deposit.id);
+      await store().put("aurora-deposit", deposit.id, row.owner, {
+        ...row.payload,
+        deposit: { ...deposit, observedAt: new Date(Date.now() - 6000).toISOString() },
+      });
+      const updated = await live.call("funding.auroraDeposit", { id: deposit.id });
+      expect(updated.statusAvailable).toBe(true);
+      expect(updated.deadline).toBe(deposit.deadline);
+      expect(updated.providerDeadline).toBe(deposit.providerDeadline);
+      fixture.state.alteredStatusDeadline = true;
+      await store().put("aurora-deposit", deposit.id, row.owner, {
+        ...row.payload,
+        deposit: { ...updated, observedAt: new Date(Date.now() - 6000).toISOString() },
+      });
+      expect((await live.call("funding.auroraDeposit", { id: deposit.id })).statusAvailable).toBe(
+        false,
+      );
+    });
+
+    it("shortens the send window when the provider deposit address becomes inactive sooner", async () => {
+      fixture.state.inactiveOffsetMs = -600000;
+      const now = Date.now();
+      const deposit = await client().call("funding.auroraCreateDeposit", {
+        ...quoteInput,
+        expectedRecipient: fundingRecipient,
+        requestId: randomUUID(),
+        acknowledgeMainnet: true,
+      });
+      expect(Date.parse(deposit.deadline)).toBeGreaterThanOrEqual(now + 600000);
+      expect(Date.parse(deposit.deadline)).toBeLessThanOrEqual(Date.now() + 600000);
+      expect(Date.parse(deposit.providerDeadline ?? "") - Date.parse(deposit.deadline)).toBe(
+        600000,
+      );
+    });
+
+    it("rejects a provider deadline that leaves less than a minute to deposit", async () => {
+      fixture.state.quoteDeadlineOffsetMs = -1200000;
       await expect(
         client().call("funding.auroraCreateDeposit", {
           ...quoteInput,

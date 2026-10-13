@@ -69,6 +69,7 @@ export const auroraDeposit = auroraQuote.extend({
   createdAt: isoTimestamp,
   depositAddress: addressString,
   deadline: isoTimestamp,
+  providerDeadline: isoTimestamp.optional(),
   state: auroraSwapState,
   stateSource: z.literal("aurora"),
   statusAvailable: z.boolean().default(true),

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { auroraDeposit, auroraQuoteInput, auroraCreateInput } from "@spoke/protocol";
+import { auroraDeposit, auroraQuoteInput, auroraCreateInput, isoTimestamp } from "@spoke/protocol";
 import { digest, type Store } from "../db/store.js";
 import { ApiProblem } from "../http/problem.js";
 import { type AuroraProvider } from "./aurora-provider.js";
@@ -11,6 +11,8 @@ import { createAuroraQuote, assertRequest } from "./aurora-quotes.js";
 const record = z.object({
   fingerprint: z.string(),
   deposit: auroraDeposit,
+  requestedDeadline: isoTimestamp.optional(),
+  providerInactiveAt: isoTimestamp.optional(),
   confirmationCursor: z.number().int().nonnegative().default(0),
 });
 type QuoteInput = z.infer<typeof auroraQuoteInput>;
@@ -52,14 +54,19 @@ export const createAuroraService = (
               );
             return saved.deposit;
           }
-          const { result, publicQuote } = await quote(input, recipient, false);
-          const deadline = result.quote.deadline;
+          const { result, publicQuote, requestedDeadline } = await quote(input, recipient, false);
+          const providerDeadline = result.quote.deadline;
+          const sendBy = Math.min(
+            Date.parse(requestedDeadline),
+            Date.parse(providerDeadline ?? ""),
+            Date.parse(result.quote.timeWhenInactive ?? providerDeadline ?? ""),
+          );
           if (
             !result.quote.depositAddress ||
             /^0x0{40}$/.test(result.quote.depositAddress) ||
             result.quote.depositMemo ||
-            !deadline ||
-            Date.parse(deadline) < Date.now() + 60_000
+            !Number.isFinite(sendBy) ||
+            sendBy < Date.now() + 60_000
           )
             throw new ApiProblem(
               503,
@@ -72,7 +79,8 @@ export const createAuroraService = (
             id,
             createdAt: new Date().toISOString(),
             depositAddress: result.quote.depositAddress,
-            deadline,
+            deadline: new Date(sendBy).toISOString(),
+            providerDeadline,
             state: "PENDING_DEPOSIT",
             stateSource: "aurora",
             statusAvailable: true,
@@ -80,7 +88,12 @@ export const createAuroraService = (
             destinationTxHashes: [],
             confirmation: { state: "pending", txHash: null, blockNumber: null },
           });
-          await store.put("aurora-deposit", id, owner, { fingerprint, deposit });
+          await store.put("aurora-deposit", id, owner, {
+            fingerprint,
+            deposit,
+            requestedDeadline,
+            providerInactiveAt: result.quote.timeWhenInactive,
+          });
           await store.audit(owner, "wallet.fundingInstructionsCreated", id, {
             destinationChainId: 143,
           });
@@ -119,7 +132,11 @@ export const createAuroraService = (
             if (
               upstream.quoteResponse.quote.depositAddress?.toLowerCase() !==
                 previous.depositAddress.toLowerCase() ||
-              upstream.quoteResponse.quote.deadline !== previous.deadline ||
+              upstream.quoteResponse.quote.deadline !==
+                (previous.providerDeadline ?? previous.deadline) ||
+              upstream.quoteResponse.quoteRequest.deadline !==
+                (saved.requestedDeadline ?? previous.deadline) ||
+              upstream.quoteResponse.quote.timeWhenInactive !== saved.providerInactiveAt ||
               upstream.quoteResponse.quote.minAmountOut !== previous.minAmountOut ||
               upstream.quoteResponse.quote.amountOut !== previous.amountOut ||
               upstream.quoteResponse.timestamp !== previous.quotedAt

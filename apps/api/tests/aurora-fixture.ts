@@ -15,6 +15,9 @@ export const auroraFixture = () => {
     failed: false,
     altered: false,
     alteredDeadline: false,
+    quoteDeadlineOffsetMs: 0,
+    inactiveOffsetMs: 0,
+    alteredStatusDeadline: false,
     quote: {} as Record<string, unknown>,
   };
   const fetcher: typeof fetch = async (input, init) => {
@@ -23,35 +26,44 @@ export const auroraFixture = () => {
     if (state.failed)
       return Response.json({ error: "fixture provider unavailable" }, { status: 503 });
     if (url.pathname.includes("/tokens/"))
-      return Response.json([
-        {
-          assetId: sourceAsset,
-          blockchain: "base",
-          symbol: "USDC",
-          decimals: 6,
-          contractAddress: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
-        },
-        {
-          assetId: targetAsset,
-          blockchain: "monad",
-          symbol: "USDC",
-          decimals: 6,
-          contractAddress: monadUsdc,
-        },
-        {
-          assetId: "sample-sdusd",
-          blockchain: "monad",
-          symbol: "SDUSD",
-          decimals: 6,
-          contractAddress: depositAddress,
-        },
-      ]);
+      return Response.json({
+        tokens: [
+          {
+            assetId: sourceAsset,
+            blockchain: "base",
+            symbol: "USDC",
+            decimals: 6,
+            contractAddress: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+          },
+          {
+            assetId: targetAsset,
+            blockchain: "monad",
+            symbol: "USDC",
+            decimals: 6,
+            contractAddress: monadUsdc,
+          },
+          {
+            assetId: "sample-sdusd",
+            blockchain: "monad",
+            symbol: "SDUSD",
+            decimals: 6,
+            contractAddress: depositAddress,
+          },
+        ],
+        asset_stats: [],
+      });
     if (url.pathname.includes("/quote/")) {
       const request = z.record(z.string(), z.unknown()).parse(await new Request(url, init).json());
       const quote = {
         timestamp: new Date().toISOString(),
         signature: "fixture-signature",
-        quoteRequest: { ...request, recipient: state.altered ? fundingOther : request.recipient },
+        quoteRequest: {
+          ...request,
+          recipient: state.altered ? fundingOther : request.recipient,
+          deadline: state.alteredDeadline
+            ? new Date(Date.now() + 86400000).toISOString()
+            : request.deadline,
+        },
         quote: {
           amountIn: request.amount,
           amountOut: "995000",
@@ -63,9 +75,12 @@ export const auroraFixture = () => {
             ? {}
             : {
                 depositAddress,
-                deadline: state.alteredDeadline
-                  ? new Date(Date.now() + 86400000).toISOString()
-                  : request.deadline,
+                deadline: new Date(
+                  Date.parse(z.string().parse(request.deadline)) + state.quoteDeadlineOffsetMs,
+                ).toISOString(),
+                timeWhenInactive: new Date(
+                  Date.parse(z.string().parse(request.deadline)) + state.inactiveOffsetMs,
+                ).toISOString(),
               }),
         },
       };
@@ -77,7 +92,15 @@ export const auroraFixture = () => {
         throw new Error("Unexpected test deposit");
       return Response.json({
         status: state.status,
-        quoteResponse: state.quote,
+        quoteResponse: state.alteredStatusDeadline
+          ? {
+              ...state.quote,
+              quote: {
+                ...z.record(z.string(), z.unknown()).parse(state.quote.quote),
+                deadline: new Date(Date.now() + 172800000).toISOString(),
+              },
+            }
+          : state.quote,
         updatedAt: new Date().toISOString(),
         swapDetails: {
           destinationChainTxHashes: state.status === "SUCCESS" ? [{ hash: fundingHash }] : [],

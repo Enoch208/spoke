@@ -102,11 +102,25 @@ export function AuroraDeposit({
           <dd className="font-mono mt-1 break-all">{deposit.refundAddress}</dd>
         </div>
         <div>
-          <dt className="text-subtle">Deposit deadline</dt>
+          <dt className="text-subtle">Send by · Spoke funding window</dt>
           <dd className="mt-1">
             <time dateTime={deposit.deadline}>{new Date(deposit.deadline).toLocaleString()}</time>
           </dd>
         </div>
+        {deposit.providerDeadline && deposit.providerDeadline !== deposit.deadline ? (
+          <div>
+            <dt className="text-subtle">Aurora refund deadline</dt>
+            <dd className="mt-1">
+              <time dateTime={deposit.providerDeadline}>
+                {new Date(deposit.providerDeadline).toLocaleString()}
+              </time>
+              <p className="text-subtle mt-1">
+                If the swap does not complete, refunds may begin after this time. A refund is not
+                guaranteed when Spoke's funding window ends.
+              </p>
+            </dd>
+          </div>
+        ) : null}
         <div>
           <dt className="text-subtle">Network and provider fees</dt>
           <dd className="mt-1">

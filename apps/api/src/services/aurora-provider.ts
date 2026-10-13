@@ -19,8 +19,12 @@ const token = z.object({
   blockchain: z.string(),
   symbol: z.string().min(1).max(30),
   decimals: z.number().int().min(0).max(36),
-  contractAddress: z.string().nullable(),
+  contractAddress: z
+    .string()
+    .nullish()
+    .transform((value) => value ?? null),
 });
+const tokens = z.object({ tokens: z.array(token).max(2000) }).transform((value) => value.tokens);
 const request = z.object({
   dry: z.boolean(),
   swapType: z.literal("EXACT_INPUT"),
@@ -49,6 +53,7 @@ export const providerQuote = z.object({
     depositAddress: addressString.optional(),
     depositMemo: z.string().optional(),
     deadline: isoTimestamp.optional(),
+    timeWhenInactive: isoTimestamp.optional(),
   }),
 });
 export const providerStatus = z.object({
@@ -124,7 +129,7 @@ export const createAuroraProvider = (apiKey: string, fetcher: typeof fetch = fet
     }
   };
   return {
-    tokens: () => call("tokens", z.array(token).max(2000)),
+    tokens: () => call("tokens", tokens),
     quote: (body: z.infer<typeof request>) => call("quote", providerQuote, body),
     status: (depositAddress: string) =>
       call("status", providerStatus, undefined, { depositAddress }),

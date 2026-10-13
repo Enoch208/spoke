@@ -42,15 +42,16 @@ export const createAuroraQuote = (
       deadline: requestedDeadline,
     });
     assertRequest(result, input, recipient, dry);
-    if (!dry && result.quote.deadline !== requestedDeadline)
+    if (result.quoteRequest.deadline !== requestedDeadline)
       throw new ApiProblem(
         503,
         "UPSTREAM_UNAVAILABLE",
-        "Aurora changed the deposit deadline.",
+        "Aurora changed the requested funding window.",
         true,
       );
     return {
       result,
+      requestedDeadline,
       publicQuote: auroraQuote.parse({
         provider: "aurora",
         destinationChainId: 143,
