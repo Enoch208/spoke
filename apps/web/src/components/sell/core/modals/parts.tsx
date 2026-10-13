@@ -29,14 +29,20 @@ export function DialogSkeleton() {
 export function LedgerLines({
   rows,
 }: {
-  rows: readonly { key: string; label: ReactNode; value: ReactNode }[];
+  rows: readonly { key: string; label: ReactNode; value: ReactNode; text?: boolean }[];
 }) {
   return (
     <dl className="border-hairline divide-hairline divide-y rounded-xl border">
       {rows.map((row) => (
         <div key={row.key} className="flex items-center justify-between gap-4 px-4 py-2.5 text-sm">
           <dt className="text-subtle">{row.label}</dt>
-          <dd className="text-ink font-mono tabular-nums">{row.value}</dd>
+          <dd
+            className={
+              row.text ? "text-ink text-right" : "text-ink text-right font-mono tabular-nums"
+            }
+          >
+            {row.value}
+          </dd>
         </div>
       ))}
     </dl>
