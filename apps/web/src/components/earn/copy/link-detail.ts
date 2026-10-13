@@ -1,0 +1,106 @@
+export const linkDetailCopy = {
+  crumb: "Links",
+  by: "by {merchant}",
+  share: {
+    title: "Share",
+    copy: "Copy link",
+    share: "Share",
+    qr: "QR code",
+    open: "Open referral page",
+    disclosureTitle: "Disclosure",
+    disclosure:
+      "Include this when you share: “I earn a share of the merchant’s reward if you buy through this link.”",
+    disclosureText: "I earn a share of the merchant’s reward if you buy through this link.",
+    copyDisclosure: "Copy disclosure",
+    disclosureCopied: "Disclosure copied",
+  },
+  performance: {
+    title: "Performance",
+    visits: "Visits (estimate)",
+    under: "Links under yours",
+    underLine: "{direct} direct · {total} in total",
+    sales: "Sales",
+    earned: "Earned from this link",
+    pending: "Pending",
+    claimable: "Claimable",
+    claimed: "Claimed",
+  },
+  position: {
+    title: "Your position",
+    level: "Level {n} from the merchant",
+    created: "Created {date}",
+    permanent:
+      "Your position is permanent. You can have one link in this campaign and its parent can’t change.",
+    merchant: "{merchant} · merchant",
+    collapsed: "… {n} more",
+  },
+  pays: {
+    title: "How this link pays you",
+    example: "Example at today’s price ({price})",
+    caption: "How a sale pays you by level",
+    through: "Sale through",
+    yourLevel: "You are",
+    share: "Your share",
+    amount: "Example",
+    own: "Your own link",
+    under: "A link directly under yours",
+    deeper: "A link {n} levels under yours",
+    level: "Level {n}",
+    shortRenormalize:
+      "Only {count} eligible people are in your path. The campaign’s short-path rule changes the split to {split}.",
+    shortReturn:
+      "Your path has {count} of the paid levels, so a sale through your own link pays {split} and returns the rest to the merchant’s budget.",
+  },
+  terms: {
+    title: "{campaign}’s terms are changing",
+    body: "New terms apply from {effectiveAt}. Sales before then keep today’s terms.",
+    commission: "Commission {before} → {after}",
+    hold: "Hold {before} → {after}",
+    levels: "Levels {before} → {after}",
+  },
+  branch: {
+    title: "Your branch",
+    line: "{links} links · {levels} levels deep · {sales} sales",
+    open: "Open in network",
+    empty:
+      "No one has shared from your link yet. When someone creates their own link from yours, it appears here.",
+    more: "+{n} more",
+    under: "{n} under it",
+  },
+  sales: {
+    title: "Sales on this link’s paths",
+    all: "All states",
+    empty: "No sales on this link’s paths yet.",
+    notEarned: "On the path, not paid",
+  },
+  proof: {
+    node: "Link ID",
+    campaign: "Campaign ID",
+    parent: "Parent link ID",
+    owner: "Owner",
+    created: "Link created",
+    policy: "Policy v{version}",
+  },
+  rail: {
+    price: "Price",
+    budget: "Reward budget left",
+    hold: "Hold",
+    open: "Open campaign",
+  },
+  banners: {
+    paused:
+      "Paused by the merchant. New sales and new links under yours are blocked until it resumes. Sales already made still settle and you can still claim.",
+    closed: "This campaign has ended. Sales already made still settle and you can still claim.",
+    exhausted:
+      "The reward budget is used up, so purchases through this link can’t pay commission until the merchant adds budget. Buyers can still buy directly, and nobody earns a commission on those.",
+    hidden:
+      "Hidden by moderation: {reason}. People who open this link see that it’s unavailable. Sales already made are unaffected and you can still claim.",
+    decided: "Decided {date}",
+    appeal: "Appeal",
+    appealCategory: "Appeal a moderation decision",
+  },
+  notFound: "We couldn’t find this link.",
+  justCreated: "If you just created it, it can take a few seconds to appear.",
+  notMine: "This link belongs to another account.",
+  viewNetwork: "View this campaign’s network",
+} as const;

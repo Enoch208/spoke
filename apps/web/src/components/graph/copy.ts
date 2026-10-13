@@ -15,6 +15,8 @@ export const graphCopy = {
   levelFromMerchant: "Level {n} from the merchant",
   root: "Started a branch",
   notOnPath: "Not on this sale’s path",
+  collapsed: "… {n} more",
+  pathLabel: "Path from the merchant",
 } as const;
 
 export const salePanelCopy = {

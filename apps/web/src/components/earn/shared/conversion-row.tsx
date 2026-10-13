@@ -22,10 +22,12 @@ export function ConversionRow({
   row,
   campaign,
   now,
+  showCampaign = true,
 }: {
   row: Conversion;
   campaign: CampaignCard | undefined;
   now: number;
+  showCampaign?: boolean;
 }) {
   const open = useUiStore((state) => state.open);
   const at = purchasedAt(row);
@@ -38,7 +40,11 @@ export function ConversionRow({
       >
         <span className="flex items-start justify-between gap-3">
           <span className="min-w-0 text-sm">
-            <CampaignName campaignId={row.campaignId} known={campaign} />
+            {showCampaign ? (
+              <CampaignName campaignId={row.campaignId} known={campaign} />
+            ) : (
+              <span className="text-ink font-medium">#{row.saleId}</span>
+            )}
           </span>
           <span
             className={cx(
@@ -51,7 +57,8 @@ export function ConversionRow({
         </span>
         <span className="flex flex-wrap items-center justify-between gap-2">
           <span className="text-subtle text-sm">
-            #{row.saleId} · {placeLine(row)}
+            {showCampaign ? `#${row.saleId} · ` : ""}
+            {placeLine(row)}
             {at ? ` · ${formatRelative(new Date(at), { now: new Date(now) })}` : ""}
           </span>
           <MoneyStateChip
