@@ -82,7 +82,11 @@ export function OverviewPage() {
                 : null
             }
             obligations={
-              buckets ? { reserved: buckets.pendingReserved, owed: buckets.vestedUnclaimed } : null
+              buckets
+                ? { reserved: buckets.pendingReserved, owed: buckets.vestedUnclaimed }
+                : vault.data
+                  ? { reserved: 0n, owed: 0n }
+                  : null
             }
             health={rows.flatMap((row) =>
               row.campaignId === null
