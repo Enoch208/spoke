@@ -1,0 +1,87 @@
+import {
+  CodeIcon,
+  Megaphone01Icon,
+  Share08Icon,
+  ShoppingBag01Icon,
+} from "@hugeicons/core-free-icons";
+
+export const welcomeCopy = {
+  steps: ["Intent", "Profile", "Recovery", "Funding"],
+  intents: [
+    {
+      value: "buy",
+      title: "Buy something",
+      body: "Pay with test SDUSD and keep your receipts.",
+      icon: ShoppingBag01Icon,
+      action: "Explore campaigns",
+      href: "/explore",
+    },
+    {
+      value: "earn",
+      title: "Share and earn",
+      body: "Get links for products you'd recommend. Earn when a sale settles.",
+      icon: Share08Icon,
+      action: "Find products to share",
+      href: "/earn/opportunities",
+    },
+    {
+      value: "sell",
+      title: "Sell my product",
+      body: "List a product and fund rewards for people who sell it.",
+      icon: Megaphone01Icon,
+      action: "Set up your business",
+      href: "/sell/setup",
+    },
+    {
+      value: "build",
+      title: "Build on Spoke",
+      body: "Read campaigns, receipts and the graph from the API and SDK.",
+      icon: CodeIcon,
+      action: "Open the developer docs",
+      href: "/developers",
+    },
+  ],
+  titles: [
+    "What brings you to Spoke?",
+    "How should people see you?",
+    "Save a way back in",
+    "Add test funds",
+    "You're set up",
+  ],
+  bodies: [
+    "Pick the one that fits best. One account does all four.",
+    "Choose how you appear on the links you share. You can change this in Settings.",
+    "Your passkey signs you in. Your recovery phrase keeps a way back in.",
+    "Spoke runs on Monad Testnet. Test MON pays fees. SDUSD is a demonstration token. Neither has cash value.",
+    "Your account is ready. Here's what you've set up.",
+  ],
+  promises: [
+    "A product can travel through people. Start with your part in the network.",
+    "Your record travels with you. Decide how people see you.",
+    "Keep a way back into your account.",
+    "Try a real testnet purchase, with no cash value.",
+    "You're ready for your next step.",
+  ],
+  continue: "Continue",
+  skip: "Skip for now",
+  withoutFunds: "Continue without funds",
+  back: "Back",
+  name: "Display name",
+  privacy:
+    "Your handle shows on links you share. Your public profile stays off until you turn it on in Settings → Privacy.",
+  sample: "Sample setup · demo",
+  sampleHelp: "Try the setup without changing this sample account's profile or recovery status.",
+  saveFailed: "Couldn't save. Your answers are still here. Try again.",
+  noHandle: "No handle yet",
+  notBackedUp: "Not backed up · reminder on",
+  backedUp: "Backed up",
+  walletRecovery: "Managed by your wallet",
+  also: "Also explore",
+  wallet: "Go to my wallet",
+  buildNote: "Developer docs are public. You can read them without funding this account.",
+  earnFunds: "Sharing needs only test MON for fees. SDUSD is optional.",
+  sellFunds: "Funding rewards needs SDUSD. Start with enough for the sales you expect.",
+  buyFunds: "Buying needs both test MON and SDUSD.",
+} as const;
+
+export type WelcomeIntent = (typeof welcomeCopy.intents)[number]["value"];
