@@ -6,4 +6,5 @@ export const sellCoreModals: ModalFragment = {
   "M-23": lazy(() => import("./modals/add-budget-modal")),
   "M-24": lazy(() => import("./modals/withdraw-modal")),
   "M-25": lazy(() => import("./modals/pause-modal")),
+  "M-26": lazy(() => import("./modals/end-modal")),
 };
