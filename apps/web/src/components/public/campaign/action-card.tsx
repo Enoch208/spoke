@@ -116,9 +116,11 @@ export function ActionCard({
             <span className="font-ui text-subtle text-sm">{testnetSuffix}</span>
           </p>
         </div>
-        <div data-campaign-actions="" className="flex flex-col gap-2">
-          <ActList acts={acts} campaignId={campaign.campaignId} code={code} layout="stack" />
-        </div>
+        {acts.length > 0 ? (
+          <div data-campaign-actions="" className="flex flex-col gap-2">
+            <ActList acts={acts} campaignId={campaign.campaignId} code={code} layout="stack" />
+          </div>
+        ) : null}
         {notes.length > 0 ? (
           <div className="text-subtle flex flex-col gap-1 text-sm">
             {notes.map((note) => (
@@ -129,9 +131,11 @@ export function ActionCard({
         {short && buying && viewer.balance !== null ? (
           <LowFunds campaign={campaign} balance={viewer.balance} />
         ) : null}
-        <div className="border-hairline border-t pt-4">
-          <RewardLines campaign={campaign} />
-        </div>
+        {availability === "live" || availability === "exhausted" ? (
+          <div className="border-hairline border-t pt-4">
+            <RewardLines campaign={campaign} />
+          </div>
+        ) : null}
       </Card>
     </div>
   );
