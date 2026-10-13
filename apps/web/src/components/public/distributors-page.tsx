@@ -9,10 +9,12 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { useClientContext } from "@/lib/client/provider";
 import { useClientQuery } from "@/lib/query/use-client";
 import { routes } from "@/lib/routes";
-import { useSessionStore } from "@/lib/stores/session";
 import { useUiStore } from "@/lib/stores/ui";
 import { directoryCopy } from "./copy/directory";
-import { DistributorCard } from "./directory/distributor-card";
+import { DirectoryResults } from "./directory/results";
+import { ComparisonSelection, DirectoryComparison } from "./directory/comparison";
+import { uniqueDistributors } from "./directory/comparison-model";
+import { useComparison } from "./directory/use-comparison";
 import {
   defaultDirectoryFilters,
   directoryParams,
@@ -23,7 +25,6 @@ import {
 } from "./directory/filters";
 import { DirectoryToolbar } from "./directory/toolbar";
 import { DiscoverSwitch } from "./shared/discover-switch";
-import { hasModal } from "./shared/modals-ready";
 import { useUrlParams } from "./shared/use-url-params";
 import { usePublicViewer } from "./shared/viewer";
 
@@ -63,22 +64,30 @@ function DirectoryContent() {
   const filters = parseDirectory(params);
   const [limit, setLimit] = useState(pageSize);
   const { mode } = useClientContext();
-  const isMerchant = useSessionStore((state) => state.isMerchant);
+  const { me } = usePublicViewer();
+  const isMerchant = me?.isMerchant ?? false;
+  const comparison = useComparison(isMerchant);
+  const { selected, select, viewing: comparing } = comparison;
   const categoryName = useCategoryName();
   const people = useClientQuery("distributors.search", searchInput(filters, limit));
-  const rows = [...(people.data?.items ?? []), ...(people.data?.newDistributors ?? [])].filter(
-    (card) => matchesQuery(card, filters.q),
-  );
+  const rows = uniqueDistributors([
+    ...(people.data?.items ?? []),
+    ...(people.data?.newDistributors ?? []),
+  ]).filter((card) => matchesQuery(card, filters.q));
   const setParam = (key: string, value: string | null) => {
     const next = directoryParams(parseDirectory(params));
     if (value) next.set(key, value);
     else next.delete(key);
     setLimit(pageSize);
-    write(directoryParams(parseDirectory(next)), key === "q" ? "replace" : "push");
+    const output = directoryParams(parseDirectory(next));
+    if (selected.length) output.set("compare", selected.join(","));
+    write(output, key === "q" ? "replace" : "push");
   };
   const clear = () => {
     setLimit(pageSize);
-    write(directoryParams(defaultDirectoryFilters), "push");
+    const output = directoryParams(defaultDirectoryFilters);
+    if (selected.length) output.set("compare", selected.join(","));
+    write(output, "push");
   };
   return (
     <ProductPage
@@ -86,72 +95,71 @@ function DirectoryContent() {
       description={directoryCopy.description}
       actions={<DiscoverSwitch active="distributors" />}
     >
-      <DirectoryToolbar filters={filters} onChange={setParam} onClear={clear} />
-      <QueryState
-        pending={people.isPending}
-        error={people.error}
-        retry={() => void people.refetch()}
-        loading="cards"
-      >
-        {rows.length === 0 ? (
-          isDirectoryNarrowed(filters) ? (
-            <EmptyState
-              icon={Search01Icon}
-              title={directoryCopy.filteredTitle}
-              actions={
-                <Button variant="secondary" onClick={clear}>
-                  {directoryCopy.clearFilters}
-                </Button>
-              }
-            />
-          ) : (
-            <EmptyState
-              icon={UserGroupIcon}
-              title={directoryCopy.emptyTitle}
-              body={directoryCopy.emptyBody}
-              actions={
-                <>
-                  <Button asChild>
-                    <Link href={routes.explore}>{directoryCopy.exploreCampaigns}</Link>
-                  </Button>
-                  <Button asChild variant="secondary">
-                    <Link href={routes.demo}>{directoryCopy.exploreDemo}</Link>
-                  </Button>
-                </>
-              }
-            />
-          )
-        ) : (
-          <div className="flex flex-col gap-4">
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {rows.map((card, index) => (
-                <DistributorCard
-                  key={card.handle ?? card.address ?? String(index)}
-                  card={card}
-                  sample={mode === "demo"}
-                  canInvite={isMerchant && hasModal("M-28")}
-                  categoryName={categoryName}
+      {isMerchant ? (
+        <ComparisonSelection
+          selected={selected}
+          viewing={comparing}
+          view={comparison.view}
+          clear={comparison.clear}
+        />
+      ) : null}
+      {comparing ? (
+        <DirectoryComparison selected={selected} sample={mode === "demo"} remove={select} />
+      ) : (
+        <>
+          <DirectoryToolbar filters={filters} onChange={setParam} onClear={clear} />
+          <QueryState
+            pending={people.isPending}
+            error={people.error}
+            retry={() => void people.refetch()}
+            loading="cards"
+          >
+            {rows.length === 0 ? (
+              isDirectoryNarrowed(filters) ? (
+                <EmptyState
+                  icon={Search01Icon}
+                  title={directoryCopy.filteredTitle}
+                  actions={
+                    <Button variant="secondary" onClick={clear}>
+                      {directoryCopy.clearFilters}
+                    </Button>
+                  }
                 />
-              ))}
-            </div>
-            <div className="flex justify-center pt-2">
-              {people.data?.nextCursor && limit < 96 ? (
-                <Button
-                  variant="secondary"
-                  loading={people.isFetching}
-                  onClick={() => {
-                    setLimit((current) => current + pageSize);
-                  }}
-                >
-                  {directoryCopy.showMore}
-                </Button>
               ) : (
-                <p className="text-subtle text-sm">{directoryCopy.endOfList}</p>
-              )}
-            </div>
-          </div>
-        )}
-      </QueryState>
+                <EmptyState
+                  icon={UserGroupIcon}
+                  title={directoryCopy.emptyTitle}
+                  body={directoryCopy.emptyBody}
+                  actions={
+                    <>
+                      <Button asChild>
+                        <Link href={routes.explore}>{directoryCopy.exploreCampaigns}</Link>
+                      </Button>
+                      <Button asChild variant="secondary">
+                        <Link href={routes.demo}>{directoryCopy.exploreDemo}</Link>
+                      </Button>
+                    </>
+                  }
+                />
+              )
+            ) : (
+              <DirectoryResults
+                rows={rows}
+                sample={mode === "demo"}
+                merchant={isMerchant}
+                selected={selected}
+                select={select}
+                categoryName={categoryName}
+                more={Boolean(people.data?.nextCursor) && limit < 96}
+                loading={people.isFetching}
+                loadMore={() => {
+                  setLimit((current) => current + pageSize);
+                }}
+              />
+            )}
+          </QueryState>
+        </>
+      )}
       <ClosingNote />
     </ProductPage>
   );

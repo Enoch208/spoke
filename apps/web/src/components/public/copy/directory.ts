@@ -2,9 +2,9 @@ export const directoryCopy = {
   title: "Explore distributors",
   description:
     "People with settled sales on Spoke who chose to be listed. Every number comes from finalized, non-refunded receipts.",
-  search: "Search by name or handle",
+  search: "Search by name, handle or public wallet",
   orderedBody:
-    "Most relevant puts category matches first, then settled sales in that category over the last 90 days, then the number of different merchants. Every fifth spot goes to a newer distributor (first settled sale in the last 30 days) who matches your filters, marked New, so the list doesn’t only reward early starters.",
+    "Most relevant prioritizes category matches, then combines settled sales, distinct merchants, refund share and recent settlement activity. The sales and merchant signals are capped so early volume does not dominate indefinitely. New marks distributors with a recent active link and at most two settled sales; a rotating selection appears alongside ranked results.",
   orderedOther:
     "Follower counts, wallet balances and outside data are never used, and no one can pay to rank higher.",
   settledLine: "Settled sales {settled}",

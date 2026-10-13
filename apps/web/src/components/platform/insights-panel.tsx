@@ -10,10 +10,10 @@ export function InsightsPanel({ address }: { address: string | null }) {
   const insights = useClientQuery(
     "insights.forDistributor",
     { address: address ?? "0x0000000000000000000000000000000000000000" },
-    { enabled: valid },
+    { enabled: valid, staleTime: 0, refetchInterval: 30_000 },
   );
   if (!valid) return null;
-  const data = insights.data;
+  const data = insights.error ? undefined : insights.data;
   return (
     <Card>
       <h2 className="font-display text-h4">Wallet context</h2>
@@ -47,6 +47,11 @@ export function InsightsPanel({ address }: { address: string | null }) {
                     : "not reported"}
                 </p>
               ) : null}
+              {data.networks.length ? (
+                <p className="text-subtle text-sm">
+                  Networks in this result: {data.networks.join(", ")}
+                </p>
+              ) : null}
               {data.reviewSignals.map((signal) => (
                 <div className="bg-amber-soft rounded-xl p-3" key={signal.label}>
                   <p className="font-medium">{signal.label}</p>
@@ -63,7 +68,7 @@ export function InsightsPanel({ address }: { address: string | null }) {
           ) : null}
         </>
       ) : (
-        <p className="text-subtle mt-3 text-sm">
+        <p role={insights.error ? "alert" : "status"} className="text-subtle mt-3 text-sm">
           {insights.error?.message ?? "Loading cached context…"}
         </p>
       )}

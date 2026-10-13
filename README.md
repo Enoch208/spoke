@@ -40,7 +40,15 @@ The core web app and API are deployed, with settlement on Monad Testnet:
 
 The contracts are source verified through Monad Sourcify, with exact matches for creation and runtime bytecode. Live pages use the deployed API and indexed contract state; Demo uses local fixtures. Prototype contract limits are 128 campaigns, 256 nodes and 100 sales per campaign. External commerce integrations, teams, webhooks and multi-currency settlement remain designed previews, with no live financial behavior.
 
-Optional mainnet wallet funding is disabled until its app key is configured. It accepts supported EVM source assets and quotes native USDC on Monad Mainnet to an authenticated external wallet. This separate route never credits testnet checkout, campaign budgets or earnings. Provider integration tests use deterministic responses; no real mainnet transfer has been verified for this release.
+Optional mainnet wallet funding is configured in the hosted app. It accepts supported EVM source assets and quotes native USDC on Monad Mainnet to an authenticated external wallet. Deployments without an app key display an unavailable state. This separate route never credits testnet checkout, campaign budgets or earnings. Provider integration tests use deterministic responses; no real mainnet transfer has been verified for this release.
+
+## Research distribution partners
+
+Sign in as a merchant and open [Distributors](https://usespoke.xyz/distributors). Search a shared name, handle or public wallet, narrow by category and settled activity, then select two or three people and choose **Compare selected**. The comparison shows settled, direct and network sales, merchant diversity, campaigns and the latest settlement. Open the supporting receipts or each full profile to inspect their contribution before deciding who to work with. Selections survive filters and page reloads.
+
+Only shared fields appear; hidden values are never treated as zero. Pending and refunded sales do not count as settled performance. A sale can credit several people, so candidate columns must not be added together. Monetary totals appear only when complete receipt evidence establishes one token denomination.
+
+**Review wallet context** opens separate, cached research for a public wallet. Its networks, source and age are disclosed. It never affects directory ranking or rewards, and a page view does not buy a provider refresh. Private and pseudonymous profiles cannot be used to retrieve external wallet context. Demo mode labels all sample records.
 
 ## Private campaign notes
 
@@ -87,7 +95,7 @@ For local settlement, start Anvil and follow the [contract deployment commands](
 
 ## Network
 
-Monad Testnet, chain ID 10143, explorer [MonadVision](https://testnet.monadvision.com). Everything here is a testnet demonstration: tokens are demo tokens and balances are not money.
+Monad Testnet, chain ID 10143, explorer [MonadVision](https://testnet.monadvision.com). Commerce settlement uses testnet demo tokens with no monetary value. Optional wallet funding runs separately on Monad Mainnet and involves real funds; it does not fund these testnet contracts.
 
 | Contract      | Address                                                                                           | Deployment transaction                                                                                               |
 | ------------- | ------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |

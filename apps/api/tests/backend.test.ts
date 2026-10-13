@@ -172,6 +172,37 @@ describe.skipIf(!databaseUrl)("persistent API security and lifecycle", () => {
     expect((await request("/me")).status).toBe(401);
     expect((await request("/merchant/products")).status).toBe(401);
   });
+  it("restricts wallet research to merchants and respects current profile visibility", async () => {
+    const path = `/merchant/distributors/${other.address}/insights`;
+    expect((await request(path)).status).toBe(401);
+    const headers = await signIn();
+    expect((await request(path, "GET", undefined, headers)).status).toBe(403);
+    await merchant(headers);
+    await signIn(other);
+    const owner = await store.identity("wallet", other.address.toLowerCase());
+    expect(owner).toBeTruthy();
+    const account = await store.require("account", owner ?? "");
+    for (const level of ["private", "pseudonymous", "public", "private"] as const) {
+      await store.put("account", account.id, account.owner, {
+        ...account.payload,
+        visibility: { level, fields: [], acceptsInvitations: false },
+      });
+      const response = await request(path, "GET", undefined, headers);
+      expect(response.status).toBe(level === "public" ? 200 : 404);
+      if (level === "public")
+        expect(await response.json()).toMatchObject({ data: { status: "none" } });
+    }
+    expect(
+      (
+        await request(
+          `/merchant/distributors/${wallet.address}/insights`,
+          "GET",
+          undefined,
+          headers,
+        )
+      ).status,
+    ).toBe(200);
+  });
   it("returns the canonical account, merchant and product schemas without exposing deliverables", async () => {
     const headers = await signIn();
     await merchant(headers);

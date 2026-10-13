@@ -284,6 +284,33 @@ describe.skipIf(!databaseUrl)("canonical public read models and consent", () => 
     );
     expect(results.items[0]?.settledConversions).toBe(1);
   });
+  it("finds public distributors by partial name, handle and public wallet", async () => {
+    await visibility("public", ["settledConversions", "merchantCount", "refundAdjustment"]);
+    for (const query of ["ALICE PRIV", "@ALICE_T", distributor.slice(0, 20)]) {
+      const result = clientMethodSchemas["distributors.search"].output.parse(
+        await read(`/distributors?q=${encodeURIComponent(query)}`),
+      );
+      expect(result.items[0]?.handle).toBe("alice_test");
+    }
+  });
+  it("does not reveal pseudonymous identities through directory search", async () => {
+    await visibility("pseudonymous", ["settledConversions", "merchantCount", "refundAdjustment"]);
+    for (const query of ["Alice Private", distributor]) {
+      const result = clientMethodSchemas["distributors.search"].output.parse(
+        await read(`/distributors?q=${encodeURIComponent(query)}`),
+      );
+      expect(result.items).toHaveLength(0);
+      expect(result.newDistributors).toHaveLength(0);
+    }
+    const result = clientMethodSchemas["distributors.search"].output.parse(
+      await read("/distributors?q=%40ALICE_T"),
+    );
+    expect(result.items[0]).toMatchObject({
+      handle: "alice_test",
+      address: null,
+      displayName: null,
+    });
+  });
   it("recovers an interrupted order from canonical chain state and rejects a conflicting buyer", async () => {
     const rpc = await fixtureRpc();
     const chain = createChainService(rpc.url, 31337, contract, paymentToken);

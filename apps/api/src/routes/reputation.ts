@@ -95,10 +95,17 @@ export const reputationRoutes = (services: Services) => {
     );
     const visible = facts.filter(
       (facts) =>
-        (!query.q ||
-          facts.account?.payload.handle === query.q ||
-          (facts.visibility.level === "public" &&
-            facts.address.toLowerCase() === query.q.toLowerCase())) &&
+        (!query.q?.trim() ||
+          [
+            facts.account?.payload.handle,
+            ...(facts.visibility.level === "public"
+              ? [facts.account?.payload.displayName, facts.address]
+              : []),
+          ].some(
+            (value) =>
+              typeof value === "string" &&
+              value.toLowerCase().includes(query.q?.trim().replace(/^@/, "").toLowerCase() ?? ""),
+          )) &&
         (!query.recency ||
           (facts.lastSettledAt &&
             Date.now() - Date.parse(facts.lastSettledAt) <= query.recency * 86400000)),

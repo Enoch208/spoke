@@ -76,7 +76,9 @@ export function ReceiptsList({ profile, name }: { profile: AnyProfile; name: str
   const items = profile.evidence.items;
   return (
     <Card padding="lg" className="flex flex-col gap-3">
-      <h2 className="font-display text-h4 text-ink font-medium">{profileCopy.receipts}</h2>
+      <h2 id="receipts" className="font-display text-h4 text-ink scroll-mt-24 font-medium">
+        {profileCopy.receipts}
+      </h2>
       {items.length === 0 ? (
         <EmptyState
           variant="compact"

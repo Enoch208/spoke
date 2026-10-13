@@ -140,6 +140,7 @@ function ProfileBody({
 
 function OwnProfile() {
   const profile = useClientQuery("reputation.mine", {});
+  const { me } = usePublicViewer();
   return (
     <QueryState
       pending={profile.isPending}
@@ -148,7 +149,9 @@ function OwnProfile() {
     >
       {profile.data ? (
         <ProfileBody profile={profile.data} owner>
-          {profile.data.subject ? <InsightsPanel address={profile.data.subject} /> : null}
+          {me?.isMerchant && profile.data.subject ? (
+            <InsightsPanel address={profile.data.subject} />
+          ) : null}
         </ProfileBody>
       ) : null}
     </QueryState>

@@ -7,8 +7,9 @@ import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { fill, globalStates } from "@/lib/copy";
-import { formatCount, formatHandle, formatRelative, pluralize } from "@/lib/format";
+import { formatCount, formatHandle, formatRelative, pluralize, shortAddress } from "@/lib/format";
 import { routeTo } from "@/lib/routes";
 import { useUiStore } from "@/lib/stores/ui";
 import { directoryCopy } from "../copy/directory";
@@ -20,15 +21,19 @@ export function DistributorCard({
   sample,
   canInvite,
   categoryName,
+  comparison,
 }: {
   card: DistributorCardData;
   sample: boolean;
   canInvite: boolean;
   categoryName: (id: string) => string;
+  comparison?: { selected: boolean; full: boolean; toggle: () => void } | undefined;
 }) {
   const open = useUiStore((state) => state.open);
   const handle = card.handle ? formatHandle(card.handle) : null;
-  const name = card.displayName ?? handle ?? "";
+  const name =
+    card.displayName ?? handle ?? (card.address ? shortAddress(card.address) : "Distributor");
+  const profileId = card.handle ?? card.address;
   const stats = [
     card.settledConversions === null
       ? null
@@ -44,9 +49,9 @@ export function DistributorCard({
         <Avatar seed={card.handle ?? name} name={name} size="lg" />
         <div className="flex min-w-0 flex-1 flex-col gap-0.5">
           <div className="flex min-w-0 items-center gap-2">
-            {card.handle ? (
+            {profileId ? (
               <Link
-                href={routeTo.profile(card.handle)}
+                href={routeTo.profile(profileId)}
                 className="font-display text-ink truncate text-[20px] leading-tight font-medium outline-none after:absolute after:inset-0"
               >
                 {name}
@@ -101,6 +106,25 @@ export function DistributorCard({
           >
             {directoryCopy.invite}
           </Button>
+        </div>
+      ) : null}
+      {comparison ? (
+        <div className="relative z-10 border-t border-hairline pt-3">
+          <Checkbox
+            checked={comparison.selected}
+            disabled={comparison.full && !comparison.selected}
+            onCheckedChange={comparison.toggle}
+            label={
+              <span className="text-sm">
+                Compare<span className="sr-only"> {name}</span>
+              </span>
+            }
+            description={
+              comparison.full && !comparison.selected
+                ? "Remove a selected distributor to compare someone else."
+                : undefined
+            }
+          />
         </div>
       ) : null}
     </Card>

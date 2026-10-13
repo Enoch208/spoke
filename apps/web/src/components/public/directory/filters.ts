@@ -85,10 +85,12 @@ export const searchInput = (
 };
 
 export const matchesQuery = (
-  card: { handle: string | null; displayName: string | null },
+  card: { handle: string | null; displayName: string | null; address?: string | null },
   q: string,
 ) => {
   const needle = q.trim().toLowerCase().replace(/^@/, "");
   if (!needle) return true;
-  return [card.handle, card.displayName].some((text) => text?.toLowerCase().includes(needle));
+  return [card.handle, card.displayName, card.address].some((text) =>
+    text?.toLowerCase().includes(needle),
+  );
 };
