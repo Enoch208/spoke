@@ -33,6 +33,7 @@ The core web app and API are deployed, with settlement on Monad Testnet:
 - A PostgreSQL API implementing 135 core client methods for wallet sessions, immutable product versions, campaign publication, graph exploration, receipts, six earnings buckets, merchant vaults, reports and privacy-aware distributor records. Four optional methods support separate mainnet wallet funding; another 50 designed methods return an explicit unavailable error.
 - Envio HyperIndex settlement and SDUSD event indexing, canonical replay and reorganization checks. HyperSync supplies history; native RPC supplies live events with TLS verification and bounded log ranges.
 - Cached Nansen context for four demonstration distributors, labelled as supported mainnet history. These new wallets have no observed history; page views do not purchase provider queries, and insights never determine payouts.
+- Passkey accounts and signing sessions with Mera, plus private campaign notes protected by a separate PRF namespace. Notes are encrypted locally and never sent to the API or blockchain.
 - Private product uploads and buyer-only delivery that checks sale state directly onchain, plus a bounded testnet gas station with durable transaction retries.
 - A typed public read SDK, request and response validation, contract invariants and an actual frontend-client-to-API-to-contract settlement journey.
 - A scripted two-merchant testnet settlement proof with four rewarded levels, a branch, a separate refund, successful claims and protected unused-budget withdrawals.
@@ -40,6 +41,14 @@ The core web app and API are deployed, with settlement on Monad Testnet:
 The contracts are source verified through Monad Sourcify, with exact matches for creation and runtime bytecode. Live pages use the deployed API and indexed contract state; Demo uses local fixtures. Prototype contract limits are 128 campaigns, 256 nodes and 100 sales per campaign. External commerce integrations, teams, webhooks and multi-currency settlement remain designed previews, with no live financial behavior.
 
 Optional mainnet wallet funding is disabled until its app key is configured. It accepts supported EVM source assets and quotes native USDC on Monad Mainnet to an authenticated external wallet. This separate route never credits testnet checkout, campaign budgets or earnings. Provider integration tests use deterministic responses; no real mainnet transfer has been verified for this release.
+
+## Private campaign notes
+
+Sign in with a passkey, open a campaign and choose **Open private notes**. Write an outreach plan, then **Encrypt & save** and confirm the same passkey. Saving locks the notebook; reopening it requires that passkey again. Each campaign has separate notes.
+
+Mera evaluates `SHA-256("spoke.campaign-notes.v1")` as a dedicated WebAuthn PRF salt. HKDF-SHA-256 derives a non-extractable AES-256-GCM key, bound to the account, chain, campaign and credential. Every save generates a new nonce. This namespace does non-account work; it does not change the existing wallet derivation or signing session.
+
+Only ciphertext and the metadata needed to reopen it persist in this browser. Unlocked text stays in page memory until locked, navigation, sign-out or the five-minute limit. This is local storage, not cloud sync: keep both the browser data and the same passkey. Clearing browser data loses the notes, and a wallet recovery phrase cannot restore this separate namespace.
 
 ## Layout
 

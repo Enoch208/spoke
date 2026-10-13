@@ -17,6 +17,7 @@ import { CampaignProof } from "./campaign/campaign-proof";
 import { CampaignNotFound } from "./campaign/campaign-states";
 import { CampaignFooterLinks } from "./campaign/footer-links";
 import { MerchantSection } from "./campaign/merchant-section";
+import { CampaignNotebook } from "./campaign/notebook/campaign-notebook";
 import { NetworkSection } from "./campaign/network-section";
 import { PhoneActionBar } from "./campaign/phone-bar";
 import { ReferralNotice, useCampaignReferral } from "./campaign/referral-strip";
@@ -121,6 +122,7 @@ function CampaignView({ campaign, policy }: { campaign: CampaignDetail; policy: 
           </div>
         </aside>
         <div className="flex min-w-0 flex-col gap-6 lg:col-span-7">
+          <CampaignNotebook campaignId={campaign.campaignId} chainId={campaign.chainId} />
           <RewardSplit
             price={BigInt(campaign.price)}
             policy={terms}
