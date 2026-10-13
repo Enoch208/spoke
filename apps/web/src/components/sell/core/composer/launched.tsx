@@ -15,6 +15,7 @@ import { Qr } from "@/components/ui/qr";
 import { useCopy } from "@/components/ui/use-copy";
 import { fill } from "@/lib/copy";
 import { useClientQuery } from "@/lib/query/use-client";
+import { useUiStore } from "@/lib/stores/ui";
 import { routeTo, routes } from "@/lib/routes";
 import { composerCopy } from "./copy";
 import { launchedCopy } from "./copy-launch";
@@ -32,6 +33,7 @@ export function LaunchedPanel({ campaignId }: { campaignId: string }) {
   const campaign = query.data;
   const url = `${origin()}${routeTo.campaign(campaignId)}`;
   const name = campaign?.product.title ?? "";
+  const open = useUiStore((state) => state.open);
   const share = () => {
     const text = fill(copy.shareText, { name });
     if (typeof navigator.share === "function") {
@@ -73,12 +75,21 @@ export function LaunchedPanel({ campaignId }: { campaignId: string }) {
                 <h3 className="text-ink text-base font-medium">{copy.page}</h3>
                 <CopyField value={url} label={copy.copyLink} copiedMessage={copy.copied} />
                 <div className="flex flex-col items-center gap-3 sm:flex-row sm:items-start">
-                  <Qr
-                    value={url}
-                    label={fill(copy.qr, { name })}
-                    size={152}
-                    className="bg-surface border-hairline border p-2"
-                  />
+                  <button
+                    type="button"
+                    aria-label={copy.openQr}
+                    onClick={() => {
+                      open("M-14", { url, title: name });
+                    }}
+                    className="ease-spring rounded-xl transition-transform duration-[423ms] hover:scale-[1.02]"
+                  >
+                    <Qr
+                      value={url}
+                      label={fill(copy.qr, { name })}
+                      size={152}
+                      className="bg-surface border-hairline border p-2"
+                    />
+                  </button>
                   <div className="flex flex-col gap-2">
                     <p className="text-subtle text-sm">{copy.merchantNote}</p>
                     <Button variant="secondary" icon={Share08Icon} onClick={share}>

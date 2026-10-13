@@ -41,6 +41,7 @@ export const launchedCopy = {
   copyLink: "Copy campaign link",
   copied: "Link copied",
   qr: "QR code for {name}",
+  openQr: "Open a larger QR code to download",
   share: "Share the campaign page",
   shareText: "{name} on Spoke",
   find: "Find distributors",
