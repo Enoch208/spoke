@@ -141,7 +141,7 @@ export function TxEngineProvider({ children }: { children: ReactNode }) {
       },
       openSheet,
       beforeSign: (record, signer) =>
-        signer.kind === "passkey" ? preparePasskeySigning(record) : Promise.resolve(),
+        signer.kind === "passkey" ? preparePasskeySigning(record, live) : Promise.resolve(),
       afterHash: (record, hash) => {
         afterPasskeySigning();
         attachCheckoutHash(live, record, hash);

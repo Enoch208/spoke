@@ -39,7 +39,7 @@ export const useAccountAuth = ({
     setBusy(create ? "create" : "passkey");
     setError(null);
     try {
-      const { account, credential } = await unlockPasskey(create);
+      const { account, credential } = await unlockPasskey(create, client);
       if (!matchesExpected(account.address))
         throw new Error("Choose the passkey for your original account to continue.");
       const result = await signInAccount(client, account.address, "passkey", (message) =>

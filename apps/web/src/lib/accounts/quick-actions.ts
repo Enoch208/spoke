@@ -3,6 +3,7 @@ import { needsPasskeyPrompt, purchaseAmountOf } from "../tx/actions";
 import type { AnyTxRecord } from "../tx/types";
 import { useUiStore } from "../stores/ui";
 import { unlockPasskey, passkeySessionActive, endPasskeySession } from "./passkey";
+import type { SpokeClient } from "../client/types";
 
 const preference = z.object({
   choice: z.enum(["allow", "ask"]),
@@ -27,8 +28,9 @@ export const chooseQuickActions = (choice: "allow" | "ask", capMinor = "10000000
   if (choice === "ask") endPasskeySession();
 };
 
-export const preparePasskeySigning = async (record: AnyTxRecord) => {
-  if (!readQuickActions()) {
+export const preparePasskeySigning = async (record: AnyTxRecord, client: SpokeClient) => {
+  const onboarding = location.pathname === "/welcome";
+  if (!onboarding && !readQuickActions()) {
     const promise = new Promise<"allow" | "ask">((resolve) => {
       decision = resolve;
     });
@@ -39,12 +41,12 @@ export const preparePasskeySigning = async (record: AnyTxRecord) => {
   if (
     needsPasskeyPrompt(
       record.kind,
-      choice?.choice === "allow" && passkeySessionActive(),
+      !onboarding && choice?.choice === "allow" && passkeySessionActive(),
       purchaseAmountOf(record),
       BigInt(choice?.capMinor ?? "100000000"),
     )
   ) {
-    const { account } = await unlockPasskey();
+    const { account } = await unlockPasskey(false, client);
     if (account.address.toLowerCase() !== record.account.toLowerCase()) {
       endPasskeySession();
       throw new Error(
@@ -55,5 +57,6 @@ export const preparePasskeySigning = async (record: AnyTxRecord) => {
 };
 
 export const afterPasskeySigning = () => {
-  if (readQuickActions()?.choice !== "allow") endPasskeySession();
+  if (location.pathname === "/welcome" || readQuickActions()?.choice !== "allow")
+    endPasskeySession();
 };

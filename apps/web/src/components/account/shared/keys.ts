@@ -1,14 +1,11 @@
-import {
-  createSecp256k1SigningSession,
-  getPasskeyPrfOutput,
-  type Secp256k1SigningSession,
-} from "@category-labs/mera";
+import { createSecp256k1SigningSession, type Secp256k1SigningSession } from "@category-labs/mera";
 import { toViemAccount } from "@category-labs/mera/viem";
 import { HDKey } from "@scure/bip32";
 import { entropyToMnemonic, mnemonicToSeedSync } from "@scure/bip39";
 import { wordlist } from "@scure/bip39/wordlists/english.js";
 import type { Address, Hex } from "viem";
-import { storedPasskey } from "@/lib/accounts/passkey";
+import { readPasskeyEntropy } from "@/lib/accounts/passkey-entropy";
+import type { SpokeClient } from "@/lib/client/types";
 
 export type PhraseKey = {
   address: Address;
@@ -44,23 +41,20 @@ export const keyFromMnemonic = (mnemonic: string): PhraseKey => {
   };
 };
 
-export const passkeyMnemonic = async (): Promise<string> => {
-  const known = storedPasskey();
-  const result = await getPasskeyPrfOutput({
-    rpId: location.hostname,
-    ...(known ? { credential: known } : {}),
-  });
+export const passkeyMnemonic = async (client?: SpokeClient | null): Promise<string> => {
+  const { entropy } = await readPasskeyEntropy(client);
   try {
-    return entropyToMnemonic(result.prfOutput, wordlist);
+    return entropyToMnemonic(entropy, wordlist);
   } finally {
-    result.prfOutput.fill(0);
+    entropy.fill(0);
   }
 };
 
 export const signWithPasskey = async (
   message: string,
+  client?: SpokeClient | null,
 ): Promise<{ address: Address; signature: Hex }> => {
-  const key = keyFromMnemonic(await passkeyMnemonic());
+  const key = keyFromMnemonic(await passkeyMnemonic(client));
   try {
     return { address: key.address, signature: await key.sign(message) };
   } finally {

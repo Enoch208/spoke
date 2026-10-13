@@ -3,7 +3,8 @@
 import { createSecretVaultWithNewPasskey } from "@category-labs/mera";
 import { mnemonicToEntropy } from "@scure/bip39";
 import { wordlist } from "@scure/bip39/wordlists/english.js";
-import { useRef } from "react";
+import { useCallback, useRef } from "react";
+import { rememberPasskey } from "@/lib/accounts/passkey-credential";
 import { getAddress, keccak256, toHex, type Address, type Hex } from "viem";
 import type { ClientOutput } from "@spoke/protocol";
 import { useClientContext } from "@/lib/client/provider";
@@ -40,10 +41,10 @@ export function useRecovery(ask: (kind: "passkey") => Promise<void>) {
   const key = useRef<PhraseKey | null>(null);
   const unknownDemo = useRef(false);
 
-  const forget = () => {
+  const forget = useCallback(() => {
     key.current?.end();
     key.current = null;
-  };
+  }, []);
 
   const derive = async (words: readonly string[]): Promise<Derived> => {
     forget();
@@ -116,10 +117,13 @@ export function useRecovery(ask: (kind: "passkey") => Promise<void>) {
       return label;
     }
     if (!client) throw new CeremonyError("failed");
+    const secret = mnemonicToEntropy(words.join(" "), wordlist);
     const vault = await createSecretVaultWithNewPasskey({
       rp: { id: location.hostname, name: "Spoke" },
       user: { name: `spoke-${crypto.randomUUID()}`, displayName: "Spoke account" },
-      secret: mnemonicToEntropy(words.join(" "), wordlist),
+      secret,
+    }).finally(() => {
+      secret.fill(0);
     });
     const confirmation = await signWith("phrase", "confirm", "account.addPasskey");
     if (!("confirmationToken" in confirmation)) throw new CeremonyError("failed");
@@ -138,6 +142,7 @@ export function useRecovery(ask: (kind: "passkey") => Promise<void>) {
         ciphertext: vault.ciphertext,
       },
     });
+    rememberPasskey({ ...vault.credential, transports, kind: "added" });
     return label;
   };
 
