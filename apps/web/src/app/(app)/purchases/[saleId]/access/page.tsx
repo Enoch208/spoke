@@ -1,5 +1,6 @@
-import { PurchasePage } from "@/components/buy/purchase-page";
+import { AccessPage } from "@/components/buy/access/access-page";
+
 export default async function Page({ params }: { params: Promise<{ saleId: string }> }) {
   const { saleId } = await params;
-  return <PurchasePage saleId={saleId} />;
+  return <AccessPage saleId={saleId} />;
 }
