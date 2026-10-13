@@ -1,13 +1,13 @@
 # Spoke public read SDK
 
-A typed, credential-free client for 32 public Spoke API methods. Version **0.1.1** targets API `/v1`, schema `3.0`, and the current Monad Testnet deployment. Monetary amounts remain base-unit strings.
+A typed, credential-free client for 32 public Spoke API methods. Version **0.1.2** targets API `/v1`, schema `3.0`, and the current Monad Testnet deployment. Monetary amounts remain base-unit strings.
 
 ## Install
 
-Install the versioned release package from GitHub:
+Install the versioned package from npm:
 
 ```bash
-npm install https://github.com/Enoch208/docs-madonna/releases/download/sdk-v0.1.1/spoke-sdk-0.1.1.tgz
+npm install @enochid/spoke-sdk@0.1.2
 ```
 
 The archive includes compiled ESM/CommonJS and TypeScript declarations. It bundles the shared protocol schemas, so consumers do not need the Spoke monorepo or `@spoke/protocol`. Node.js 22 or later is supported. Browser integrations require native `fetch` and `AbortSignal.timeout`; their API deployment must also allow the browser origin through CORS. A server-side integration works without browser CORS restrictions. Browser credentials are always omitted.
@@ -15,7 +15,7 @@ The archive includes compiled ESM/CommonJS and TypeScript declarations. It bundl
 ## Read a receipt
 
 ```ts
-import { createSpokeClient, SpokeApiError } from "@spoke/sdk";
+import { createSpokeClient, SpokeApiError } from "@enochid/spoke-sdk";
 
 const spoke = createSpokeClient({ baseUrl: "https://api.usespoke.xyz" });
 
@@ -31,7 +31,7 @@ try {
 }
 ```
 
-Pass the API origin, without `/v1`. CommonJS consumers can use `require("@spoke/sdk")`. Every request validates both its input and the successful response against the bundled shared Zod contract.
+Pass the API origin, without `/v1`. CommonJS consumers can use `require("@enochid/spoke-sdk")`. Every request validates both its input and the successful response against the bundled shared Zod contract.
 
 ## Retain freshness and chain context
 
@@ -64,11 +64,13 @@ Pin exact SDK versions for repeatable integrations. Before 1.0, breaking changes
 Maintainers build and check an isolated installation before publication:
 
 ```bash
-pnpm --filter @spoke/sdk build
-pnpm --filter @spoke/sdk release:check
-pnpm --filter @spoke/sdk exec npm pack --ignore-scripts
+pnpm --filter @enochid/spoke-sdk build
+pnpm --filter @enochid/spoke-sdk release:check
+pnpm --filter @enochid/spoke-sdk exec npm pack --ignore-scripts
 ```
 
-`release:check` installs the actual packed archive in a temporary project, checks the file allowlist, loads both module formats and typechecks ESM/CommonJS consumers. Publish that verified archive, never the repository root. npm registry publication additionally requires access to the `@spoke` scope and a valid npm login. GitHub release assets provide a direct, versioned installation path independently of registry setup.
+`release:check` installs the actual packed archive in a temporary project, checks the file allowlist, loads both module formats and typechecks ESM/CommonJS consumers. Publish that verified archive, never the repository root. npm registry publication requires access to the `@enochid` scope and a valid npm login. The [public release](https://github.com/Enoch208/docs-madonna/releases/tag/sdk-v0.1.2) also includes the same archive and a SHA-256 checksum.
 
 The application source repository requires repository access. The SDK archive, documentation and release notes are public through the documentation repository.
+
+Version 0.1.2 moves public registry distribution to `@enochid/spoke-sdk`. If you installed the earlier GitHub archive as `@spoke/sdk`, uninstall that dependency, install the new package, and replace imports with `@enochid/spoke-sdk`. The client methods and runtime behavior are unchanged.

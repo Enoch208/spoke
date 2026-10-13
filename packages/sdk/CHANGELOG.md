@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.2 — 2026-10-13
+
+Publish the SDK on npm as `@enochid/spoke-sdk`, with matching installation and import examples. This replaces the `@spoke/sdk` name used by the earlier GitHub-only archives; change the dependency and import path when upgrading. Runtime behavior and the API contract are unchanged.
+
 ## 0.1.1 — 2026-10-13
 
 Publish the SDK archive through the public documentation repository, with corrected install and support links. Runtime behavior and the API contract are unchanged from 0.1.0.

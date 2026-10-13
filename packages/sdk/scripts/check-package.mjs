@@ -14,7 +14,7 @@ try {
   const packed = JSON.parse(
     run("npm", ["pack", "--ignore-scripts", "--json", "--pack-destination", consumer], packageRoot),
   )[0];
-  assert.equal(packed.name, "@spoke/sdk");
+  assert.equal(packed.name, "@enochid/spoke-sdk");
   assert.equal(
     packed.version,
     JSON.parse(readFileSync(join(packageRoot, "package.json"), "utf8")).version,
@@ -44,7 +44,7 @@ try {
     join(consumer, packed.filename),
   ]);
   const installed = JSON.parse(
-    readFileSync(join(consumer, "node_modules/@spoke/sdk/package.json"), "utf8"),
+    readFileSync(join(consumer, "node_modules/@enochid/spoke-sdk/package.json"), "utf8"),
   );
   assert.ok(!installed.private);
   for (const [name, version] of Object.entries(installed.dependencies ?? {})) {
@@ -70,17 +70,17 @@ const client = createSpokeClient({
 `;
   writeFileSync(
     join(consumer, "smoke.cjs"),
-    `const { createSpokeClient, publicReadMethods } = require("@spoke/sdk");${exercise}`,
+    `const { createSpokeClient, publicReadMethods } = require("@enochid/spoke-sdk");${exercise}`,
   );
   writeFileSync(
     join(consumer, "smoke.mjs"),
     `import { createRequire } from "node:module";
-import { createSpokeClient, publicReadMethods } from "@spoke/sdk";
+import { createSpokeClient, publicReadMethods } from "@enochid/spoke-sdk";
 const require = createRequire(import.meta.url);${exercise}`,
   );
   run(process.execPath, ["smoke.mjs"]);
   run(process.execPath, ["smoke.cjs"]);
-  const types = `import { createSpokeClient, type SpokeReadInput, type SpokeReadOutput, type PublicReadMethod } from "@spoke/sdk";
+  const types = `import { createSpokeClient, type SpokeReadInput, type SpokeReadOutput, type PublicReadMethod } from "@enochid/spoke-sdk";
 const method: PublicReadMethod = "system.contracts";
 const input: SpokeReadInput<typeof method> = {};
 const result: Promise<SpokeReadOutput<typeof method>> = createSpokeClient({ baseUrl: "https://api.usespoke.xyz" }).read(method, input);
