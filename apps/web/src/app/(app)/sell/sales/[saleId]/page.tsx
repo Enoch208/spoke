@@ -1,5 +1,5 @@
-import { PurchasePage } from "@/components/buy/purchase-page";
+import { SaleDetailPage } from "@/components/sell/core/sales/sale-detail-page";
 export default async function Page({ params }: { params: Promise<{ saleId: string }> }) {
   const { saleId } = await params;
-  return <PurchasePage saleId={saleId} merchant />;
+  return <SaleDetailPage saleId={saleId} />;
 }

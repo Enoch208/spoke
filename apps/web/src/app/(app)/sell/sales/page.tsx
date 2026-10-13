@@ -1,4 +1,10 @@
-import { PurchasesPage } from "@/components/buy/purchases-page";
+import { Suspense } from "react";
+import { PageSkeleton } from "@/components/product/page";
+import { SalesPage } from "@/components/sell/core/sales/sales-page";
 export default function Page() {
-  return <PurchasesPage merchant />;
+  return (
+    <Suspense fallback={<PageSkeleton shape="rows" />}>
+      <SalesPage />
+    </Suspense>
+  );
 }
