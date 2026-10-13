@@ -39,17 +39,22 @@ export function PaidRows({
   token,
   total,
   exact,
+  compact = false,
 }: {
   saleId: string;
   rows: readonly PaidRow[];
   token: TokenLike;
   total: bigint;
   exact: boolean;
+  compact?: boolean;
 }) {
   const totalText = fill(salePanelCopy.total, { reward: formatAmount(total, token) });
   return (
     <>
-      <Table caption={fill(salePanelCopy.pathCaption, { saleId })} className="max-sm:hidden">
+      <Table
+        caption={fill(salePanelCopy.pathCaption, { saleId })}
+        className={compact ? "hidden" : "max-sm:hidden"}
+      >
         <THead>
           <tr>
             <Th>{salePanelCopy.columns.person}</Th>
@@ -100,7 +105,7 @@ export function PaidRows({
       </Table>
       <ol
         aria-label={fill(salePanelCopy.pathCaption, { saleId })}
-        className="divide-hairline divide-y sm:hidden"
+        className={compact ? "divide-hairline divide-y" : "divide-hairline divide-y sm:hidden"}
       >
         <li className="py-3 text-sm">
           <Buyer />

@@ -16,6 +16,8 @@ export const graphCopy = {
   root: "Started a branch",
   notOnPath: "Not on this sale’s path",
   collapsed: "… {n} more",
+  levelShort: "L{n}",
+  childLine: "{under} links under it · {settled} settled · {pending} pending",
   pathLabel: "Path from the merchant",
 } as const;
 
@@ -53,4 +55,119 @@ export const allocationCopy = {
   claimed: "Claimed",
   refunded: "Refunded",
   reversed: "Reversed",
+} as const;
+
+export const explorerCopy = {
+  title: "Network",
+  description: "Your place in each campaign’s distribution graph.",
+  publicTitle: "Distribution graph",
+  publicDescription:
+    "Every link has one parent. A sale rewards the eligible people on its path, nearest first.",
+  campaign: "Campaign",
+  scope: { label: "Scope", me: "Around me", campaign: "Whole campaign" },
+  view: { label: "View", graph: "Graph", table: "Table", path: "Path" },
+  depth: "Levels below",
+  depthAll: "All",
+  depthTooMany: "Too many to draw at once. Use search or open a branch.",
+  search: "Find a person, node or sale",
+  searchCampaign: "Search the whole campaign",
+  noMatches: "No matches in the loaded graph.",
+  zoomIn: "Zoom in",
+  zoomOut: "Zoom out",
+  fit: "Fit",
+  fullScreen: "Full screen",
+  exitFullScreen: "Exit full screen",
+  skip: "Skip to table",
+  summary:
+    "Your branch: {links} links · {levels} levels deep · {sales} sales ({settled} settled, {pending} pending, {refunded} refunded)",
+  summaryCampaign:
+    "{links} links loaded · {sales} sales ({settled} settled, {pending} pending, {refunded} refunded)",
+  indexed: "Indexed to block {block}",
+  simulated: "Simulated in demo mode",
+  syncing: "Recent links and sales may be missing.",
+  trimmed: "Some branches were collapsed to keep this fast.",
+  clear: "Clear selection",
+  notFound: "We couldn’t find that in this campaign.",
+  empty: "Your network starts with your first link.",
+  emptyAction: "Find a campaign",
+  onlyMe:
+    "No links under yours yet. Share your link so people can buy or create their own under it.",
+  share: "Share",
+  canvas: "Distribution graph for {campaign}",
+  more: "+{n}",
+  moreOther: "+{n} other branches",
+  expand: "Show {n} more links",
+  collapse: "Collapse branch",
+  expandBranch: "Expand branch",
+  nodeName: "{display}, level {n}, {activity}, {k} links under, {s} sales",
+  salesInView: "Sales in view",
+  salesEmpty: "No sales in this part of the graph yet.",
+  notEarned: "Not earned ({n})",
+  notOnYourPath: "You weren’t on this path",
+  through: "through {person}",
+  legend: "Legend",
+  paidPath: "Paid path of the selected sale",
+  upOne: "Up one level",
+  underYou: "Under you",
+  underNode: "Under {person}",
+  salesTab: "Sales",
+  linksTab: "Links",
+  pathTab: "Path",
+  noChildren: "No links under this one yet.",
+  table: {
+    links: "Links",
+    sales: "Sales",
+    person: "Person",
+    level: "Level from merchant",
+    parent: "Parent",
+    under: "Links under it",
+    salesCol: "Sales",
+    activity: "Activity",
+    sale: "Sale",
+    node: "Through",
+    state: "State",
+    share: "Your share or reason",
+  },
+} as const;
+
+export const nodePanelCopy = {
+  level: "Level {n} from {merchant}",
+  pathTitle: "Path to merchant",
+  under: "Links made from this one: {n}",
+  sales: "Sales through this link: {settled} settled · {pending} pending · {refunded} refunded",
+  rewards: "Rewards from this campaign: {settled} settled · {pending} pending",
+  openLink: "Open link",
+  shareKit: "Open share kit",
+  profile: "View profile",
+  copyId: "Copy node ID",
+  idCopied: "Node ID copied",
+  hidden: "Hidden by moderation. The link keeps its place and sales through it still settle.",
+} as const;
+
+export const markWords = {
+  PENDING: "pending",
+  FINALIZED: "settled",
+  REFUNDED: "refunded",
+} as const;
+
+export const activityCopy = {
+  shared: "Shared",
+  viewed: "Viewed (estimated)",
+  purchased: "Purchased",
+} as const;
+
+export const publicNetworkCopy = {
+  title: "Network",
+  counts: "{links} links · {sales} sales",
+  shareView: "Share this view",
+  viewCopied: "View link copied",
+  hidden: "This campaign was removed from public pages.",
+  emptyTitle: "No links yet",
+  emptyBody: "When people create links for this campaign, their branches appear here.",
+  createFirst: "Create the first link",
+  aboutTitle: "About this graph",
+  about:
+    "Every link is a node with a fixed parent. When someone buys, only the nearest {n} people on that sale’s path are paid. Other branches stay visible but earn nothing from that sale.",
+  privacy: "Buyers are never shown. People with a private profile appear as Someone.",
+  createUnder: "Create my link under this one",
 } as const;

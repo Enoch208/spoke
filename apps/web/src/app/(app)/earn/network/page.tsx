@@ -1,4 +1,11 @@
-import { NetworkPage } from "@/components/public/network-page";
+import { Suspense } from "react";
+import { NetworkPage } from "@/components/earn/network/network-page";
+import { PageSkeleton } from "@/components/product/page";
+
 export default function Page() {
-  return <NetworkPage />;
+  return (
+    <Suspense fallback={<PageSkeleton />}>
+      <NetworkPage />
+    </Suspense>
+  );
 }

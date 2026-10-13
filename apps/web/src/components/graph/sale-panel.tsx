@@ -24,11 +24,13 @@ export function SalePanel({
   saleId,
   heading = true,
   showInNetwork = false,
+  compact = false,
   onNavigate,
 }: {
   saleId: string;
   heading?: boolean;
   showInNetwork?: boolean;
+  compact?: boolean;
   onNavigate?: () => void;
 }) {
   const navigate = () => onNavigate?.();
@@ -127,6 +129,7 @@ export function SalePanel({
         maxLevels={version?.maxRewardedAncestors ?? route.nodes.length}
         shortPathMode={version?.shortPathMode ?? null}
         isSelf={(entry) => self.isSelf(entry.nodeId, entry.creator)}
+        compact={compact}
       />
       <p className="text-subtle text-xs">{graphCopy.pathNote}</p>
       <KeyValue

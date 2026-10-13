@@ -35,6 +35,7 @@ export function SalePathTable({
   maxLevels,
   shortPathMode,
   isSelf,
+  compact = false,
 }: {
   saleId: string;
   entries: readonly PathEntry[];
@@ -43,6 +44,7 @@ export function SalePathTable({
   maxLevels: number;
   shortPathMode: ShortPathMode | null;
   isSelf: (entry: PathEntry) => boolean;
+  compact?: boolean;
 }) {
   const indexed = entries.map((entry, index) => ({ entry, level: index + 1 }));
   const rows = indexed.filter(({ entry }) => entry.paid || entry.state !== null);
@@ -60,6 +62,7 @@ export function SalePathTable({
         token={token}
         total={total}
         exact={total === reward}
+        compact={compact}
       />
       {short && shortPathMode === "RENORMALIZE_EXISTING" ? (
         <p className="bg-sky-soft text-sky-ink rounded-xl px-4 py-3 text-sm">
