@@ -2,6 +2,7 @@ import { lazy } from "react";
 import type { ModalFragment } from "@/components/app/modal-types";
 
 export const earnModals: ModalFragment = {
+  "M-46": lazy(() => import("./invitations/review-dialog")),
   "M-12": lazy(() => import("./dialogs/create-link-dialog")),
   "M-13": lazy(() => import("./dialogs/share-kit")),
   "M-14": lazy(() => import("./dialogs/qr-dialog")),

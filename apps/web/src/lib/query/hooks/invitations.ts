@@ -9,6 +9,7 @@ export const useInvitationsSendMutation = mutationHook("invitations.send", [
 export const useInvitationsRespondMutation = mutationHook("invitations.respond", [
   "invitations",
   "links",
+  "campaigns",
   "notifications",
 ]);
 export const useInvitationsWithdrawMutation = mutationHook("invitations.withdraw", [

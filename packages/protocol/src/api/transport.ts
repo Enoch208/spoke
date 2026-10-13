@@ -135,6 +135,7 @@ export const clientRoutes = {
   "distributors.recommendations": own("GET", "/merchant/recommendations"),
   "partners.list": own("GET", "/merchant/partners"),
   "partners.get": own("GET", "/merchant/partners/:address"),
+  "invitations.get": own("GET", "/me/invitations/:id"),
   "invitations.mine": own("GET", "/me/invitations"),
   "invitations.sent": own("GET", "/merchant/invitations"),
   "invitations.send": own("POST", "/merchant/invitations"),

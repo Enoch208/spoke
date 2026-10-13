@@ -56,7 +56,7 @@ export const actions: ActionTable = {
     feature: "links",
     plan: single("createNode"),
     resumeKey: (params) => `createNode:${params.campaignId}`,
-    invalidates: ["links", "graph", "campaigns"],
+    invalidates: ["links", "graph", "campaigns", "invitations", "partners"],
     quickAction: "allowed",
     alreadyDoneCheckable: true,
   },

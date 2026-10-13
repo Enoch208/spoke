@@ -15,6 +15,9 @@ export const participantRoutes = (services: Services) => {
     const id = c.req.param("id") ?? "";
     await store.require("campaign", id, z.string().parse(merchant.payload.address).toLowerCase());
     const nodes = (await allRecords(store, "node")).filter((row) => row.payload.campaignId === id);
+    const invitations = (await allRecords(store, "invitation"))
+      .filter((row) => row.payload.merchantId === merchant.id && row.payload.campaignId === id)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
     const rows = await Promise.all(
       nodes.map(async (node) => {
         const { detail } = await partnerView(
@@ -22,8 +25,9 @@ export const participantRoutes = (services: Services) => {
           z.string().parse(node.payload.creator),
           new Set([id]),
         );
-        const invitation = (await allRecords(store, "invitation", merchant.id)).find(
+        const invitation = invitations.find(
           (row) =>
+            row.payload.merchantId === merchant.id &&
             row.payload.campaignId === id &&
             z.string().parse(row.payload.distributor).toLowerCase() === node.owner,
         );

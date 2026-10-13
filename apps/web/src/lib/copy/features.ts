@@ -19,6 +19,7 @@ export const featureNames = {
   sellDashboard: "Merchant overview",
   reputation: "Reputation",
   partnerDiscovery: "Discover distributors",
+  invitations: "Campaign invitations",
   partnerRecommendations: "Recommendations",
   insights: "Distributor insights",
   sdkRead: "Public API and SDK",

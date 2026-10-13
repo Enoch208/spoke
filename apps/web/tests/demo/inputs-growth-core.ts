@@ -27,6 +27,7 @@ export const studioPolicy = {
 };
 
 export const growthCoreInputs = {
+  "invitations.get": { id: "demo-invitation-mara-pending" },
   "invitations.mine": { status: "pending" },
   "invitations.sent": {},
   "invitations.send": {
@@ -64,6 +65,7 @@ export const growthCoreInputs = {
 } satisfies MethodInputs;
 
 export const growthCorePersonas = {
+  "invitations.get": "distributor",
   "invitations.mine": "distributor",
   "invitations.respond": "distributor",
   "invitations.sent": "merchant",

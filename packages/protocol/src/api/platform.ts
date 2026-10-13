@@ -169,6 +169,7 @@ export const partnerRow = distributorCard.extend({
   lastSettledAt: isoTimestamp.nullable(),
 });
 export const invitation = z.object({
+  joinedNodeId: protocolId.nullable().optional(),
   id: resourceId,
   distributor: addressString,
   campaignId: protocolId,

@@ -24,6 +24,7 @@ import { createLiveClient } from "../../web/src/lib/client/live/index.js";
 import { createApp } from "../src/app.js";
 import { createChainService } from "../src/services/chain.js";
 import { createIndexer } from "../src/services/indexer.js";
+import { exerciseInvitations } from "./invitation-journey.js";
 import { isolatedStore } from "./isolated-store.js";
 
 const rpcUrl = process.env.JOURNEY_RPC_URL;
@@ -76,7 +77,11 @@ describe.skipIf(!rpcUrl || !databaseUrl)(
     };
     const protocolData = (
       functionName:
-        "activateCampaign" | "pauseCampaign" | "refundUnusedRewardBudget" | "claimMerchantProceeds",
+        | "activateCampaign"
+        | "pauseCampaign"
+        | "resumeCampaign"
+        | "refundUnusedRewardBudget"
+        | "claimMerchantProceeds",
       id = 1n,
     ) => encodeFunctionData({ abi: spokeProtocolAbi, functionName, args: [id] });
     const sync = async () => {
@@ -279,6 +284,17 @@ describe.skipIf(!rpcUrl || !databaseUrl)(
         }),
       );
       await send(merchant, protocolData("activateCampaign"));
+      await sync();
+      const invitationId = await exerciseInvitations({
+        seller,
+        earner,
+        outsider: refundCustomer,
+        recipient: distributor.account.address,
+        merchant: merchant.account.address,
+        store: database.store,
+        pause: () => send(merchant, protocolData("pauseCampaign")),
+        resume: () => send(merchant, protocolData("resumeCampaign")),
+      });
       await send(
         distributor,
         encodeFunctionData({
@@ -288,6 +304,15 @@ describe.skipIf(!rpcUrl || !databaseUrl)(
         }),
       );
       await sync();
+      expect((await earner.call("invitations.get", { id: invitationId })).joinedNodeId).toBe("1");
+      expect(
+        (await seller.call("invitations.sent", {})).items.find((item) => item.id === invitationId)
+          ?.joinedNodeId,
+      ).toBe("1");
+      expect(
+        (await seller.call("campaigns.distributors", { campaignId: "1" })).items[0]
+          ?.invitationStatus,
+      ).toBe("accepted");
       const campaign = await seller.call("campaigns.get", { campaignId: "1" });
       expect(campaign.product.title).toBe(product.title);
       await expect(seller.call("campaigns.deleteDraft", { id: draftId })).rejects.toMatchObject({

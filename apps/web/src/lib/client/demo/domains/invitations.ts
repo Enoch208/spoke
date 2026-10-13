@@ -8,10 +8,19 @@ import { merchantFor, ownCampaign } from "./growth-scope";
 
 const NOT_TAKING_LINKS = "This campaign isn't taking new links right now.";
 
-const present = (invitation: Invitation, now: number): Invitation =>
-  invitation.status === "pending" && now >= Date.parse(invitation.expiresAt)
-    ? { ...invitation, status: "expired" }
-    : invitation;
+const present = (invitation: Invitation, now: number, world: DemoWorld): Invitation => ({
+  ...invitation,
+  status:
+    invitation.status === "pending" && now >= Date.parse(invitation.expiresAt)
+      ? "expired"
+      : invitation.status,
+  joinedNodeId:
+    world.nodes.find(
+      (node) =>
+        node.campaignId === invitation.campaignId &&
+        node.owner.toLowerCase() === invitation.distributor.toLowerCase(),
+    )?.id ?? null,
+});
 
 const newestFirst = (a: Invitation, b: Invitation) => b.createdAt.localeCompare(a.createdAt);
 
@@ -32,11 +41,25 @@ const unanswerable = (invitation: Invitation): string | null => {
 };
 
 export const invitationsReads = {
+  "invitations.get": (input, runtime) => {
+    const mine = addressesOf(runtime.world, runtime.personaId());
+    return present(
+      found(
+        runtime.world.invitations.find(
+          (item) =>
+            item.id === input.id && mine.some((address) => sameAddress(address, item.distributor)),
+        ),
+        "That invitation",
+      ),
+      runtime.now(),
+      runtime.world,
+    );
+  },
   "invitations.mine": (input, runtime) => {
     const mine = addressesOf(runtime.world, runtime.personaId());
     const items = runtime.world.invitations
       .filter((invitation) => mine.some((address) => sameAddress(address, invitation.distributor)))
-      .map((invitation) => present(invitation, runtime.now()))
+      .map((invitation) => present(invitation, runtime.now(), runtime.world))
       .filter((invitation) => input.status === undefined || invitation.status === input.status)
       .reverse()
       .sort(newestFirst);
@@ -50,7 +73,7 @@ export const invitationsReads = {
         (invitation) =>
           input.distributor === undefined || sameAddress(invitation.distributor, input.distributor),
       )
-      .map((invitation) => present(invitation, runtime.now()))
+      .map((invitation) => present(invitation, runtime.now(), runtime.world))
       .reverse()
       .sort(newestFirst);
     return page(items, input);
@@ -75,7 +98,7 @@ export const invitationsWrites = {
       (invitation) =>
         invitation.campaignId === campaign.id &&
         sameAddress(invitation.distributor, input.distributor) &&
-        present(invitation, now).status === "pending",
+        ["pending", "accepted"].includes(present(invitation, now, world).status),
     );
     if (open)
       return fail("CONFLICT", "This person already has a pending invitation to this campaign.");
@@ -108,7 +131,9 @@ export const invitationsWrites = {
       ),
       "That invitation",
     );
-    const invitation = present(stored, now);
+    const invitation = present(stored, now, world);
+    const status = input.response === "accept" ? "accepted" : "declined";
+    if (invitation.status === status) return invitation;
     const problem = unanswerable(invitation);
     if (problem !== null) return fail("VALIDATION_FAILED", problem);
     const campaign = world.campaigns.find((candidate) => candidate.id === invitation.campaignId);
@@ -129,7 +154,8 @@ export const invitationsWrites = {
       ),
       "That invitation",
     );
-    if (present(stored, now).status !== "pending")
+    if (stored.status === "withdrawn") return present(stored, now, world);
+    if (present(stored, now, world).status !== "pending")
       return fail("VALIDATION_FAILED", "Only a pending invitation can be withdrawn.");
     return replace(world, { ...stored, status: "withdrawn", withdrawnAt: iso(now) });
   },

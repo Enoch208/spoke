@@ -72,8 +72,8 @@ describe("invitations", () => {
     await expect(client["invitations.send"](input)).rejects.toMatchObject({ code: "CONFLICT" });
     const withdrawn = await client["invitations.withdraw"]({ id: sent.id });
     expect(withdrawn).toMatchObject({ status: "withdrawn", withdrawnAt: iso(ANCHOR) });
-    await expect(client["invitations.withdraw"]({ id: sent.id })).rejects.toMatchObject({
-      code: "VALIDATION_FAILED",
+    expect(await client["invitations.withdraw"]({ id: sent.id })).toMatchObject({
+      status: "withdrawn",
     });
   });
 

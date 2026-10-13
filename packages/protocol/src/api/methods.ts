@@ -388,6 +388,7 @@ export const clientMethodSchemas = {
     }),
   ),
   "partners.get": method(address, p.partnerDetail),
+  "invitations.get": method(id, p.invitation),
   "invitations.mine": method(
     pagination.extend({ status: z.string().optional() }),
     m.pagedSchema(p.invitation),

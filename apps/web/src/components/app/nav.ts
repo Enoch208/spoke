@@ -87,7 +87,14 @@ export const earnNav: readonly NavItem[] = [
   ),
   item("earn", "earn-payouts", "Payouts", routes.earn.payouts, Wallet01Icon, "settlement"),
   item("earn", "earn-reputation", "Reputation", routes.earn.reputation, Award01Icon, "reputation"),
-  item("earn", "earn-invitations", "Invitations", routes.earn.invitations, Mail01Icon, "cohorts"),
+  item(
+    "earn",
+    "earn-invitations",
+    "Invitations",
+    routes.earn.invitations,
+    Mail01Icon,
+    "invitations",
+  ),
   item(
     "earn",
     "earn-communities",

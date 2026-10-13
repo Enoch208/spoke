@@ -28,9 +28,10 @@ Pay for revenue, not reach.
 The core web app and API are deployed, with settlement on Monad Testnet:
 
 - Merchant setup, versioned products, campaign publication and management, referral links and graphs, checkout, buyer delivery, receipts, refunds and claims in the web app.
+- Merchant campaign invitations with opted-in recipients, current reward terms, an acceptance inbox and confirmed link participation. Accepting an invitation does not create a link; the distributor approves that transaction separately.
 - An immutable settlement contract with separate reward and buyer-payment ledgers, 1–5 commission levels, refunds, finalization, pull claims and future policy versions with 24 hours' notice.
-- A 6-decimal testnet demo token (`SpokeDemoUSD`, not a stablecoin and not redeemable), generated contract ABIs, shared reward math and schemas for all 189 client methods.
-- A PostgreSQL API implementing 135 core client methods for wallet sessions, immutable product versions, campaign publication, graph exploration, receipts, six earnings buckets, merchant vaults, reports and privacy-aware distributor records. Four optional methods support separate mainnet wallet funding; another 50 designed methods return an explicit unavailable error.
+- A 6-decimal testnet demo token (`SpokeDemoUSD`, not a stablecoin and not redeemable), generated contract ABIs, shared reward math and schemas for all 190 client methods.
+- A PostgreSQL API implementing 136 core client methods for wallet sessions, immutable product versions, campaign publication, graph exploration, receipts, six earnings buckets, merchant vaults, reports and privacy-aware distributor records. Four optional methods support separate mainnet wallet funding; another 50 designed methods return an explicit unavailable error.
 - Envio HyperIndex settlement and SDUSD event indexing, canonical replay and reorganization checks. HyperSync supplies history; native RPC supplies live events with TLS verification and bounded log ranges.
 - Cached Nansen context for four demonstration distributors, labelled as supported mainnet history. These new wallets have no observed history; page views do not purchase provider queries, and insights never determine payouts.
 - Passkey accounts and signing sessions with Mera, plus private campaign notes protected by a separate PRF namespace. Notes are encrypted locally and never sent to the API or blockchain.
@@ -49,6 +50,12 @@ Sign in as a merchant and open [Distributors](https://usespoke.xyz/distributors)
 Only shared fields appear; hidden values are never treated as zero. Pending and refunded sales do not count as settled performance. A sale can credit several people, so candidate columns must not be added together. Monetary totals appear only when complete receipt evidence establishes one token denomination.
 
 **Review wallet context** opens separate, cached research for a public wallet. Its networks, source and age are disclosed. It never affects directory ranking or rewards, and a page view does not buy a provider refresh. Private and pseudonymous profiles cannot be used to retrieve external wallet context. Demo mode labels all sample records.
+
+## Invite distributors to a campaign
+
+Open **Sell → Partners → Invite distributor**, enter a registered wallet, choose an active campaign and send an optional message. Recipients must enable invitations in their reputation settings. Spoke records the current contract terms and policy hash with the invitation; it blocks duplicate open invitations, self-invitations and distributors who already have a campaign link.
+
+The distributor opens **Earn → Invitations**, reviews the original and current terms, then accepts or declines. They can accept now and create their link later. Joining requires a separate transaction approved by the invited wallet. **Sent invitations** shows **Joined** only after the link is confirmed and indexed. Pending invitations can be withdrawn; expired or withdrawn invitations cannot be accepted. Invitations do not restrict the deployed campaign contract's open participation model or create rewards by themselves.
 
 ## Private campaign notes
 
