@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Address } from "@/components/ui/address";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -10,7 +9,7 @@ import { ErrorState } from "@/components/ui/error-state";
 import { Field } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
 import { fill } from "@/lib/copy";
-import { formatAmount, formatDateTime, formatRelative, shortAddress } from "@/lib/format";
+import { formatAmount, formatDateTime, formatRelative } from "@/lib/format";
 import { useClientMutation, useClientQuery } from "@/lib/query/use-client";
 import { useTxStore } from "@/lib/stores/tx";
 import { useUiStore } from "@/lib/stores/ui";
@@ -22,7 +21,8 @@ import type { ModalComponentProps } from "@/components/app/modal-types";
 import { refundCopy as copy } from "../copy/dialogs";
 import { Callout } from "../shared/callout";
 import { useIsDemo, useOwnsCampaign } from "../shared/hooks";
-import { DialogBadge, DialogSkeleton, FeeNote, LedgerLines } from "./parts";
+import { DialogBadge, DialogSkeleton, FeeNote } from "./parts";
+import { RefundSummary } from "./refund-summary";
 import { openFinalize } from "../shared/settle";
 
 const defaultReply = "Refunded under the published refund terms.";
@@ -108,7 +108,6 @@ export default function RefundModal({ props, isTop, close }: ModalComponentProps
   };
   const loading = receipt.isPending || (Boolean(data) && (campaign.isPending || owns === null));
   const blocked = !loading && (!owns || !windowOpen);
-  const people = new Set(data?.allocations.map((allocation) => allocation.recipient.address)).size;
   return (
     <Dialog
       open
@@ -171,68 +170,11 @@ export default function RefundModal({ props, isTop, close }: ModalComponentProps
               relative: formatRelative(new Date(unlock), { now: new Date(now) }),
             })}
           </Badge>
-          <LedgerLines
-            rows={[
-              {
-                key: "buyer",
-                label: copy.buyer,
-                value: data.buyer ? (
-                  <Address
-                    address={data.buyer}
-                    chainId={activeChain.id}
-                    demo={demo}
-                    copy={false}
-                    explorer={false}
-                  />
-                ) : (
-                  "—"
-                ),
-              },
-              {
-                key: "product",
-                label: copy.product,
-                value: campaign.data?.product.title ?? "",
-                text: true,
-              },
-              {
-                key: "paid",
-                label: copy.paid,
-                value: formatAmount(BigInt(data.price), token, { testnet: true }),
-              },
-              {
-                key: "time",
-                label: copy.time,
-                value: formatDateTime(new Date(data.purchasedAt)),
-                text: true,
-              },
-            ]}
+          <RefundSummary
+            receipt={data}
+            productTitle={campaign.data?.product.title ?? ""}
+            demo={demo}
           />
-          <div>
-            <h3 className="text-ink mb-2 text-sm font-medium">{copy.effectsTitle}</h3>
-            <ul className="text-body list-disc space-y-1.5 pl-5 text-sm">
-              <li>
-                {fill(copy.effectBuyer, {
-                  buyer: data.buyer ? shortAddress(data.buyer) : copy.buyer,
-                  price: formatAmount(BigInt(data.price), token),
-                })}
-              </li>
-              {BigInt(data.rewardReserved) > 0n ? (
-                <li>
-                  {fill(copy.effectRewards, {
-                    reward: formatAmount(BigInt(data.rewardReserved), token),
-                  })}
-                </li>
-              ) : null}
-              {people > 0 ? (
-                <li>
-                  {people === 1
-                    ? copy.effectPeopleOne
-                    : fill(copy.effectPeople, { n: String(people) })}
-                </li>
-              ) : null}
-              <li>{copy.effectAccess}</li>
-            </ul>
-          </div>
           {props.disputeId && dispute.data ? (
             <div className="bg-soft space-y-1 rounded-xl px-4 py-3 text-sm">
               <p className="text-subtle">{copy.reason}</p>
