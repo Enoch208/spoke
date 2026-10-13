@@ -1,0 +1,87 @@
+import { required } from "@/lib/copy/required";
+
+export const sheetCopy = {
+  openFullPage: "Open full page",
+} as const;
+
+export const refundCopy = {
+  title: "Ask {merchant} for a refund",
+  body: "Only {merchant} can issue a refund, and only before the sale settles on {unlockAt}. If they refund, {price} goes back to your account in the same transaction.",
+  closes: "Refund window closes {relative}",
+  reason: "Reason",
+  reasonPlaceholder: "Choose a reason",
+  reasons: {
+    no_access: "I didn’t get access",
+    not_as_described: "It’s not as described",
+    mistake: "I bought it by mistake",
+    other: "Something else",
+  },
+  details: "Details",
+  detailsHelp: "What happened? {merchant} sees this.",
+  send: "Send request",
+  sending: "Sending…",
+  cancel: "Cancel",
+  close: "Close",
+  chooseReason: "Choose a reason.",
+  tooShort: "Add a little more detail (at least 20 characters).",
+  tooLong: "Keep it under 1,000 characters.",
+  already: "You asked for a refund {time}. Status: {status}.",
+  statuses: {
+    open: "Waiting for {merchant}",
+    declined: "Declined",
+    refunded: "Refunded",
+    other: "Closed",
+  },
+  windowClosed:
+    "This sale settled on {unlockAt}. Refunds through Spoke are no longer possible. Contact {merchant} directly.",
+  refunded: required.refunded,
+  sentToast: "Refund request sent to {merchant}.",
+  demo: "Sample request · stored only in this demo",
+} as const;
+
+export const proofCopy = {
+  title: "Proof for sale #{saleId}",
+  native: "Paid onchain through Spoke’s checkout.",
+  attested: required.merchantAttested,
+  facts: "Facts",
+  keys: {
+    network: "Network",
+    contract: "Contract",
+    saleId: "Sale ID",
+    orderKey: "Order key",
+    policyHash: "Policy hash",
+    policyVersion: "Terms version",
+    buyer: "Buyer",
+    referral: "Referral link ID",
+    price: "Price",
+    reward: "Reward reserved",
+    unlocks: "Unlocks at",
+  },
+  networkValue: "Monad Testnet (chain 10143)",
+  you: "You",
+  direct: "None, direct purchase",
+  version: "Version {version}",
+  events: "Events",
+  eventNames: {
+    NativePurchaseAccepted: "Purchase accepted",
+    RewardReserved: "Rewards reserved",
+    SaleFinalized: "Sale finalized",
+    SaleRefunded: "Sale refunded",
+    RewardClaimed: "Reward claimed",
+  },
+  block: "Block {block}",
+  indexed: "Indexed up to block {block} · {relative}",
+  syncing: required.syncing,
+  checkTitle: "Check it yourself",
+  checkSteps: [
+    "Open the contract on MonadVision.",
+    "Read getSale({saleId}) and compare the state, amounts and unlock time.",
+    "Open each transaction above and match its events.",
+  ],
+  snippet: "Read the sale with viem",
+  snippetCopied: "Snippet copied",
+  demoCheck: "Demo sales aren’t onchain, so there’s nothing to check on the explorer.",
+  simulated: "Simulated in demo mode",
+  notFound: "This sale doesn’t exist on Monad Testnet.",
+  viewOnExplorer: "View on explorer",
+} as const;

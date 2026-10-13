@@ -58,10 +58,18 @@ export function CheckoutPage({ campaignId }: { campaignId: string }) {
           </div>
         ) : (
           <>
-            <CheckoutSummary checkout={checkout} compact onNotThisPerson={direct.ask} />
-            <section className="bg-surface border-hairline flex flex-col gap-5 rounded-2xl border p-4">
-              <CheckoutPanel checkout={checkout} onDirect={direct.ask} />
-            </section>
+            <div
+              className={
+                checkout.blocked || checkout.phase === "done"
+                  ? "flex flex-col-reverse gap-6"
+                  : "flex flex-col gap-6"
+              }
+            >
+              <CheckoutSummary checkout={checkout} compact onNotThisPerson={direct.ask} />
+              <section className="bg-surface border-hairline flex flex-col gap-5 rounded-2xl border p-4">
+                <CheckoutPanel checkout={checkout} onDirect={direct.ask} />
+              </section>
+            </div>
             <AgreeLine />
             <HelpLink />
             {checkout.phase === "done" ||

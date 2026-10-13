@@ -65,12 +65,7 @@ function PrimaryButton({ checkout }: { checkout: Checkout }) {
         </Button>
       </div>
     ) : (
-      <Button
-        className={primaryClass}
-        loading
-        disabled
-        loadingLabel={stepCopy.pay.states.submitted}
-      >
+      <Button className={primaryClass} loading disabled loadingLabel={stepCopy.pay.paying}>
         {label}
       </Button>
     );

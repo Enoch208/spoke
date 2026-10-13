@@ -59,6 +59,7 @@ export const stepCopy = {
     simulate: "Before asking you to sign, we check the purchase would go through.",
     confirmWallet: "Confirm in your wallet",
     confirmPasskey: "Confirm with your passkey",
+    paying: "Paying…",
     tryAgain: "Try again",
     checkAgain: "Check again",
     slow: "This is taking longer than usual. You can leave; reopening this page picks your purchase up again.",
