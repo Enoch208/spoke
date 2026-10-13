@@ -1,5 +1,6 @@
-import { describe, expect, it } from "vitest";
-import { createSpokeClient, SpokeApiError } from "../src/index.js";
+import { describe, expect, it, vi } from "vitest";
+import { clientRoutes } from "@spoke/protocol";
+import { createSpokeClient, publicReadMethods, SpokeApiError } from "../src/index.js";
 
 const reply = (data: unknown) =>
   Response.json({
@@ -64,5 +65,19 @@ describe("public read client", () => {
       fetch: () => Promise.resolve(reply({ contracts: [{ sourceVerified: "yes" }] })),
     });
     await expect(client.read("system.contracts", {})).rejects.toThrow();
+  });
+  it("exposes only credential-free GET routes", () => {
+    expect(new Set(publicReadMethods).size).toBe(publicReadMethods.length);
+    for (const method of publicReadMethods) {
+      expect(clientRoutes[method]).toMatchObject({ verb: "GET", auth: "public" });
+    }
+  });
+  it("refuses non-public methods from untyped consumers before transport", async () => {
+    const transport = vi.fn<typeof fetch>();
+    const client = createSpokeClient({ baseUrl: "https://api.usespoke.xyz", fetch: transport });
+    await expect(
+      Reflect.apply(client.read.bind(client), client, ["account.me", {}]),
+    ).rejects.toThrow(TypeError);
+    expect(transport).not.toHaveBeenCalled();
   });
 });

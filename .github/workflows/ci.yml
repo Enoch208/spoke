@@ -87,3 +87,5 @@ jobs:
         run: pnpm test
       - name: Build
         run: pnpm build
+      - name: Verify SDK package in an isolated consumer
+        run: pnpm --filter @spoke/sdk release:check

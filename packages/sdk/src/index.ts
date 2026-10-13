@@ -48,6 +48,8 @@ export type SpokeReadEnvelope<M extends PublicReadMethod> = Omit<
   z.infer<ReturnType<typeof envelope>>,
   "data"
 > & { data: ClientOutput<M> };
+export type SpokeReadInput<M extends PublicReadMethod> = ClientInput<M>;
+export type SpokeReadOutput<M extends PublicReadMethod> = ClientOutput<M>;
 export class SpokeApiError extends Error {
   constructor(
     public code: ErrorCode,
@@ -70,6 +72,8 @@ export const createSpokeClient = (options: { baseUrl: string; fetch?: typeof fet
     method: M,
     input: ClientInput<M>,
   ): Promise<SpokeReadEnvelope<M>> => {
+    if (!(publicReadMethods as readonly string[]).includes(method))
+      throw new TypeError("This method is not part of the public read SDK.");
     const schema = clientMethodSchemas[method];
     const parsed = schema.input.parse(input);
     const fields = z.record(z.string(), z.unknown()).parse(parsed);

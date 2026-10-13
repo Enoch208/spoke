@@ -1,15 +1,67 @@
 {
   "name": "@spoke/sdk",
-  "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit"
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "prepack": "pnpm build",
+    "release:check": "node scripts/check-package.mjs"
   },
   "dependencies": {
+    "zod": "4.6.6",
+    "viem": "2.57.4"
+  },
+  "devDependencies": {
     "@spoke/protocol": "workspace:*",
-    "zod": "4.6.6"
+    "tsup": "8.5.1"
+  },
+  "version": "0.1.0",
+  "description": "Validated, credential-free TypeScript client for the Spoke public read API.",
+  "license": "MIT",
+  "homepage": "https://docs.usespoke.xyz/developers/sdk",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Enoch208/spoke.git",
+    "directory": "packages/sdk"
+  },
+  "bugs": {
+    "url": "https://github.com/Enoch208/spoke/issues"
+  },
+  "keywords": [
+    "spoke",
+    "monad",
+    "sdk",
+    "typescript",
+    "referrals"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }
