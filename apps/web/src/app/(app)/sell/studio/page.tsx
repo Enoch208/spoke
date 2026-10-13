@@ -1,10 +1,10 @@
 import { PageSkeleton } from "@/components/product/page";
-import { ComposerPage } from "@/components/sell/core/composer-page";
+import { StudioPage } from "@/components/sell/core/studio/studio-page";
 import { Suspense } from "react";
 export default function Page() {
   return (
     <Suspense fallback={<PageSkeleton />}>
-      <ComposerPage />
+      <StudioPage />
     </Suspense>
   );
 }

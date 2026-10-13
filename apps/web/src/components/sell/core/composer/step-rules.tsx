@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { RadioGroup } from "@/components/ui/radio";
 import { disclosures, fill } from "@/lib/copy";
 import { formatDateTime } from "@/lib/format";
-import { holdWords } from "./plain-terms";
+import { holdWords } from "../studio/terms-text";
 import { useModeStore } from "@/lib/stores/mode";
 import { useUiStore } from "@/lib/stores/ui";
 import { HoldField } from "../studio/hold-field";

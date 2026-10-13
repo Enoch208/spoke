@@ -10,6 +10,7 @@ import { ErrorState } from "@/components/ui/error-state";
 import { useClientQuery } from "@/lib/query/use-client";
 import { routes } from "@/lib/routes";
 import { useModeStore } from "@/lib/stores/mode";
+import { prefillFor } from "../studio/handoff";
 import { findTemplate, myTemplates } from "../studio/library";
 import { Composer } from "./composer";
 import { entryCopy } from "./copy-entry";
@@ -23,6 +24,7 @@ export function CreateEntry() {
   const templateParam = search.get("template");
   const appMode = useModeStore((state) => state.mode);
   const [freshId] = useState(() => crypto.randomUUID());
+  const [prefill] = useState(() => prefillFor(templateParam));
   const draftId = draftParam ?? freshId;
   const loadDraft = draftParam !== null && draftParam !== freshId;
   const merchant = useClientQuery("merchants.me", {});
@@ -93,9 +95,9 @@ export function CreateEntry() {
   };
   const ready = items.filter(isReady).map((item) => productLite(item, categories.data));
   const library = libraryFor(templates.data, token);
-  const template = templateParam
-    ? findTemplate(templateParam, myTemplates(templates.data ?? [], token))
-    : null;
+  const template =
+    prefill ??
+    (templateParam ? findTemplate(templateParam, myTemplates(templates.data ?? [], token)) : null);
   const draftData = loadDraft ? (draft.data ?? null) : null;
   const setup = {
     mode: "create" as const,

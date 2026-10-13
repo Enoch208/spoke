@@ -5,27 +5,11 @@ import { reviewCopy } from "./copy-rules";
 import type { ComposerToken, ProductLite } from "./derive";
 import type { StepKey } from "./fields";
 import type { ShortPathMode } from "../studio/terms";
+import { holdAdjective } from "../studio/terms-text";
 
 const copy = reviewCopy.terms;
 
 export type PlainTerm = { readonly text: string; readonly step: StepKey | null };
-
-const units = [
-  { seconds: 86_400, name: "day" },
-  { seconds: 3_600, name: "hour" },
-  { seconds: 60, name: "minute" },
-] as const;
-
-export const holdAdjective = (seconds: number) => {
-  const unit = units.find((candidate) => seconds % candidate.seconds === 0) ?? units[2];
-  return `${String(Math.max(1, Math.floor(seconds / unit.seconds)))}-${unit.name}`;
-};
-
-export const holdWords = (seconds: number) => {
-  const unit = units.find((candidate) => seconds % candidate.seconds === 0) ?? units[2];
-  const value = Math.max(1, Math.floor(seconds / unit.seconds));
-  return `${String(value)} ${unit.name}${value === 1 ? "" : "s"}`;
-};
 
 export type TermsInput = {
   readonly product: ProductLite | null;

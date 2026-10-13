@@ -2,6 +2,7 @@ import { computeReward, formatTokenAmount, type ClientOutput } from "@spoke/prot
 import { myTemplates } from "../studio/library";
 import { termsFromPolicy } from "../studio/policy";
 import { startingPoints, type LibraryTemplate } from "../studio/starting-points";
+import type { StudioTerms } from "../studio/terms";
 import type { ComposerToken, ProductLite } from "./derive";
 import { msToLocal } from "./derive-rules";
 import {
@@ -52,7 +53,11 @@ export type CreateSources = {
   readonly token: ComposerToken;
   readonly alertDefault: number;
   readonly productParam: string | null;
-  readonly template: LibraryTemplate | null;
+  readonly template: {
+    readonly name: string | null;
+    readonly version: number;
+    readonly terms: StudioTerms;
+  } | null;
   readonly from: { readonly policy: PolicySet["current"]; readonly productId: string } | null;
 };
 
@@ -101,7 +106,10 @@ export const createFields = (sources: CreateSources): ComposerFields => {
     ...(sources.template
       ? {
           terms: sources.template.terms,
-          template: { name: sources.template.name, version: sources.template.version },
+          template:
+            sources.template.name === null
+              ? null
+              : { name: sources.template.name, version: sources.template.version },
         }
       : {}),
   };

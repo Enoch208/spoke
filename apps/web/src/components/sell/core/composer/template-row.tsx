@@ -6,26 +6,12 @@ import type { ReactNode } from "react";
 import { Card } from "@/components/ui/card";
 import { cx } from "@/components/ui/cx";
 import { fill } from "@/lib/copy";
-import { formatBps, formatDuration, formatSplit } from "@/lib/format";
-import { parsePercent, parsedBps, holdSecondsOf } from "../studio/terms";
+import { termsChips } from "../studio/terms-text";
 import type { LibraryTemplate } from "../studio/starting-points";
 import { composerCopy } from "./copy";
 import type { TemplateNote } from "./fields";
 
 const copy = composerCopy.rewards;
-
-const chips = (template: LibraryTemplate) => {
-  const rate = parsePercent(template.terms.rate);
-  const weights = parsedBps(template.terms.weights);
-  const hold = holdSecondsOf(template.terms.hold);
-  return [
-    rate.ok ? formatBps(rate.value) : null,
-    weights ? formatSplit(weights) : null,
-    hold === null ? null : formatDuration(hold),
-  ]
-    .filter((item) => item !== null)
-    .join(" · ");
-};
 
 export function TemplateRow({
   templates,
@@ -68,7 +54,7 @@ export function TemplateRow({
             >
               <span className="text-ink truncate text-sm font-medium">{template.name}</span>
               <span className="text-subtle truncate font-mono text-xs tabular-nums">
-                {chips(template)}
+                {termsChips(template.terms).join(" · ")}
               </span>
             </button>
           );

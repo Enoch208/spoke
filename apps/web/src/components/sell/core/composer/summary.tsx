@@ -5,7 +5,7 @@ import { CampaignArt } from "@/components/product/campaign-art";
 import { Card } from "@/components/ui/card";
 import { fill } from "@/lib/copy";
 import { formatAmount, formatBps, formatDateTime } from "@/lib/format";
-import { holdWords } from "./plain-terms";
+import { holdWords } from "../studio/terms-text";
 import { composerCopy } from "./copy";
 import type { ComposerToken, Derived, ProductLite } from "./derive";
 import type { ComposerFields, ComposerMode, StepKey } from "./fields";
