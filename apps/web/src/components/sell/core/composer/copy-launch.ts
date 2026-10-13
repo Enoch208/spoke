@@ -1,0 +1,101 @@
+export const launchCopy = {
+  title: "Launch",
+  description:
+    "Each step below is a separate confirmation. Launching deposits money, so it always asks.",
+  steps: {
+    create: "Create the campaign",
+    createHelper: "Records the product, price, commission and split onchain.",
+    approve: "Allow a {deposit} deposit",
+    approveHelper:
+      "Lets the Spoke contract take exactly this amount. Skipped when already allowed.",
+    deposit: "Deposit {deposit}",
+    depositHelper: "Moves {deposit} into this campaign’s reward budget.",
+    live: "Go live",
+    liveHelper: "Opens the campaign for links and purchases now.",
+  },
+  note: "Each step asks you to confirm with your passkey or wallet. Launching deposits money, so quick actions never skip these confirmations.",
+  depositFirst:
+    "Deposit reward funds before the campaign begins. Existing obligations cannot be withdrawn.",
+  button: "Launch and deposit {deposit}",
+  preparing: "Preparing launch…",
+  launching: "Launching… keep this tab open to confirm each step.",
+  showProgress: "Show progress",
+  createdNotFunded: "Campaign #{campaignId} was created but not funded. Nothing was deposited.",
+  fundedNotLive: "Your campaign is funded but not live yet.",
+  openCampaign: "Open campaign",
+  notDeployed:
+    "Spoke isn’t deployed on Monad Testnet yet, so campaigns can’t launch. Your draft is saved.",
+  noMon: "You need a little MON for network fees.",
+  noSdusd: "You have {balance}. Deposit less or get test {symbol}.",
+  getFunds: "Get test funds",
+  productChanged: "The product changed after you reviewed these terms. Review again.",
+  termsChanged: "The terms changed while you were reviewing. Review them again.",
+  reviewAgain: "Review again",
+  failed: "We couldn’t prepare the launch. {reason}",
+} as const;
+
+export const launchedCopy = {
+  title: "Your campaign is live",
+  description: "Share the campaign page so people can start their own links.",
+  page: "Campaign page",
+  copyLink: "Copy campaign link",
+  copied: "Link copied",
+  qr: "QR code for {name}",
+  share: "Share the campaign page",
+  shareText: "{name} on Spoke",
+  find: "Find distributors",
+  embed: "Embed on your site",
+  open: "Open campaign",
+  proof: "Proof",
+  created: "Created",
+  funded: "Funded",
+  campaignId: "Campaign ID",
+  policyHash: "Policy hash",
+  simulated: "Simulated in demo mode",
+  indexing: "It can take a few seconds to appear in Explore while we index it.",
+  merchantNote: "You’re never paid on your own campaign, so the page has no referral code.",
+  loadFailed: "We couldn’t load the launched campaign yet.",
+  alertFailed: "We couldn’t save your budget alert. Set it on the campaign’s Budget tab.",
+} as const;
+
+export const newTermsCopy = {
+  title: "New terms for {campaign}",
+  today: "Today: v{version}",
+  description:
+    "Publish terms for future sales. Sales before the new terms apply keep today’s terms.",
+  changes: "What changes",
+  noChanges: "Nothing has changed yet.",
+  change: "{field}: {before} → {after}",
+  fields: {
+    commissionBps: "Commission",
+    perSaleCap: "Per-sale cap",
+    maxRewardedAncestors: "People paid",
+    weightsBps: "Split",
+    shortPathMode: "Short paths",
+    holdSeconds: "Hold",
+  },
+  effective: "Effective from",
+  effectiveHelper: "In your time zone. {utc}. The earliest is 24 hours after publishing.",
+  keepNote:
+    "Sales before {effectiveAt} keep today’s terms. Every receipt records the policy version and hash it was made under.",
+  scheduledNote: "v{version} is already set to apply from {effectiveAt}.",
+  publish: "Publish new terms",
+  publishing: "Publishing…",
+  endsFixed: "The campaign still ends {date}.",
+  errors: {
+    unchanged: "Change at least one term to publish a new version.",
+    notice: "New terms need at least 24 hours’ notice. Choose {earliest} or later.",
+    afterEnd: "The campaign ends {endsAt}, before these terms would apply.",
+    invalidDate: "Choose a date and time.",
+  },
+  blockedTitle: "New terms for future sales",
+  blocked: {
+    ended: "This campaign has ended, so there are no future sales to set terms for.",
+    notLive: "Finish launching this campaign before changing its terms.",
+    scheduled:
+      "New terms are already scheduled for {effectiveAt}. You can change terms again after they apply.",
+    other: "This belongs to another business.",
+    back: "Back to campaign",
+  },
+  toast: "New terms published. They apply from {effectiveAt}.",
+} as const;
