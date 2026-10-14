@@ -1,0 +1,3 @@
+@video path /video /video/
+header @video Cache-Control "no-store"
+redir @video https://youtu.be/-rz5jWOEWw4 302
