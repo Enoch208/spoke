@@ -139,8 +139,8 @@ export function AuroraForm({
         {quote ? <p className="font-mono mt-2 break-all">{quote.recipient}</p> : null}
         <p className="text-subtle mt-2">
           The quote shows your authenticated destination wallet. Check its full address before
-          continuing. Mainnet funding requires an external wallet; passkey signing currently
-          supports testnet.
+          continuing. Mainnet funding requires an external wallet; email and passkey signing
+          currently supports testnet.
         </p>
       </div>
       <Button

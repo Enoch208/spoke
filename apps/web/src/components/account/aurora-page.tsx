@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
+import { useConnection } from "wagmi";
 import { z } from "zod";
 import type { ClientOutput } from "@spoke/protocol";
 import { ProductPage, PageLink } from "@/components/product/page";
@@ -104,6 +105,11 @@ export function AuroraFundingPage() {
     : "/wallet/fund";
   const address = useSessionStore((state) => state.address);
   const signedIn = useSessionStore((state) => state.status === "signedIn");
+  const connection = useConnection();
+  const externalWalletReady =
+    connection.status === "connected" &&
+    connection.connector.type !== "AUTH" &&
+    connection.address.toLowerCase() === address?.toLowerCase();
   return (
     <ProductPage
       title="Fund your wallet"
@@ -117,8 +123,8 @@ export function AuroraFundingPage() {
           use SDUSD on Monad Testnet, so this funding stays separate.
         </p>
         <p className="text-body mt-2 text-sm">
-          Use an external wallet you control. If you signed in with a passkey, sign out and choose
-          Connect wallet. You will need MON on Monad Mainnet to send or spend your USDC.
+          Use an external wallet you control. If you signed in with email or a passkey, sign out and
+          choose Connect wallet. You will need MON on Monad Mainnet to send or spend your USDC.
         </p>
       </Card>
       {mode !== "live" ? (
@@ -133,6 +139,27 @@ export function AuroraFundingPage() {
           <p>Sign in to choose your destination wallet.</p>
           <Button onClick={() => useUiStore.getState().open("M-01", { reason: "open", returnTo })}>
             Sign in
+          </Button>
+        </Card>
+      ) : !saved.success && !externalWalletReady ? (
+        <Card>
+          <p>
+            Connect the external wallet for your signed-in account before creating a mainnet funding
+            request.
+          </p>
+          <p className="text-subtle mt-2 text-sm">
+            Email and passkey signing in Spoke currently use testnet. To fund an external wallet,
+            sign out and sign in with that wallet.
+          </p>
+          <Button
+            variant="secondary"
+            onClick={() =>
+              useUiStore
+                .getState()
+                .open("M-01", { reason: "open", returnTo, expectedAddress: address })
+            }
+          >
+            Connect your wallet
           </Button>
         </Card>
       ) : (
