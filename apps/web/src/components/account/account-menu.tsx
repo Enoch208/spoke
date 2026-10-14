@@ -10,6 +10,7 @@ import { useSpokeClient } from "@/lib/client/provider";
 import { useClientQuery } from "@/lib/query/use-client";
 import { useSessionStore } from "@/lib/stores/session";
 import { endPasskeySession } from "@/lib/accounts/passkey";
+import { disconnectEmailWallet } from "@/lib/accounts/reown";
 import { useDemoMode } from "@/lib/demo/use-demo-mode";
 import { useModeStore } from "@/lib/stores/mode";
 import { useWorkspaceStore } from "@/lib/stores/workspace";
@@ -54,6 +55,7 @@ export default function AccountMenu({ close }: ModalComponentProps<"M-07">) {
       setError(errorText(failure));
     } finally {
       endPasskeySession();
+      await disconnectEmailWallet().catch(() => undefined);
       useSessionStore.getState().signOut();
       queryClient.clear();
       close();

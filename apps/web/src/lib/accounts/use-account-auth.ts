@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useConfig, useConnection, useConnectors } from "wagmi";
-import { connect, signMessage, switchChain } from "wagmi/actions";
+import { connect, getConnection, signMessage, switchChain } from "wagmi/actions";
 import { useSpokeClient } from "@/lib/client/provider";
 import { useSessionStore } from "@/lib/stores/session";
 import { activeChain } from "@/lib/wagmi";
 import { endPasskeySession, unlockPasskey } from "./passkey";
-import { openWalletConnection } from "./reown";
+import { emailLoginAvailable, openEmailConnection, openWalletConnection } from "./reown";
 import { signInAccount } from "./sign-in";
 
 export type AuthOutcome = { isNewAccount: boolean };
@@ -16,6 +16,7 @@ type Connector = ReturnType<typeof useConnectors>[number];
 
 const messageOf = (failure: unknown, fallback: string) =>
   failure instanceof Error && failure.message ? failure.message : fallback;
+const subscribeHydration = () => () => {};
 
 export const useAccountAuth = ({
   expectedAddress,
@@ -28,8 +29,22 @@ export const useAccountAuth = ({
   const config = useConfig();
   const connectors = useConnectors();
   const connection = useConnection();
-  const [busy, setBusy] = useState<"passkey" | "create" | "wallet" | null>(null);
+  const hydrated = useSyncExternalStore(
+    subscribeHydration,
+    () => true,
+    () => false,
+  );
+  const [busy, setBusy] = useState<"passkey" | "create" | "wallet" | "email" | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const emailAttempt = useRef<AbortController | null>(null);
+
+  useEffect(
+    () => () => {
+      emailAttempt.current?.abort();
+      emailAttempt.current = null;
+    },
+    [],
+  );
 
   const matchesExpected = (address: string) =>
     !expectedAddress || address.toLowerCase() === expectedAddress.toLowerCase();
@@ -68,7 +83,7 @@ export const useAccountAuth = ({
     setBusy("wallet");
     setError(null);
     try {
-      const connected = connector ? await connect(config, { connector }) : connection;
+      const connected = connector ? await connect(config, { connector }) : getConnection(config);
       const address = "accounts" in connected ? connected.accounts[0] : connected.address;
       if (!address) throw new Error("Choose a wallet first.");
       if (!matchesExpected(address)) throw new Error("Connect your original account to continue.");
@@ -86,6 +101,41 @@ export const useAccountAuth = ({
     }
   };
 
+  const email = async () => {
+    if (!client || busy || emailAttempt.current) return;
+    const attempt = new AbortController();
+    emailAttempt.current = attempt;
+    setBusy("email");
+    setError(null);
+    try {
+      const address = await openEmailConnection(attempt.signal);
+      if (!address || attempt.signal.aborted) return;
+      if (!matchesExpected(address))
+        throw new Error("Use the email, passkey or wallet for your original account to continue.");
+      const connected = getConnection(config);
+      if (
+        connected.status !== "connected" ||
+        connected.address.toLowerCase() !== address.toLowerCase()
+      )
+        throw new Error("Your connected account changed. Please sign in again.");
+      if (connected.chainId !== activeChain.id)
+        await switchChain(config, { chainId: activeChain.id, connector: connected.connector });
+      const result = await signInAccount(client, address, "wallet", (message) =>
+        signMessage(config, { account: address, connector: connected.connector, message }),
+      );
+      if (emailAttempt.current === attempt)
+        onSignedIn({ isNewAccount: result.verified.isNewAccount });
+    } catch (failure) {
+      if (!attempt.signal.aborted) {
+        useSessionStore.getState().setStatus("anonymous");
+        setError(messageOf(failure, "Email sign-in didn’t finish. Please try again."));
+      }
+    } finally {
+      emailAttempt.current = null;
+      setBusy(null);
+    }
+  };
+
   const walletConnect = () => {
     setError(null);
     openWalletConnection().catch((failure: unknown) => {
@@ -97,11 +147,16 @@ export const useAccountAuth = ({
     busy,
     error,
     passkey,
+    email,
+    emailAvailable: emailLoginAvailable,
     wallet,
     walletConnect,
-    connected: connection.status === "connected",
-    browserWallets: connectors
-      .filter((connector) => connector.type !== "walletConnect")
+    connected: hydrated && connection.status === "connected",
+    browserWallets: (hydrated ? connectors : [])
+      .filter((connector) => connector.type !== "walletConnect" && connector.type !== "AUTH")
+      .filter(
+        (connector, index, all) => all.findIndex((item) => item.id === connector.id) === index,
+      )
       .map((connector) => ({
         connector,
         name: connector.id === "injected" ? "Browser wallet" : connector.name,

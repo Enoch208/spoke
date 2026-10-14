@@ -3,6 +3,7 @@
 import {
   ArrowRight01Icon,
   FingerPrintIcon,
+  Mail01Icon,
   QrCodeIcon,
   Wallet01Icon,
 } from "@hugeicons/core-free-icons";
@@ -56,9 +57,25 @@ export function AuthPanel({ kind }: { kind: "login" | "signup" }) {
       <p className="text-body mt-2">{copy.subtitle}</p>
 
       <div className="mt-8 flex flex-col gap-3">
+        {auth.emailAvailable ? (
+          <>
+            <Button
+              size="lg"
+              block
+              icon={Mail01Icon}
+              loading={auth.busy === "email"}
+              disabled={busy}
+              onClick={() => void auth.email()}
+            >
+              {authCopy.email}
+            </Button>
+            <p className="text-subtle text-sm">{authCopy.emailHint}</p>
+          </>
+        ) : null}
         <Button
           size="lg"
           block
+          variant={auth.emailAvailable ? "secondary" : "primary"}
           icon={FingerPrintIcon}
           loading={auth.busy === "passkey" || auth.busy === "create"}
           disabled={busy}
@@ -122,7 +139,11 @@ export function AuthPanel({ kind }: { kind: "login" | "signup" }) {
         {auth.busy ? (
           <p className="text-subtle flex items-center gap-2 text-sm">
             <Spinner />
-            {auth.busy === "wallet" ? authCopy.working.wallet : authCopy.working.passkey}
+            {auth.busy === "email"
+              ? authCopy.working.email
+              : auth.busy === "wallet"
+                ? authCopy.working.wallet
+                : authCopy.working.passkey}
           </p>
         ) : auth.error ? (
           <p role="alert" className="bg-pink-soft text-pink-ink rounded-xl px-3 py-2.5 text-sm">

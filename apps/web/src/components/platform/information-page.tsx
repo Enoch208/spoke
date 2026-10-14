@@ -49,6 +49,7 @@ const pages: Record<string, { title: string; paragraphs: string[] }> = {
       "Account and delivery information is restricted to authenticated users with the required ownership or role. Chain addresses and transactions remain publicly visible on the underlying network.",
       "Distributor profiles start private. You can choose pseudonymous or public visibility and explicitly select the statistics to publish. Refund adjustment accompanies any published settlement statistics.",
       "Passkey signing material and recovery phrases are derived on your device. Signing sessions end on reload, sign-out, inactivity or their maximum duration. Never submit a recovery phrase to a support form.",
+      "Email sign-in is provided by Reown. Your email and verification code are handled by its authentication service, which creates or restores an embedded wallet. Spoke verifies a signed message from that wallet and does not receive your email verification code. Email sign-in does not automatically link an existing passkey or external-wallet account.",
     ],
   },
   disclosures: {

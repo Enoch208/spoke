@@ -1,6 +1,6 @@
 "use client";
 
-import { FingerPrintIcon } from "@hugeicons/core-free-icons";
+import { FingerPrintIcon, Mail01Icon } from "@hugeicons/core-free-icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { ModalComponentProps } from "@/components/app/modal-types";
@@ -35,12 +35,29 @@ export default function SignInModal<K extends "M-01" | "M-02" | "M-03">({
         if (!open && !busy) close();
       }}
       title="Sign in to continue"
-      subtitle="Use a passkey or a wallet. Spoke never holds your money."
+      subtitle="Use email, a passkey or a wallet. Spoke never holds your money."
       closeDisabled={busy}
+      modal={auth.busy !== "email"}
+      inert={auth.busy === "email"}
     >
       <div className="grid gap-3">
+        {auth.emailAvailable ? (
+          <>
+            <Button
+              block
+              icon={Mail01Icon}
+              loading={auth.busy === "email"}
+              disabled={busy}
+              onClick={() => void auth.email()}
+            >
+              {authCopy.email}
+            </Button>
+            <p className="text-subtle text-sm">{authCopy.emailHint}</p>
+          </>
+        ) : null}
         <Button
           block
+          variant={auth.emailAvailable ? "secondary" : "primary"}
           icon={FingerPrintIcon}
           loading={auth.busy === "passkey"}
           disabled={busy}

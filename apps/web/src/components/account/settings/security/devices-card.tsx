@@ -8,6 +8,7 @@ import { QueryState } from "@/components/product/page";
 import { Button } from "@/components/ui/button";
 import { StatusChip } from "@/components/ui/status-chip";
 import { endPasskeySession } from "@/lib/accounts/passkey";
+import { disconnectEmailWallet } from "@/lib/accounts/reown";
 import { fill } from "@/lib/copy";
 import { formatDateTime, formatRelative } from "@/lib/format";
 import { useClientMutation, useClientQuery } from "@/lib/query/use-client";
@@ -32,18 +33,19 @@ export function DevicesCard() {
       "scope" in confirm
         ? confirm.scope === "all"
         : devices.data?.some((device) => device.id === confirm.sessionId && device.isCurrent);
-    const finish = () => {
+    const finish = async () => {
       setConfirm(null);
       endPasskeySession();
+      await disconnectEmailWallet().catch(() => undefined);
       useSessionStore.getState().signOut();
       router.push("/login");
     };
-    if (current && "sessionId" in confirm) signOut.mutate({}, { onSuccess: finish });
+    if (current && "sessionId" in confirm) signOut.mutate({}, { onSuccess: () => void finish() });
     else
       revoke.mutate(confirm, {
         onSuccess: () => {
           setConfirm(null);
-          if (current) signOut.mutate({}, { onSuccess: finish });
+          if (current) signOut.mutate({}, { onSuccess: () => void finish() });
         },
       });
   };

@@ -60,6 +60,7 @@ The core web app and API are deployed, with settlement on Monad Testnet:
 - Envio HyperIndex settlement and SDUSD event indexing, canonical replay and reorganization checks. HyperSync supplies history; native RPC supplies live events with TLS verification and bounded log ranges.
 - Cached Nansen context for four demonstration distributors, labelled as supported mainnet history. These new wallets have no observed history; page views do not purchase provider queries, and insights never determine payouts.
 - Passkey accounts and signing sessions with Mera, plus private campaign notes protected by a separate PRF namespace. Notes are encrypted locally and never sent to the API or blockchain.
+- Email sign-in through Reown's one-time codes and embedded EOA wallets, using the same signed backend session as external wallets. No browser wallet extension is required.
 - Private product uploads and buyer-only delivery that checks sale state directly onchain, plus a bounded testnet gas station with durable transaction retries.
 - A typed public read SDK, request and response validation, contract invariants and an actual frontend-client-to-API-to-contract settlement journey.
 - A scripted two-merchant testnet settlement proof with four rewarded levels, a branch, a separate refund, successful claims and protected unused-budget withdrawals.
@@ -67,6 +68,14 @@ The core web app and API are deployed, with settlement on Monad Testnet:
 The contracts are source verified through Monad Sourcify, with exact matches for creation and runtime bytecode. Live pages use the deployed API and indexed contract state; Demo uses local fixtures. Prototype contract limits are 128 campaigns, 256 nodes and 100 sales per campaign. External commerce integrations, teams, webhooks and multi-currency settlement remain designed previews, with no live financial behavior.
 
 Optional mainnet wallet funding is configured in the hosted app. It accepts supported EVM source assets and quotes native USDC on Monad Mainnet to an authenticated external wallet. Deployments without an app key display an unavailable state. This separate route never credits testnet checkout, campaign budgets or earnings. Spoke shows provider progress and independently verifies the destination USDC receipt before marking funding as received. Mainnet commerce settlement is not implemented.
+
+## Sign in with email
+
+Open [Sign in](https://usespoke.xyz/login) or choose **Continue with email** when checkout asks you to sign in. Enter your email, complete Reown's one-time-code verification, then confirm the sign-in message. Spoke verifies the wallet signature and creates its normal secure session before returning you to your original page. Reown handles the email, verification codes and embedded wallet; Spoke does not store the codes.
+
+Use the same sign-in method to return to an existing account. An email wallet has its own address and does not automatically inherit a passkey or external wallet's campaigns, purchases or earnings. Mera private notes still require the original passkey. Email accounts use the existing wallet transaction flow; testnet transactions still need testnet gas.
+
+For self-hosting, set `NEXT_PUBLIC_REOWN_PROJECT_ID` before building the web app, enable email login in that Reown project and configure the project's allowed production origins. Without a project ID, email sign-in is hidden. Email and wallet availability also depends on the provider's configuration and service status.
 
 ## Research distribution partners
 

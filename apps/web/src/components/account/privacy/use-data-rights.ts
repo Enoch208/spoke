@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { ClientOutput } from "@spoke/protocol";
 import { endPasskeySession } from "@/lib/accounts/passkey";
+import { disconnectEmailWallet } from "@/lib/accounts/reown";
 import { useClientContext } from "@/lib/client/provider";
 import { isClientError } from "@/lib/client/errors";
 import { useClientQuery } from "@/lib/query/use-client";
@@ -76,6 +77,7 @@ export function useDataRights(close: () => void) {
       });
       if (action === "delete") {
         endPasskeySession();
+        await disconnectEmailWallet().catch(() => undefined);
         useSessionStore.getState().signOut();
         close();
         router.push("/");
