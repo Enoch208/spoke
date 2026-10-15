@@ -1,14 +1,16 @@
 # Spoke public read SDK
 
-A typed, credential-free client for 32 public Spoke API methods. Version **0.1.2** targets API `/v1`, schema `3.0`, and the current Monad Testnet deployment. Monetary amounts remain base-unit strings.
+A typed, credential-free client for 32 public Spoke API methods. Version **0.1.3** targets API `/v1`, schema `3.0`, and the current Monad Testnet deployment. Monetary amounts remain base-unit strings.
 
 ## Install
 
-Install the versioned package from npm:
+Install the verified 0.1.3 release archive:
 
 ```bash
-npm install @enochid/spoke-sdk@0.1.2
+npm install https://github.com/Enoch208/spoke/releases/download/sdk-v0.1.3/enochid-spoke-sdk-0.1.3.tgz
 ```
+
+The npm registry currently publishes 0.1.2; 0.1.3 registry publication requires a renewed maintainer login. The 0.1.3 archive adds the current Passport and Network Activity response types without changing the 32 public methods.
 
 The archive includes compiled ESM/CommonJS and TypeScript declarations. It bundles the shared protocol schemas, so consumers do not need the Spoke monorepo or `@spoke/protocol`. Node.js 22 or later is supported. Browser integrations require native `fetch` and `AbortSignal.timeout`; their API deployment must also allow the browser origin through CORS. A server-side integration works without browser CORS restrictions. Browser credentials are always omitted.
 
@@ -69,7 +71,7 @@ pnpm --filter @enochid/spoke-sdk release:check
 pnpm --filter @enochid/spoke-sdk exec npm pack --ignore-scripts
 ```
 
-`release:check` installs the actual packed archive in a temporary project, checks the file allowlist, loads both module formats and typechecks ESM/CommonJS consumers. Publish that verified archive, never the repository root. npm registry publication requires access to the `@enochid` scope and a valid npm login. The [public release](https://github.com/Enoch208/docs-madonna/releases/tag/sdk-v0.1.2) also includes the same archive and a SHA-256 checksum.
+`release:check` installs the actual packed archive in a temporary project, checks the file allowlist, loads both module formats and typechecks ESM/CommonJS consumers. Publish that verified archive, never the repository root. npm registry publication requires access to the `@enochid` scope and a valid npm login. The [public release](https://github.com/Enoch208/spoke/releases/tag/sdk-v0.1.3) also includes the same archive and a SHA-256 checksum.
 
 The [application source](https://github.com/Enoch208/spoke), SDK package, [documentation](https://docs.usespoke.xyz) and release notes are public. Follow [@usespoke_ on X](https://x.com/usespoke_) for product updates.
 
