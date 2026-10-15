@@ -28,7 +28,7 @@ The provider returned naive UTC timestamps on its transactions endpoint. One was
 
 ## Validation and limits
 
-The baseline passed 688 application tests and 33 Solidity tests. The updated application passes 717 tests across 76 files with disposable PostgreSQL and both required Anvil chains, without skipped suites. Typecheck, lint, formatting and the production web build pass. SDK 0.1.3 passes clean packed installation, ESM/CommonJS loading and consumer typechecks; npm publication is a separate authenticated release step. Check [CI](https://github.com/Enoch208/spoke/actions/workflows/ci.yml) for the latest pushed revision.
+The baseline passed 688 application tests and 33 Solidity tests. The updated application passes 717 tests across 76 files with disposable PostgreSQL and both required Anvil chains, without skipped suites. Typecheck, lint, formatting and the production web build pass. SDK 0.1.3 is published on npm and GitHub, with matching package integrity, clean installation, ESM/CommonJS loading and consumer typechecks. Check [CI](https://github.com/Enoch208/spoke/actions/workflows/ci.yml) for the latest pushed revision.
 
 Public browser checks cover Passport receipts, network navigation, activity, indexer freshness and narrow layouts. Tests with an injected PRF prove encryption and serialization behavior; they do not prove a real hardware or synced passkey will work across devices. No simulated identity ceremony is presented as a physical-device test.
 

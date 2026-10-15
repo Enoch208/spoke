@@ -4,13 +4,13 @@ A typed, credential-free client for 32 public Spoke API methods. Version **0.1.3
 
 ## Install
 
-Install the verified 0.1.3 release archive:
+Install the versioned package from npm:
 
 ```bash
-npm install https://github.com/Enoch208/spoke/releases/download/sdk-v0.1.3/enochid-spoke-sdk-0.1.3.tgz
+npm install @enochid/spoke-sdk@0.1.3
 ```
 
-The npm registry currently publishes 0.1.2; 0.1.3 registry publication requires a renewed maintainer login. The 0.1.3 archive adds the current Passport and Network Activity response types without changing the 32 public methods.
+Version 0.1.3 adds the current Passport and Network Activity response types without changing the 32 public methods. The npm package matches the verified GitHub release archive.
 
 The archive includes compiled ESM/CommonJS and TypeScript declarations. It bundles the shared protocol schemas, so consumers do not need the Spoke monorepo or `@spoke/protocol`. Node.js 22 or later is supported. Browser integrations require native `fetch` and `AbortSignal.timeout`; their API deployment must also allow the browser origin through CORS. A server-side integration works without browser CORS restrictions. Browser credentials are always omitted.
 

@@ -140,7 +140,7 @@ Read the [architecture](https://docs.usespoke.xyz/developers/architecture), [dat
 The published SDK supports 32 credential-free public methods with validated inputs and responses. It reads campaigns, graphs, receipts and profiles; it does not sign transactions or hold private keys.
 
 ```sh
-npm install @enochid/spoke-sdk@0.1.2
+npm install @enochid/spoke-sdk@0.1.3
 ```
 
 ```ts
