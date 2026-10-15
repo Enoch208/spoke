@@ -1,3 +1,4 @@
+import { workspaceRoutes } from "./routes/workspace.js";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { bodyLimit } from "hono/body-limit";
@@ -168,6 +169,7 @@ export const createApp = (deps: AppDeps) => {
       accountDataRoutes(services),
       walletRoutes(services),
       passkeyRoutes(services),
+      workspaceRoutes(services),
       assetRoutes(services),
       fulfillmentRoutes(services),
       fundingRoutes(services),

@@ -1,2 +1,2 @@
 export const passkeyHint =
-  "Passkeys use Face ID, Touch ID or a security key, and sync through your password manager: iCloud Keychain, Google Password Manager or 1Password. Spoke never sees them.";
+  "Use your device’s screen lock or a compatible password manager. No wallet extension needed. A synced passkey can travel with your provider; a device-bound passkey stays on that device. Spoke needs PRF support, which is checked during confirmation.";

@@ -55,11 +55,34 @@ export function AuthPanel({ kind }: { kind: "login" | "signup" }) {
         {copy.title}
       </h1>
       <p className="text-body mt-2">{copy.subtitle}</p>
+      {next ? (
+        <p className="bg-soft text-body mt-4 rounded-xl px-4 py-3 text-sm">
+          After sign-in, you’ll return to the page you were using. Your selected campaign or
+          referral path stays with you.
+        </p>
+      ) : null}
 
       <div className="mt-8 flex flex-col gap-3">
+        <Button
+          size="lg"
+          block
+          variant="primary"
+          icon={FingerPrintIcon}
+          loading={auth.busy === "passkey" || auth.busy === "create"}
+          disabled={busy || auth.passkeySupport !== "available"}
+          onClick={() => void auth.passkey(kind === "signup")}
+        >
+          {copy.passkey}
+        </Button>
+        <p className="text-subtle text-sm">
+          {auth.passkeySupport === "available" || auth.passkeySupport === "checking"
+            ? passkeyHint
+            : auth.passkeySupport}
+        </p>
         {auth.emailAvailable ? (
           <>
             <Button
+              variant="secondary"
               size="lg"
               block
               icon={Mail01Icon}
@@ -72,18 +95,6 @@ export function AuthPanel({ kind }: { kind: "login" | "signup" }) {
             <p className="text-subtle text-sm">{authCopy.emailHint}</p>
           </>
         ) : null}
-        <Button
-          size="lg"
-          block
-          variant={auth.emailAvailable ? "secondary" : "primary"}
-          icon={FingerPrintIcon}
-          loading={auth.busy === "passkey" || auth.busy === "create"}
-          disabled={busy}
-          onClick={() => void auth.passkey(kind === "signup")}
-        >
-          {copy.passkey}
-        </Button>
-        <p className="text-subtle text-sm">{passkeyHint}</p>
       </div>
 
       <div className="text-faint my-7 flex items-center gap-3 text-sm">

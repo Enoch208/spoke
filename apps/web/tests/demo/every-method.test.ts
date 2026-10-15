@@ -14,6 +14,7 @@ const setups: MethodSetups = { ...coreSetups };
 
 const refusals: Partial<Record<ClientMethod, ErrorCode>> = {
   "account.deleteAccount": "NOT_AUTHORIZED",
+  "workspace.save": "FEATURE_NOT_AVAILABLE",
   "funding.auroraPreview": "FEATURE_NOT_AVAILABLE",
   "funding.auroraCreateDeposit": "FEATURE_NOT_AVAILABLE",
   "funding.auroraDeposit": "FEATURE_NOT_AVAILABLE",

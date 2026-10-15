@@ -8,6 +8,7 @@ import { useSessionStore } from "@/lib/stores/session";
 import { activeChain } from "@/lib/wagmi";
 import { endPasskeySession, unlockPasskey } from "./passkey";
 import { emailLoginAvailable, openEmailConnection, openWalletConnection } from "./reown";
+import { passkeyAvailability, passkeyFailure } from "./passkey-guidance";
 import { signInAccount } from "./sign-in";
 
 export type AuthOutcome = { isNewAccount: boolean };
@@ -34,6 +35,11 @@ export const useAccountAuth = ({
     () => true,
     () => false,
   );
+  const passkeySupport = useSyncExternalStore(
+    subscribeHydration,
+    passkeyAvailability,
+    () => "checking",
+  );
   const [busy, setBusy] = useState<"passkey" | "create" | "wallet" | "email" | null>(null);
   const [error, setError] = useState<string | null>(null);
   const emailAttempt = useRef<AbortController | null>(null);
@@ -50,7 +56,11 @@ export const useAccountAuth = ({
     !expectedAddress || address.toLowerCase() === expectedAddress.toLowerCase();
 
   const passkey = async (create: boolean) => {
-    if (!client) return;
+    if (!client || busy) return;
+    if (passkeySupport !== "available") {
+      setError(passkeySupport);
+      return;
+    }
     setBusy(create ? "create" : "passkey");
     setError(null);
     try {
@@ -72,7 +82,7 @@ export const useAccountAuth = ({
     } catch (failure) {
       endPasskeySession();
       useSessionStore.getState().setStatus("anonymous");
-      setError(messageOf(failure, "The passkey couldn’t be opened. Try again or use a wallet."));
+      setError(passkeyFailure(failure));
     } finally {
       setBusy(null);
     }
@@ -149,6 +159,7 @@ export const useAccountAuth = ({
     passkey,
     email,
     emailAvailable: emailLoginAvailable,
+    passkeySupport,
     wallet,
     walletConnect,
     connected: hydrated && connection.status === "connected",

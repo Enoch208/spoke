@@ -45,6 +45,7 @@ export const routes = {
     earnings: "/earn/earnings",
     payouts: "/earn/payouts",
     reputation: "/earn/reputation",
+    workspace: "/earn/workspace",
     invitations: "/earn/invitations",
     communities: "/earn/communities",
   },

@@ -1,3 +1,4 @@
+import { nansenTimestamp } from "./nansen-timestamp.js";
 import { addressString, distributorInsights } from "@spoke/protocol";
 import { z } from "zod";
 import type { Store } from "../db/store.js";
@@ -7,7 +8,7 @@ import { emptyInsights, normalizeInsights, type InsightsOptions } from "./insigh
 const evidence = z.object({
   chain: z.string().min(1).max(60),
   transaction_hash: z.string().min(1).max(150),
-  block_timestamp: z.iso.datetime({ offset: true }),
+  block_timestamp: nansenTimestamp,
 });
 const funders = z.object({
   data: z

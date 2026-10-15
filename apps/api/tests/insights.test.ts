@@ -1,3 +1,4 @@
+import { nansenTimestamp } from "../src/services/nansen-timestamp.js";
 import { randomUUID } from "node:crypto";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { sql } from "drizzle-orm";
@@ -11,6 +12,12 @@ const fetchedAt = "2026-10-12T20:00:00.000Z";
 const from = "2026-09-12T20:00:00.000Z";
 
 describe("distributor insight semantics", () => {
+  it("normalizes provider UTC timestamps without a suffix and rejects malformed dates", () => {
+    expect(nansenTimestamp.parse("2026-10-15T13:28:11")).toBe("2026-10-15T13:28:11.000Z");
+    expect(nansenTimestamp.parse("2026-10-15T14:28:11+01:00")).toBe("2026-10-15T13:28:11.000Z");
+    expect(nansenTimestamp.safeParse("2026-02-30T13:28:11").success).toBe(false);
+    expect(nansenTimestamp.safeParse("yesterday").success).toBe(false);
+  });
   it("labels only the requested wallet and avoids pretending a sampled page is a total", () => {
     const result = normalizeInsights(
       address,

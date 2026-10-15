@@ -16,7 +16,7 @@ const sections: Record<
     {
       id: "earn-distribution",
       label: "Distribution",
-      ids: ["earn-links", "earn-network", "earn-invitations", "earn-communities"],
+      ids: ["earn-links", "earn-network", "earn-invitations", "earn-communities", "earn-private"],
     },
     {
       id: "earn-record",

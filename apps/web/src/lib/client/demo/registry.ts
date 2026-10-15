@@ -1,3 +1,4 @@
+import { workspaceHandlers } from "./domains/workspace";
 import { authReads, authWrites } from "./domains/auth";
 import { accountReads, accountWrites } from "./domains/account";
 import { fundingReads, fundingWrites } from "./domains/funding";
@@ -56,6 +57,7 @@ import {
 } from "./domains/distributors";
 
 export const demoReads = {
+  ...workspaceHandlers,
   ...authReads,
   ...accountReads,
   ...fundingReads,

@@ -3,15 +3,17 @@
 import { FingerPrintIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { shellCopy } from "@/lib/copy";
 import { authHref } from "@/lib/routes";
 
 export function SignInButton({ variant }: { variant: "sidebar" | "bar" | "icon" }) {
   const pathname = usePathname();
-  const login = authHref("login", { next: pathname });
-  const signup = authHref("signup", { next: pathname });
+  const params = useSearchParams();
+  const next = params.size ? `${pathname}?${params.toString()}` : pathname;
+  const login = authHref("login", { next });
+  const signup = authHref("signup", { next });
   if (variant === "icon")
     return (
       <Button asChild size="md" variant="ghost" className="size-10 p-0">

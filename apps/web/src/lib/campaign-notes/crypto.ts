@@ -1,25 +1,11 @@
 import { getPasskeyPrfOutput, type PasskeyCredentialMetadata } from "@category-labs/mera";
 import { z } from "zod";
 
-export const notesNamespace = "spoke.campaign-notes.v1";
+export { encryptedNote, notesNamespace } from "@spoke/protocol";
+import { encryptedNote, notesNamespace, noteScope as scopeSchema } from "@spoke/protocol";
 export const noteText = z.string().max(6000);
 export type NoteScope = { address: string; chainId: number; campaignId: string };
 
-const scopeSchema = z.object({
-  address: z.string().regex(/^0x[0-9a-f]{40}$/),
-  chainId: z.number().int().positive(),
-  campaignId: z.string().regex(/^[1-9][0-9]*$/),
-});
-const encoded = z.string().regex(/^[A-Za-z0-9_-]+$/);
-export const encryptedNote = scopeSchema.extend({
-  version: z.literal(1),
-  namespace: z.literal(notesNamespace),
-  credentialId: encoded.min(16).max(2048),
-  revision: z.uuid(),
-  savedAt: z.iso.datetime(),
-  nonce: encoded.length(16),
-  ciphertext: encoded.min(22).max(33000),
-});
 export type EncryptedNote = z.infer<typeof encryptedNote>;
 const utf8 = new TextEncoder();
 export const normalizeScope = (scope: NoteScope) =>

@@ -1,3 +1,4 @@
+import * as workspace from "./workspace";
 import { z } from "zod";
 import * as m from "./models";
 import * as p from "./platform";
@@ -403,6 +404,9 @@ export const clientMethodSchemas = {
     p.invitation,
   ),
   "invitations.withdraw": method(id, p.invitation),
+  "workspace.list": method(empty, workspace.workspaceIndex),
+  "workspace.get": method(workspace.workspaceScope, workspace.workspaceNote),
+  "workspace.save": method(workspace.workspaceWrite, workspace.workspaceNote),
   "insights.forDistributor": method(address, p.distributorInsights),
   "insights.research": method(
     address,

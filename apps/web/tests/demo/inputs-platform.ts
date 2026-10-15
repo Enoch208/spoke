@@ -9,6 +9,25 @@ const activeCredential = issued.find((credential) => credential.status === "acti
 if (!activeCredential) throw new RangeError("The sample world should issue an active credential.");
 
 export const platformInputs = {
+  "workspace.list": {},
+  "workspace.get": { chainId: 10143, campaignId: "1" },
+  "workspace.save": {
+    chainId: 10143,
+    campaignId: "1",
+    expectedRevision: null,
+    note: {
+      address: "0x0000000000000000000000000000000000000001",
+      chainId: 10143,
+      campaignId: "1",
+      version: 1,
+      namespace: "spoke.campaign-notes.v1",
+      credentialId: "demo-passkey-credential",
+      revision: "00000000-0000-4000-8000-000000000001",
+      savedAt: "2026-10-15T00:00:00Z",
+      nonce: "AAAAAAAAAAAAAAAA",
+      ciphertext: "AAAAAAAAAAAAAAAAAAAAAA",
+    },
+  },
   "system.health": {},
   "system.status": {},
   "system.contracts": {},

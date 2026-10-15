@@ -1,3 +1,4 @@
+import { nansenTimestamp } from "./nansen-timestamp.js";
 import { randomUUID } from "node:crypto";
 import { distributorInsights, addressString } from "@spoke/protocol";
 import { z } from "zod";
@@ -22,9 +23,7 @@ const transactionsResponse = z.object({
     .array(
       z.object({
         chain: z.string().min(1).max(60),
-        block_timestamp: z.iso
-          .datetime({ offset: true })
-          .transform((value) => new Date(value).toISOString()),
+        block_timestamp: nansenTimestamp,
         transaction_hash: z.string().min(1).max(150),
         tokens_sent: z.array(transfer).nullish(),
         tokens_received: z.array(transfer).nullish(),
@@ -80,13 +79,11 @@ export const normalizeInsights = (
       window: { from, to: fetchedAt },
       sampledTransactions: body.data.length,
       truncated: !body.pagination.is_last_page,
-      transactions: body.data
-        .slice(0, 20)
-        .map((tx) => ({
-          chain: tx.chain,
-          transactionHash: tx.transaction_hash,
-          timestamp: tx.block_timestamp,
-        })),
+      transactions: body.data.slice(0, 20).map((tx) => ({
+        chain: tx.chain,
+        transactionHash: tx.transaction_hash,
+        timestamp: tx.block_timestamp,
+      })),
       firstFunding: null,
       relationships: [],
       relationshipChain: "monad",

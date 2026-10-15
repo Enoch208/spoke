@@ -55,6 +55,21 @@ describe("private campaign notes", () => {
     });
   });
 
+  it("decrypts a serialized synced envelope after local storage is cleared", async () => {
+    const text = "Private partnership follow-up";
+    const encrypted = await encryptNote(scope, credential, text);
+    saveNote(scope, encrypted, null);
+    const serverCopy = JSON.stringify(encrypted);
+    storage.clear();
+    expect(readNote(scope)).toBeNull();
+    const restored = JSON.parse(serverCopy) as typeof encrypted;
+    expect(await decryptNote(scope, restored)).toBe(text);
+    saveNote(scope, restored, null);
+    const local = readNote(scope);
+    if (!local) throw new Error("Restored ciphertext was not saved.");
+    expect(await decryptNote(scope, local)).toBe(text);
+  });
+
   it("uses a distinct PRF namespace from Mera account entropy", async () => {
     const walletSalt = new Uint8Array(
       await crypto.subtle.digest("SHA-256", new TextEncoder().encode("mera.prf.salt.v1")),

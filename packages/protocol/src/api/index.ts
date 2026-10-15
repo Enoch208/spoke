@@ -8,3 +8,5 @@ export {
   checkoutInputV3 as checkoutIntentRequest,
 } from "../api-v3";
 export * from "./transport";
+
+export * from "./workspace";

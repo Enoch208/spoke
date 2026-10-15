@@ -75,6 +75,7 @@ export const earnNav: readonly NavItem[] = [
     Search01Icon,
     "discovery",
   ),
+  item("earn", "earn-private", "Private workspace", routes.earn.workspace, SafeIcon),
   item("earn", "earn-links", "Links", routes.earn.links, Link01Icon, "links"),
   item("earn", "earn-network", "Network", routes.earn.network, Route01Icon, "graph"),
   item(
