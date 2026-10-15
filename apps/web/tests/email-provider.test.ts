@@ -151,6 +151,33 @@ describe("pinned email provider timeout recovery", () => {
     expect(vi.getTimerCount()).toBe(0);
   });
 
+  it("allows device approval after the email-request deadline and completes the pending request", async () => {
+    const p = createProvider();
+    p.ready();
+    const approved = p.provider.connectDevice();
+    await vi.advanceTimersByTimeAsync(13 * 60_000);
+    expect(p.onTimeout).not.toHaveBeenCalled();
+    const request = p.requests.find((event) => event.type.endsWith("CONNECT_DEVICE"));
+    if (!request) throw new Error("Expected the device approval request");
+    p.handlers.get(request.id)?.({ id: request.id, type: "@w3m-frame/CONNECT_DEVICE_SUCCESS" });
+    await expect(approved).resolves.toBeUndefined();
+    expect(p.handlers.size).toBe(0);
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it("expires device approval after the advertised window and permits another attempt", async () => {
+    const p = createProvider();
+    p.ready();
+    const expired = expect(p.provider.connectDevice()).rejects.toThrow("did not respond");
+    await vi.advanceTimersByTimeAsync(20 * 60_000);
+    await expired;
+    expect(p.handlers.size).toBe(0);
+    expect(p.abort.signal.aborted).toBe(false);
+    p.replies.set("CONNECT_DEVICE", undefined);
+    await expect(p.provider.connectDevice()).resolves.toBeUndefined();
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
   it("keeps wallet signing outside the email deadline and still cancels pending signatures", async () => {
     const p = createProvider();
     p.ready();

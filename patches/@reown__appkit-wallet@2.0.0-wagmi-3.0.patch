@@ -1,5 +1,5 @@
 diff --git a/dist/esm/src/W3mFrameProvider.js b/dist/esm/src/W3mFrameProvider.js
-index eedee9cfa9768d2f950ba40f2e0727a92c164bc2..2d0cc8ab94981f1ee949b91a57ee78c85eb652c0 100644
+index eedee9cfa9768d2f950ba40f2e0727a92c164bc2..475753b0b687023310448fe9bcb521ea13013c6f 100644
 --- a/dist/esm/src/W3mFrameProvider.js
 +++ b/dist/esm/src/W3mFrameProvider.js
 @@ -45,40 +45,48 @@ export class W3mFrameProvider {
@@ -156,7 +156,7 @@ index eedee9cfa9768d2f950ba40f2e0727a92c164bc2..2d0cc8ab94981f1ee949b91a57ee78c8
 +                timeout = setTimeout(() => {
 +                    finish(new Error('Email sign-in did not respond. Please try again.'));
 +                    this.onTimeout?.('iframe_request_timeout');
-+                }, authentication ? 60_000 : 20_000);
++                }, event.type === W3mFrameConstants.APP_CONNECT_DEVICE ? 1_200_000 : authentication ? 60_000 : 20_000);
 +            }
              if (type === 'RPC_REQUEST') {
 -                const rpcEvent = event;

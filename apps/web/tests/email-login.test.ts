@@ -117,6 +117,7 @@ describe("email wallet connection", () => {
     const result = reown.openEmailConnection(new AbortController().signal);
     await flush();
     expect(fake.open).toHaveBeenCalledWith({ view: "Connect" });
+    await vi.advanceTimersByTimeAsync(13 * 60_000);
     connect(true);
     expect(await result).toBe(address);
     expectClean();
@@ -226,7 +227,7 @@ describe("email wallet connection", () => {
       "timed out",
     );
     await flush();
-    await vi.advanceTimersByTimeAsync(600_000);
+    await vi.advanceTimersByTimeAsync(1_800_000);
     await expired;
     expectClean();
   });

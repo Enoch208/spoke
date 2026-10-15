@@ -20,6 +20,7 @@ export const initializeWalletConnection = async () => {
     networks: [monadTestnet, localChain],
     defaultNetwork: activeChain,
     defaultAccountTypes: { eip155: "eoa" },
+    enableAuthLogger: false,
     metadata: {
       name: "Spoke",
       description: "The distribution graph",
@@ -120,7 +121,7 @@ export const openEmailConnection = async (signal: AbortSignal): Promise<Address 
     );
     const timeout = setTimeout(() => {
       finish(null, new Error("Email sign-in timed out. Please try again."));
-    }, 600_000);
+    }, 1_800_000);
     cleanups.push(() => {
       clearTimeout(timeout);
     });
