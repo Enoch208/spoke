@@ -44,6 +44,7 @@ export const platformInputs = {
   "reputation.credentials": {},
   "reputation.revokeCredential": { id: activeCredential.id },
   "reputation.verifyCredential": { credential: activeCredential },
+  "insights.research": { address: sampleAddress("person:12") },
   "insights.forDistributor": { address: sampleAddress("person:12") },
   "graph.export": {
     scope: "campaign",
@@ -61,6 +62,7 @@ export const platformPersonas = {
   "reputation.revokeCredential": "distributor",
   "reputation.verifyCredential": "distributor",
   "insights.forDistributor": "merchant",
+  "insights.research": "merchant",
   "graph.export": "merchant",
   "ops.act": "buyer",
 } satisfies MethodPersonas;

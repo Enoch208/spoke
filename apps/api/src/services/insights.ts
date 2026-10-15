@@ -3,6 +3,7 @@ import { distributorInsights, addressString } from "@spoke/protocol";
 import { z } from "zod";
 import type { Store } from "../db/store.js";
 import { ApiProblem } from "../http/problem.js";
+import { createPartnerResearch } from "./partner-research.js";
 import { boundedText } from "../http/bounded.js";
 
 const transfer = z.object({
@@ -21,10 +22,12 @@ const transactionsResponse = z.object({
     .array(
       z.object({
         chain: z.string().min(1).max(60),
-        block_timestamp: z.string().transform((value) => new Date(value).toISOString()),
+        block_timestamp: z.iso
+          .datetime({ offset: true })
+          .transform((value) => new Date(value).toISOString()),
         transaction_hash: z.string().min(1).max(150),
-        tokens_sent: z.array(transfer).optional(),
-        tokens_received: z.array(transfer).optional(),
+        tokens_sent: z.array(transfer).nullish(),
+        tokens_received: z.array(transfer).nullish(),
       }),
     )
     .max(100),
@@ -72,6 +75,29 @@ export const normalizeInsights = (
     activitySummary: {
       transactions: body.pagination.is_last_page ? body.data.length : null,
       lastActiveAt,
+    },
+    research: {
+      window: { from, to: fetchedAt },
+      sampledTransactions: body.data.length,
+      truncated: !body.pagination.is_last_page,
+      transactions: body.data
+        .slice(0, 20)
+        .map((tx) => ({
+          chain: tx.chain,
+          transactionHash: tx.transaction_hash,
+          timestamp: tx.block_timestamp,
+        })),
+      firstFunding: null,
+      relationships: [],
+      relationshipChain: "monad",
+      endpoints: [
+        {
+          endpoint: "transactions",
+          state: body.data.length ? "available" : "empty",
+          fetchedAt,
+          sourceUrl: "https://docs.nansen.ai/api/profiler/address-transactions",
+        },
+      ],
     },
     reviewSignals: [...labels].map((label) => ({
       label,
@@ -204,6 +230,7 @@ export const createInsightsService = (store: Store, options: InsightsOptions) =>
   return {
     read,
     refresh,
+    research: createPartnerResearch(store, options),
     async refreshConfigured() {
       const results = [];
       for (const address of addresses) results.push({ address, ...(await refresh(address)) });

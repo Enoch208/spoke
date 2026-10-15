@@ -201,6 +201,40 @@ export const invitation = z.object({
   withdrawnAt: isoTimestamp.nullable(),
   createdAt: isoTimestamp,
 });
+export const researchEvidence = z.object({
+  chain: z.string().min(1).max(60),
+  transactionHash: z.string().min(1).max(150),
+  timestamp: isoTimestamp,
+});
+export const partnerResearch = z.object({
+  window: z.object({ from: isoTimestamp, to: isoTimestamp }),
+  sampledTransactions: z.number().int().nonnegative(),
+  truncated: z.boolean(),
+  transactions: z.array(researchEvidence).max(20),
+  firstFunding: researchEvidence
+    .extend({ address: addressString, label: z.string().nullable() })
+    .nullable(),
+  relationships: z
+    .array(
+      researchEvidence.extend({
+        address: addressString,
+        label: z.string().nullable(),
+        relation: z.string(),
+      }),
+    )
+    .max(20),
+  relationshipChain: z.literal("monad"),
+  endpoints: z
+    .array(
+      z.object({
+        endpoint: z.enum(["transactions", "first-funder", "related-wallets"]),
+        state: z.enum(["available", "empty", "unavailable"]),
+        fetchedAt: isoTimestamp,
+        sourceUrl: z.url(),
+      }),
+    )
+    .max(3),
+});
 export const distributorInsights = z.object({
   status: z.enum(["available", "no_history", "none"]),
   source: z.string().nullable(),
@@ -215,6 +249,7 @@ export const distributorInsights = z.object({
     })
     .nullable(),
   reviewSignals: z.array(z.object({ label: z.string(), reason: z.string() })),
+  research: partnerResearch.optional(),
 });
 export const policyTemplate = z.object({
   id: resourceId,

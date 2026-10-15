@@ -142,6 +142,7 @@ export const clientRoutes = {
   "invitations.respond": own("POST", "/me/invitations/:id"),
   "invitations.withdraw": own("DELETE", "/merchant/invitations/:id"),
   "insights.forDistributor": own("GET", "/merchant/distributors/:address/insights"),
+  "insights.research": own("POST", "/merchant/distributors/:address/insights"),
   "analytics.merchant": own("GET", "/merchant/analytics"),
   "analytics.campaign": own("GET", "/merchant/campaigns/:campaignId/analytics"),
   "reports.export": own("POST", "/merchant/reports"),

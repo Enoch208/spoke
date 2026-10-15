@@ -187,6 +187,8 @@ describe.skipIf(!databaseUrl)("persistent API security and lifecycle", () => {
         ...account.payload,
         visibility: { level, fields: [], acceptsInvitations: false },
       });
+      const research = await request(path, "POST", {}, headers);
+      expect(research.status).toBe(level === "public" ? 200 : 404);
       const response = await request(path, "GET", undefined, headers);
       expect(response.status).toBe(level === "public" ? 200 : 404);
       if (level === "public")

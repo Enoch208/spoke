@@ -30,4 +30,9 @@ export const insightsReads = {
   },
 } satisfies PartialHandlers<"insights">;
 
-export const insightsWrites = {} satisfies PartialHandlers<"insights">;
+export const insightsWrites = {
+  "insights.research": (input, runtime) => ({
+    status: "not_configured",
+    insights: insightsReads["insights.forDistributor"](input, runtime),
+  }),
+} satisfies PartialHandlers<"insights">;

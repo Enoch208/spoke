@@ -404,6 +404,20 @@ export const clientMethodSchemas = {
   ),
   "invitations.withdraw": method(id, p.invitation),
   "insights.forDistributor": method(address, p.distributorInsights),
+  "insights.research": method(
+    address,
+    z.object({
+      status: z.enum([
+        "refreshed",
+        "cached",
+        "already_attempted",
+        "budget_exhausted",
+        "not_configured",
+        "failed",
+      ]),
+      insights: p.distributorInsights,
+    }),
+  ),
   "analytics.merchant": method(
     range.extend({
       source: z.string().optional(),

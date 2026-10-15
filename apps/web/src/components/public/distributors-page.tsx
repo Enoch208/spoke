@@ -11,6 +11,7 @@ import { useClientQuery } from "@/lib/query/use-client";
 import { routes } from "@/lib/routes";
 import { useUiStore } from "@/lib/stores/ui";
 import { directoryCopy } from "./copy/directory";
+import { WalletResearch } from "./directory/wallet-research";
 import { DirectoryResults } from "./directory/results";
 import { ComparisonSelection, DirectoryComparison } from "./directory/comparison";
 import { uniqueDistributors } from "./directory/comparison-model";
@@ -95,6 +96,7 @@ function DirectoryContent() {
       description={directoryCopy.description}
       actions={<DiscoverSwitch active="distributors" />}
     >
+      {isMerchant ? <WalletResearch /> : null}
       {isMerchant ? (
         <ComparisonSelection
           selected={selected}
