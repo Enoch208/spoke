@@ -666,7 +666,39 @@ export const reputationGroupTotals = z.object({
   token: tokenInfo.optional(),
 });
 export const reputationPeriods = ["all", "90d", "30d"] as const;
+export const partnerPassport = z.object({
+  history: z.array(
+    z.object({
+      month: z.string().regex(/^\d{4}-\d{2}$/),
+      direct: z.number().int().nonnegative(),
+      network: z.number().int().nonnegative(),
+      receiptIds: z.array(protocolId),
+    }),
+  ),
+  positions: z.array(
+    z.object({
+      campaignId: protocolId,
+      title: z.string(),
+      merchant: publicActor,
+      nodeId: protocolId,
+      parentNodeId: protocolId,
+      joinedAt: isoTimestamp,
+      direct: z.number().int().nonnegative(),
+      network: z.number().int().nonnegative(),
+      receiptIds: z.array(protocolId),
+    }),
+  ),
+  rewards: z
+    .object({
+      token: tokenInfo,
+      claimable: uintString,
+      claimed: uintString,
+      receiptIds: z.array(protocolId),
+    })
+    .nullable(),
+});
 export const reputationProfile = z.object({
+  passport: partnerPassport.nullable().optional(),
   subject: addressString.nullable(),
   handle: z.string().nullable(),
   displayName: z.string().nullable(),

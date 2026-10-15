@@ -1,6 +1,6 @@
 import { and, eq, sql } from "drizzle-orm";
 import { z } from "zod";
-import { activityItem } from "@spoke/protocol";
+import { activityItem, networkActivity } from "@spoke/protocol";
 import { route, router } from "../http/router.js";
 import { events } from "../db/schema.js";
 import { ok } from "../http/respond.js";
@@ -8,6 +8,7 @@ import { actorView, eventTx } from "../services/evidence.js";
 import { pageValues, stringListQuery } from "../services/read-utils.js";
 import { viewerSession } from "../services/viewer.js";
 import type { Services } from "../types.js";
+import { networkGrowth } from "../services/network-growth.js";
 
 export const campaignActivityRoutes = (services: Services) => {
   const app = router();
@@ -53,12 +54,21 @@ export const campaignActivityRoutes = (services: Services) => {
             ? 1
             : b.logIndex - a.logIndex,
       );
+    const kindOf = (event: (typeof rows)[number]) =>
+      kinds[event.name] ??
+      (event.payload.ended ? "ended" : event.payload.paused ? "paused" : "resumed");
+    const selected = requested ? rows.filter((event) => requested.includes(kindOf(event))) : rows;
+    const page = pageValues(c, selected, (row) => row.id);
     const values = await Promise.all(
-      rows.map(async (event) => {
+      page.items.map(async (event) => {
         const kind =
           kinds[event.name] ??
           (event.payload.ended ? "ended" : event.payload.paused ? "paused" : "resumed");
+        const saleId = typeof event.payload.saleId === "string" ? event.payload.saleId : undefined;
+        const receipt = saleId ? await store.get("receipt", saleId) : undefined;
         const who =
+          event.payload.buyer ??
+          receipt?.payload.buyer ??
           event.payload.creator ??
           event.payload.owner ??
           event.payload.recipient ??
@@ -67,6 +77,9 @@ export const campaignActivityRoutes = (services: Services) => {
         const actor = await actorView(store, z.string().parse(who), full);
         return {
           ...activityItem.parse({
+            id: event.id,
+            saleId,
+            nodeId: event.payload.nodeId ?? receipt?.payload.nodeId,
             kind,
             actor,
             amount:
@@ -78,9 +91,17 @@ export const campaignActivityRoutes = (services: Services) => {
         };
       }),
     );
-    const selected = requested ? values.filter((value) => requested.includes(value.kind)) : values;
-    const page = pageValues(c, selected, (row) => row.id);
-    return ok(c, { ...page, items: page.items.map((row) => activityItem.parse(row)) });
+    const cursor = await store.get("indexer", "cursor");
+    return ok(
+      c,
+      networkActivity.parse({
+        items: values,
+        nextCursor: page.nextCursor,
+        growth: networkGrowth(rows),
+        indexedBlock: cursor?.payload.blockNumber ?? null,
+        indexedAt: cursor?.payload.indexedAt ?? null,
+      }),
+    );
   });
   return app;
 };

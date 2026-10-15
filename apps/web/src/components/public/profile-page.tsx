@@ -20,6 +20,7 @@ import { IdentityCard } from "./profile/identity-card";
 import { PrivateProfile, UnknownProfile } from "./profile/profile-states";
 import { ReceiptsList } from "./profile/receipts-list";
 import { StatTiles } from "./profile/stat-tiles";
+import { PartnerPassport } from "./profile/partner-passport";
 import { methodologyLabel, profileName, type AnyProfile } from "./profile/types";
 import { Callout } from "./shared/callout";
 import { DemoLinkInLive, useIdentifierMatch } from "./shared/demo-link";
@@ -71,8 +72,9 @@ function CountingStrip({ profile }: { profile: AnyProfile }) {
 
 function ProofFooter({ profile }: { profile: AnyProfile }) {
   const { mode } = useClientContext();
-  if (mode !== "live" || !profile.handle) return null;
-  const url = `${publicEnv.NEXT_PUBLIC_API_URL}/v1/distributors/${encodeURIComponent(profile.handle)}/profile`;
+  const identity = profile.handle ?? profile.subject;
+  if (mode !== "live" || !identity) return null;
+  const url = `${publicEnv.NEXT_PUBLIC_API_URL}/v1/distributors/${encodeURIComponent(identity)}/profile`;
   return (
     <div className="flex flex-col gap-2">
       {profile.lastIndexedBlock ? (
@@ -117,6 +119,7 @@ function ProfileBody({
       <CountingStrip profile={profile} />
       <StatTiles profile={profile} />
       <p className="text-subtle max-w-[70ch] text-sm">{profileCopy.note}</p>
+      <PartnerPassport profile={profile} owner={owner} />
       <Breakdown profile={profile} />
       <ReceiptsList profile={profile} name={name} />
       {children}
@@ -139,7 +142,7 @@ function ProfileBody({
 }
 
 function OwnProfile() {
-  const profile = useClientQuery("reputation.mine", {});
+  const profile = useClientQuery("reputation.mine", {}, { refetchInterval: 20_000 });
   const { me } = usePublicViewer();
   return (
     <QueryState
@@ -159,7 +162,11 @@ function OwnProfile() {
 }
 
 function PublicProfile({ handle }: { handle: string }) {
-  const profile = useClientQuery("reputation.get", { addressOrHandle: handle });
+  const profile = useClientQuery(
+    "reputation.get",
+    { addressOrHandle: handle },
+    { refetchInterval: 20_000 },
+  );
   const { me } = usePublicViewer();
   const code = profile.error?.code;
   if (code === "NOT_FOUND" || code === "VALIDATION_FAILED")

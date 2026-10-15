@@ -212,7 +212,7 @@ export const clientMethodSchemas = {
   "campaigns.get": method(campaign, m.campaignDetail),
   "campaigns.policy": method(campaign, m.campaignPolicy),
   "campaigns.stats": method(campaign, m.campaignStats),
-  "campaigns.activity": method(campaign.extend(timeline.shape), m.pagedSchema(p.activityItem)),
+  "campaigns.activity": method(campaign.extend(timeline.shape), p.networkActivity),
   "campaigns.mine": method(
     merchantCampaignFilters,
     m

@@ -18,6 +18,8 @@ import {
 
 export const period = z.object({ from: isoTimestamp, to: isoTimestamp });
 export const activityItem = z.object({
+  id: z.string().optional(),
+  nodeId: protocolId.optional(),
   kind: z.enum([
     "salePending",
     "saleSettled",
@@ -36,6 +38,22 @@ export const activityItem = z.object({
   tx: txRef,
   at: isoTimestamp,
   saleId: protocolId.optional(),
+});
+export const networkActivity = pagedSchema(activityItem).extend({
+  growth: z
+    .array(
+      z.object({
+        day: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+        totalLinks: z.number().int().nonnegative(),
+        newLinks: z.number().int().nonnegative(),
+        purchases: z.number().int().nonnegative(),
+        finalized: z.number().int().nonnegative(),
+        refunded: z.number().int().nonnegative(),
+      }),
+    )
+    .optional(),
+  indexedBlock: uintString.nullable().optional(),
+  indexedAt: isoTimestamp.nullable().optional(),
 });
 export const merchantCampaignRow = z.object({
   campaignId: protocolId.nullable(),

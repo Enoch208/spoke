@@ -13,7 +13,7 @@ import { useClientContext } from "@/lib/client/provider";
 import { fill, globalStates } from "@/lib/copy";
 import { formatHandle } from "@/lib/format";
 import { useClientQuery } from "@/lib/query/use-client";
-import { routes } from "@/lib/routes";
+import { routes, routeTo } from "@/lib/routes";
 import { useSessionStore } from "@/lib/stores/session";
 import { useUiStore } from "@/lib/stores/ui";
 import { activeChain } from "@/lib/wagmi";
@@ -84,13 +84,19 @@ export function IdentityCard({ profile, owner }: { profile: AnyProfile; owner: b
         <Button
           variant="secondary"
           icon={Share08Icon}
+          disabled={profile.visibility === "private" || !(profile.handle ?? profile.subject)}
           onClick={() => {
-            void copy(window.location.href, profileCopy.shareCopied);
+            const identity = profile.handle ?? profile.subject;
+            if (identity)
+              void copy(
+                `${window.location.origin}${routeTo.profile(identity)}`,
+                profileCopy.shareCopied,
+              );
           }}
         >
           {profileCopy.share}
         </Button>
-        {isMerchant && !owner && subject && hasModal("M-28") ? (
+        {isMerchant && !owner && subject && profile.acceptsInvitations && hasModal("M-28") ? (
           <Button
             icon={UserAdd01Icon}
             onClick={() => {

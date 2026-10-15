@@ -398,6 +398,9 @@ describe.skipIf(!rpcUrl || !databaseUrl)(
       expect(reserved.purchaseTx.hash).toBe(paid.transaction);
       expect(reserved.allocations).toHaveLength(1);
       expect((await earner.call("earnings.summary", {})).tokens[0]?.atRisk).toBe("20000000");
+      expect(await earner.call("reputation.mine", {})).toMatchObject({
+        passport: { history: [], rewards: { claimable: "0", claimed: "0" } },
+      });
       await send(
         merchant,
         encodeFunctionData({
@@ -432,6 +435,22 @@ describe.skipIf(!rpcUrl || !databaseUrl)(
       );
       await sync();
       expect((await earner.call("earnings.summary", {})).tokens[0]?.claimable).toBe("10000000");
+      expect(await earner.call("reputation.mine", {})).toMatchObject({
+        settledConversions: 1,
+        passport: {
+          history: [{ direct: 1, network: 0, receiptIds: [paid.saleId] }],
+          rewards: { claimable: "10000000", claimed: "0" },
+        },
+      });
+      const activity = await customer.call("campaigns.activity", { campaignId: "1", limit: 50 });
+      expect(activity.items.find((event) => event.kind === "saleFinalized")).toMatchObject({
+        saleId: paid.saleId,
+        nodeId: "1",
+      });
+      expect(activity.items.find((event) => event.kind === "saleRefunded")).toMatchObject({
+        saleId: refund.saleId,
+        nodeId: "1",
+      });
       await send(
         distributor,
         encodeFunctionData({
@@ -445,6 +464,9 @@ describe.skipIf(!rpcUrl || !databaseUrl)(
       await send(merchant, protocolData("refundUnusedRewardBudget"));
       await sync();
       const earnings = (await earner.call("earnings.summary", {})).tokens[0];
+      expect(await earner.call("reputation.mine", {})).toMatchObject({
+        passport: { rewards: { claimable: "0", claimed: "10000000" } },
+      });
       expect(earnings).toMatchObject({
         atRisk: "0",
         readyToFinalize: "0",

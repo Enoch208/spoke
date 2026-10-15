@@ -8,6 +8,7 @@ import { ApiProblem } from "../http/problem.js";
 import { allRecords, indexedBlock, timestamp } from "./read-utils.js";
 import { allocations, campaignProduct } from "./views.js";
 import { receiptView } from "./evidence.js";
+import { passportView } from "./partner-passport.js";
 
 export const reputationFacts = async (
   services: Services,
@@ -50,6 +51,8 @@ export const reputationFacts = async (
     .select()
     .from(events)
     .where(and(eq(events.chainId, services.chain.chainId), eq(events.name, "SaleFinalized")));
+  const finalizedAt = new Map(finalized.map((event) => [event.payload.saleId, event.at.getTime()]));
+  settled.sort((a, b) => (finalizedAt.get(b.id) ?? 0) - (finalizedAt.get(a.id) ?? 0));
   const times = settled
     .map((row) => {
       const event = finalized.find((event) => event.payload.saleId === row.id);
@@ -131,6 +134,7 @@ export const reputationFacts = async (
     categories: [...new Set(categories)],
     categorySales,
     nodes,
+    finalized,
   };
 };
 export type ReputationFacts = Awaited<ReturnType<typeof reputationFacts>>;
@@ -161,6 +165,7 @@ export const reputationView = async (
         "refundAdjustment",
       ].every((field) => visibility.fields.some((chosen) => chosen === field)));
   const base = reputationProfile.parse({
+    passport: full ? await passportView(services, facts, privateFields) : null,
     subject: privateFields || visibility.level === "public" ? address : null,
     handle: account?.payload.handle ?? null,
     displayName:

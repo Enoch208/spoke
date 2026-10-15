@@ -1,6 +1,8 @@
 "use client";
 
 import { TxHash } from "@/components/ui/address";
+import Link from "next/link";
+import { receiptHref, routeTo } from "@/lib/routes";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { SkeletonRows } from "@/components/ui/skeleton";
@@ -12,7 +14,11 @@ import { useIsDemo } from "../shared/hooks";
 
 export function ActivityFeed({ campaignId, token }: { campaignId: string; token: TokenLike }) {
   const demo = useIsDemo();
-  const activity = useClientQuery("campaigns.activity", { campaignId, limit: 6 });
+  const activity = useClientQuery(
+    "campaigns.activity",
+    { campaignId, limit: 6 },
+    { refetchInterval: 15_000 },
+  );
   const items = activity.data?.items ?? [];
   return (
     <Card padding="none" className="overflow-hidden">
@@ -40,6 +46,14 @@ export function ActivityFeed({ campaignId, token }: { campaignId: string; token:
                   demo={demo}
                   className="text-xs"
                 />
+                {item.saleId ? (
+                  <Link
+                    href={receiptHref(item.saleId, activeChain.id)}
+                    className="ml-3 text-xs underline"
+                  >
+                    Receipt #{item.saleId}
+                  </Link>
+                ) : null}
               </div>
               {item.amount ? (
                 <span className="text-ink shrink-0 font-mono text-sm tabular-nums">
@@ -50,6 +64,12 @@ export function ActivityFeed({ campaignId, token }: { campaignId: string; token:
           ))}
         </ul>
       )}
+      <Link
+        href={routeTo.campaignNetwork(campaignId)}
+        className="block px-5 py-4 text-sm underline"
+      >
+        Explore network activity and growth
+      </Link>
     </Card>
   );
 }

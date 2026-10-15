@@ -11,6 +11,7 @@ import { allocationBucket } from "../src/services/earnings.js";
 import { intentView } from "../src/services/intents.js";
 import { reconciliationView } from "../src/services/report-reconciliation.js";
 import { sliceView } from "../src/services/graph.js";
+import { reputationView } from "../src/services/reputation.js";
 import {
   contract,
   paymentToken,
@@ -242,6 +243,7 @@ describe.skipIf(!databaseUrl)("canonical public read models and consent", () => 
       perMerchant: [],
       perCampaign: [],
       indexing: "noindex",
+      passport: null,
     });
   });
   it("does not rank a profile using withheld performance", async () => {
@@ -274,6 +276,27 @@ describe.skipIf(!databaseUrl)("canonical public read models and consent", () => 
       refundAdjustment: "30",
       merchantCount: 1,
       campaignCount: 1,
+      passport: {
+        history: [
+          {
+            month: new Date(Number(now - 20n) * 1000).toISOString().slice(0, 7),
+            direct: 1,
+            network: 0,
+            receiptIds: ["1"],
+          },
+        ],
+        positions: [
+          {
+            campaignId: "1",
+            nodeId: "1",
+            parentNodeId: "0",
+            direct: 1,
+            network: 0,
+            receiptIds: ["1"],
+          },
+        ],
+        rewards: null,
+      },
       evidencePeriod: {
         from: new Date(Number(now - 20n) * 1000).toISOString(),
         to: new Date(Number(now - 20n) * 1000).toISOString(),
@@ -283,6 +306,40 @@ describe.skipIf(!databaseUrl)("canonical public read models and consent", () => 
       await read("/distributors"),
     );
     expect(results.items[0]?.settledConversions).toBe(1);
+  });
+  it("keeps passport balances owner-only and moves finalized allocations after a claim", async () => {
+    await visibility("private", []);
+    const before = await reputationView(services, distributor, true);
+    expect(before).toMatchObject({
+      passport: { rewards: { claimable: "10", claimed: "0", receiptIds: ["1"] } },
+    });
+    const receipt = await store.require("receipt", "1");
+    await store.put("receipt", "1", buyer, { ...receipt.payload, allocationClaims: [true] });
+    expect(await reputationView(services, distributor, true)).toMatchObject({
+      passport: { rewards: { claimable: "0", claimed: "10" } },
+    });
+    expect(await read("/distributors/alice_test/profile")).toEqual({ hidden: true });
+    await visibility("public", ["settledConversions", "refundAdjustment"]);
+    expect(await read("/distributors/alice_test/profile")).toMatchObject({ passport: null });
+  });
+  it("links ordered activity to receipts and paths without exposing private buyers", async () => {
+    const result = clientMethodSchemas["campaigns.activity"].output.parse(
+      await read("/campaigns/1/activity?limit=2"),
+    );
+    expect(result.items.map((event) => event.id)).toEqual(["result-3", "result-1"]);
+    expect(result.items[0]).toMatchObject({
+      saleId: "3",
+      nodeId: "1",
+      kind: "saleRefunded",
+      actor: { address: null, handle: null },
+    });
+    expect(JSON.stringify(result)).not.toContain(buyer);
+    expect(result.growth?.at(-1)).toMatchObject({ purchases: 3, finalized: 1, refunded: 1 });
+    expect(result.indexedBlock).toBe("10");
+    const next = clientMethodSchemas["campaigns.activity"].output.parse(
+      await read(`/campaigns/1/activity?limit=2&cursor=${result.nextCursor ?? ""}`),
+    );
+    expect(next.items.map((event) => event.id)).toEqual(["purchase-3", "purchase-2"]);
   });
   it("finds public distributors by partial name, handle and public wallet", async () => {
     await visibility("public", ["settledConversions", "merchantCount", "refundAdjustment"]);

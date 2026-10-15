@@ -1,15 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { useClientContext } from "@/lib/client/provider";
-import { useClientQuery } from "@/lib/query/use-client";
 import { activeChain } from "@/lib/wagmi";
-import { mergeGraph, type GraphNode, type Slice } from "./model";
+import { mergeGraph } from "./model";
+import { fetchGraphSnapshot } from "./snapshot";
 
 export type Scope = "me" | "campaign";
-
-const childLimit = 20;
-const unavailable = () => null;
+const emptyGraph = mergeGraph([]);
 
 export function useGraphData({
   campaignId,
@@ -22,69 +21,72 @@ export function useGraphData({
   myNodeId: string | null;
   depth: number;
 }) {
-  const { client } = useClientContext();
-  const [extraSlices, setExtraSlices] = useState<readonly Slice[]>([]);
-  const [extraNodes, setExtraNodes] = useState<readonly GraphNode[]>([]);
+  const { client, mode } = useClientContext();
+  const context = `${mode}:${campaignId ?? ""}:${scope}:${myNodeId ?? ""}:${String(depth)}`;
+  const [requested, setRequested] = useState({
+    context,
+    branches: [] as string[],
+    paths: [] as string[],
+  });
   const [loading, setLoading] = useState<string | null>(null);
+  const branches = requested.context === context ? requested.branches : [];
+  const paths = requested.context === context ? requested.paths : [];
   const around = scope === "me" && myNodeId !== null;
-  const fetchDepth = Math.min(16, depth + 1);
-  const whole = useClientQuery(
-    "graph.forCampaign",
-    { campaignId: campaignId ?? "0", depth: Math.min(16, depth), childLimit },
-    { enabled: campaignId !== null && !around, refetchInterval: 20_000 },
-  );
-  const down = useClientQuery(
-    "graph.forCampaign",
-    { campaignId: campaignId ?? "0", rootNode: myNodeId ?? "0", depth: fetchDepth, childLimit },
-    { enabled: campaignId !== null && around, refetchInterval: 20_000 },
-  );
-  const ancestry = useClientQuery(
-    "graph.ancestry",
-    { nodeId: myNodeId ?? "0", chainId: activeChain.id },
-    { enabled: around },
-  );
-  const base = around ? down : whole;
-  const graph = useMemo(
-    () =>
-      mergeGraph(
-        [base.data, ...extraSlices],
-        [...(around ? (ancestry.data?.nodes ?? []) : []), ...extraNodes],
-      ),
-    [base.data, extraSlices, ancestry.data, extraNodes, around],
-  );
-
-  const expand = async (nodeId: string): Promise<boolean> => {
-    if (!client || !campaignId) return false;
-    setLoading(nodeId);
-    const slice = await client
-      .call("graph.forCampaign", { campaignId, rootNode: nodeId, depth: 3, childLimit: 100 })
-      .catch(unavailable);
-    setLoading(null);
-    if (!slice) return false;
-    setExtraSlices((previous) => [...previous, slice]);
-    return true;
-  };
-
-  const reveal = async (nodeId: string): Promise<boolean> => {
-    if (!client) return false;
-    const path = await client
-      .call("graph.ancestry", { nodeId, chainId: activeChain.id })
-      .catch(unavailable);
-    if (!path || path.nodes.length === 0) return false;
-    setExtraNodes((previous) => [...previous, ...path.nodes]);
-    return true;
-  };
-
-  return {
-    graph,
-    pending: base.isPending || (around && ancestry.isPending),
-    error: base.error ?? (around ? ancestry.error : null),
-    retry: () => {
-      void base.refetch();
-      if (around) void ancestry.refetch();
+  const snapshot = useQuery({
+    queryKey: [mode, "graph", "snapshot", { context, branches, paths }],
+    enabled: client !== null && campaignId !== null,
+    staleTime: 5_000,
+    refetchInterval: 20_000,
+    queryFn: async () => {
+      if (!client || !campaignId) throw new Error("Network is not ready");
+      return fetchGraphSnapshot(client, {
+        campaignId,
+        depth: Math.min(16, depth + (around ? 1 : 0)),
+        rootNode: around ? myNodeId : null,
+        branches,
+        paths,
+        chainId: activeChain.id,
+      });
     },
-    expand,
-    reveal,
+  });
+  const load = async (nodeId: string, kind: "branches" | "paths"): Promise<boolean> => {
+    if (!client || !campaignId || (kind === "branches" ? branches : paths).length >= 16)
+      return false;
+    setLoading(nodeId);
+    try {
+      if (kind === "branches")
+        await client.call("graph.forCampaign", {
+          campaignId,
+          rootNode: nodeId,
+          depth: 3,
+          childLimit: 100,
+        });
+      else {
+        const path = await client.call("graph.ancestry", { nodeId, chainId: activeChain.id });
+        if (!path.nodes.length || path.nodes.some((node) => node.campaignId !== campaignId))
+          return false;
+      }
+      setRequested((previous) => {
+        const current =
+          previous.context === context ? previous : { context, branches: [], paths: [] };
+        return { ...current, [kind]: [...new Set([...current[kind], nodeId])] };
+      });
+      return true;
+    } catch {
+      return false;
+    } finally {
+      setLoading(null);
+    }
+  };
+  return {
+    graph: snapshot.data ?? emptyGraph,
+    pending: snapshot.isPending,
+    error: snapshot.error,
+    retry: () => {
+      void snapshot.refetch();
+    },
+    expand: (nodeId: string) => load(nodeId, "branches"),
+    reveal: (nodeId: string) => load(nodeId, "paths"),
     loading,
   };
 }

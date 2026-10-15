@@ -9,6 +9,7 @@ import { PageSkeleton, ProductPage, QueryState } from "@/components/product/page
 import { CampaignStateChip } from "@/components/product/campaign-state-chip";
 import { publicNetworkCopy as copy } from "@/components/graph/copy";
 import { Explorer } from "@/components/graph/explorer";
+import { NetworkActivity } from "@/components/graph/network-activity";
 import { useSelf } from "@/components/graph/use-self";
 import { fill } from "@/lib/copy";
 import { formatCount } from "@/lib/format";
@@ -20,8 +21,8 @@ function PublicNetwork({ campaignId }: { campaignId: string }) {
   const self = useSelf();
   const copyText = useCopy();
   const open = useUiStore((state) => state.open);
-  const campaign = useClientQuery("campaigns.get", { campaignId });
-  const stats = useClientQuery("campaigns.stats", { campaignId });
+  const campaign = useClientQuery("campaigns.get", { campaignId }, { refetchInterval: 20_000 });
+  const stats = useClientQuery("campaigns.stats", { campaignId }, { refetchInterval: 20_000 });
   const policy = useClientQuery("campaigns.policy", { campaignId });
   const data = campaign.data;
   const mine = self.links.find((link) => link.campaign.campaignId === campaignId);
@@ -96,6 +97,7 @@ function PublicNetwork({ campaignId }: { campaignId: string }) {
           </>
         ) : null}
       </QueryState>
+      {data && !data.moderation.hidden ? <NetworkActivity campaignId={campaignId} /> : null}
     </ProductPage>
   );
 }

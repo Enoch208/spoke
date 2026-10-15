@@ -1,6 +1,6 @@
 export const profileCopy = {
   fallbackTitle: "Distributor",
-  ownTitle: "Your public record",
+  ownTitle: "Your Partner Passport",
   ownerBar: "This is your public profile. Visibility: {visibility}",
   privatePreview: "Your profile is private. Only you can see this preview.",
   visibility: { public: "Public", pseudonymous: "Pseudonymous", private: "Private" },
