@@ -38,7 +38,19 @@ export const initializeWalletConnection = async () => {
       onramp: false,
     },
   });
-  await appkit.ready();
+  let timeout: ReturnType<typeof setTimeout> | undefined;
+  try {
+    await Promise.race([
+      appkit.ready(),
+      new Promise<never>((_, reject) => {
+        timeout = setTimeout(() => {
+          reject(new Error("The sign-in service did not load. Please refresh and try again."));
+        }, 20_000);
+      }),
+    ]);
+  } finally {
+    clearTimeout(timeout);
+  }
   return appkit;
 };
 

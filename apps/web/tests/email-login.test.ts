@@ -192,6 +192,30 @@ describe("email wallet connection", () => {
     expectClean();
   });
 
+  it("releases a stalled SDK startup without opening a late sign-in window", async () => {
+    let ready: (() => void) | undefined;
+    fake.ready.mockImplementationOnce(
+      () =>
+        new Promise<void>((resolve) => {
+          ready = resolve;
+        }),
+    );
+    const result = expect(reown.openEmailConnection(new AbortController().signal)).rejects.toThrow(
+      "sign-in service did not load",
+    );
+    await vi.advanceTimersByTimeAsync(20_000);
+    await result;
+    ready?.();
+    await flush();
+    expect(fake.open).not.toHaveBeenCalled();
+    expectClean();
+    const retry = reown.openEmailConnection(new AbortController().signal);
+    await flush();
+    connect(true);
+    expect(await retry).toBe(address);
+    expectClean();
+  });
+
   it("cleans up after a provider failure or expired attempt", async () => {
     fake.open.mockRejectedValueOnce(new Error("Provider unavailable"));
     await expect(reown.openEmailConnection(new AbortController().signal)).rejects.toThrow(

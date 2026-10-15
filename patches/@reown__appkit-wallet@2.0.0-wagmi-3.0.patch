@@ -1,0 +1,221 @@
+diff --git a/dist/esm/src/W3mFrameProvider.js b/dist/esm/src/W3mFrameProvider.js
+index eedee9cfa9768d2f950ba40f2e0727a92c164bc2..2d0cc8ab94981f1ee949b91a57ee78c85eb652c0 100644
+--- a/dist/esm/src/W3mFrameProvider.js
++++ b/dist/esm/src/W3mFrameProvider.js
+@@ -45,40 +45,48 @@ export class W3mFrameProvider {
+         });
+         this.onTimeout = onTimeout;
+         if (this.getLoginEmailUsed()) {
+-            this.createFrame();
+-        }
+-    }
+-    async createFrame() {
+-        this.w3mFrame.initFrame();
+-        this.initPromise = new Promise(resolve => {
+-            this.w3mFrame.events.onFrameEvent(event => {
+-                if (event.type === W3mFrameConstants.FRAME_READY) {
+-                    setTimeout(() => {
+-                        resolve();
+-                    }, 500);
+-                }
++            void this.createFrame().catch(() => undefined);
++        }
++    }
++    createFrame() {
++        const initialize = async () => {
++            this.w3mFrame.initFrame();
++            await this.waitForFrame();
++            await this.syncDappData({
++                metadata: this.metadata,
++                projectId: this.projectId,
++                sdkVersion: this.sdkVersion,
++                sdkType: this.sdkType
+             });
++            await this.getSmartAccountEnabledNetworks();
++            this.isInitialized = true;
++        };
++        this.initPromise = initialize().finally(() => {
++            this.initPromise = undefined;
+         });
+-        await this.initPromise;
+-        await this.syncDappData({
+-            metadata: this.metadata,
+-            projectId: this.projectId,
+-            sdkVersion: this.sdkVersion,
+-            sdkType: this.sdkType
+-        });
+-        await this.getSmartAccountEnabledNetworks();
+-        this.isInitialized = true;
+-        this.initPromise = undefined;
++        return this.initPromise;
+     }
+-    async init() {
+-        if (this.isInitialized) {
+-            return;
++    async waitForFrame() {
++        let timer;
++        try {
++            await Promise.race([
++                this.w3mFrame.frameLoadPromise,
++                new Promise((_, reject) => {
++                    timer = setTimeout(() => {
++                        reject(new Error('Email sign-in could not load. Check your connection and try again.'));
++                        this.onTimeout?.('iframe_load_failed');
++                    }, 20_000);
++                })
++            ]);
++        }
++        finally {
++            clearTimeout(timer);
+         }
+-        if (this.initPromise) {
+-            await this.initPromise;
+-            return;
++    }
++    async init() {
++        if (!this.isInitialized) {
++            await (this.initPromise ?? this.createFrame());
+         }
+-        await this.createFrame();
+     }
+     getLoginEmailUsed() {
+         return Boolean(W3mFrameStorage.get(W3mFrameConstants.EMAIL_LOGIN_USED_KEY));
+@@ -527,90 +535,66 @@ export class W3mFrameProvider {
+         }
+     }
+     async appEvent(event) {
+-        let requestTimeout = undefined;
+-        let iframeReadyTimeout = undefined;
+-        function replaceEventType(type) {
+-            return type.replace('@w3m-app/', '');
+-        }
+-        const safeEventTypes = [
+-            W3mFrameConstants.APP_SYNC_DAPP_DATA,
+-            W3mFrameConstants.APP_SYNC_THEME,
+-            W3mFrameConstants.APP_SET_PREFERRED_ACCOUNT
+-        ];
+-        const type = replaceEventType(event.type);
+-        if (!this.w3mFrame.iframeIsReady &&
+-            !safeEventTypes.includes(event.type)) {
+-            iframeReadyTimeout = setTimeout(() => {
+-                this.onTimeout?.('iframe_load_failed');
+-                this.abortController.abort();
+-            }, 20_000);
+-        }
+-        await this.w3mFrame.frameLoadPromise;
+-        clearTimeout(iframeReadyTimeout);
+-        const shouldCheckForTimeout = [
++        await this.waitForFrame();
++        const type = event.type.replace('@w3m-app/', '');
++        const authentication = [
+             W3mFrameConstants.APP_CONNECT_EMAIL,
+             W3mFrameConstants.APP_CONNECT_DEVICE,
+             W3mFrameConstants.APP_CONNECT_OTP,
+             W3mFrameConstants.APP_CONNECT_SOCIAL,
+             W3mFrameConstants.APP_GET_SOCIAL_REDIRECT_URI
+-        ]
+-            .map(replaceEventType)
+-            .includes(type);
+-        if (shouldCheckForTimeout) {
+-            requestTimeout = setTimeout(() => {
+-                this.onTimeout?.('iframe_request_timeout');
+-                this.abortController.abort();
+-            }, 120_000);
+-        }
++        ].includes(event.type);
++        const initialization = [
++            W3mFrameConstants.APP_SYNC_DAPP_DATA,
++            W3mFrameConstants.APP_SYNC_THEME,
++            W3mFrameConstants.APP_GET_SMART_ACCOUNT_ENABLED_NETWORKS
++        ].includes(event.type);
+         return new Promise((resolve, reject) => {
+             const id = Math.random().toString(36).substring(7);
+-            this.w3mLogger?.logger.info?.({ event, id }, 'Sending app event');
+-            this.w3mFrame.events.postAppEvent({ ...event, id });
+             const abortController = new AbortController();
++            let timeout;
++            let settled = false;
++            const finish = (error, payload) => {
++                if (settled) return;
++                settled = true;
++                clearTimeout(timeout);
++                this.openRpcRequests.delete(id);
++                this.abortController.signal.removeEventListener('abort', cancel);
++                abortController.abort();
++                if (error) reject(error);
++                else resolve(payload);
++            };
++            const cancel = () => finish(new Error('Request was aborted'));
++            abortController.signal.addEventListener('abort', cancel, { once: true });
++            this.abortController.signal.addEventListener('abort', cancel, { once: true });
++            if (this.abortController.signal.aborted) {
++                cancel();
++                return;
++            }
++            if (authentication || initialization) {
++                timeout = setTimeout(() => {
++                    finish(new Error('Email sign-in did not respond. Please try again.'));
++                    this.onTimeout?.('iframe_request_timeout');
++                }, authentication ? 60_000 : 20_000);
++            }
+             if (type === 'RPC_REQUEST') {
+-                const rpcEvent = event;
+-                this.openRpcRequests.set(id, { ...rpcEvent.payload, abortController });
++                this.openRpcRequests.set(id, { ...event.payload, abortController });
+             }
+-            abortController.signal.addEventListener('abort', () => {
+-                if (type === 'RPC_REQUEST') {
+-                    reject(new Error('Request was aborted'));
++            this.w3mFrame.events.registerFrameEventHandler(id, response => {
++                if (response.id !== id) return;
++                if (response.type === `@w3m-frame/${type}_SUCCESS`) {
++                    finish(undefined, response.payload);
+                 }
+-                else if (type !== 'GET_FARCASTER_URI') {
+-                    reject(new Error('Something went wrong'));
++                else if (response.type === `@w3m-frame/${type}_ERROR`) {
++                    finish(new Error(response.payload?.message || 'An error occurred'));
+                 }
+-            });
+-            const handler = (framEvent, logger) => {
+-                if (framEvent.id !== id) {
+-                    return;
+-                }
+-                logger?.logger.info?.({ framEvent, id }, 'Received frame response');
+-                this.openRpcRequests.delete(framEvent.id);
+-                if (framEvent.type === `@w3m-frame/${type}_SUCCESS`) {
+-                    if (requestTimeout) {
+-                        clearTimeout(requestTimeout);
+-                    }
+-                    if (iframeReadyTimeout) {
+-                        clearTimeout(iframeReadyTimeout);
+-                    }
+-                    if ('payload' in framEvent) {
+-                        resolve(framEvent.payload);
+-                    }
+-                    resolve(undefined);
+-                }
+-                else if (framEvent.type === `@w3m-frame/${type}_ERROR`) {
+-                    if (requestTimeout) {
+-                        clearTimeout(requestTimeout);
+-                    }
+-                    if (iframeReadyTimeout) {
+-                        clearTimeout(iframeReadyTimeout);
+-                    }
+-                    if ('payload' in framEvent) {
+-                        reject(new Error(framEvent.payload?.message || 'An error occurred'));
+-                    }
+-                    reject(new Error('An error occurred'));
+-                }
+-            };
+-            this.w3mFrame.events.registerFrameEventHandler(id, frameEvent => handler(frameEvent, this.w3mLogger), this.abortController.signal);
++            }, abortController.signal);
++            try {
++                this.w3mFrame.events.postAppEvent({ ...event, id });
++            }
++            catch (error) {
++                finish(error);
++            }
+         });
+     }
+     setNewLastEmailLoginTime() {

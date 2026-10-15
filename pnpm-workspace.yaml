@@ -6,3 +6,5 @@ onlyBuiltDependencies:
   - esbuild
   - sharp
   - unrs-resolver
+patchedDependencies:
+  "@reown/appkit-wallet@2.0.0-wagmi-3.0": patches/@reown__appkit-wallet@2.0.0-wagmi-3.0.patch

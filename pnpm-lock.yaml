@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  '@reown/appkit-wallet@2.0.0-wagmi-3.0':
+    hash: ea9bbb3f2ea257ab6bf58c340b095db786789f3b99809fdcaffea39eaa1590e2
+    path: patches/@reown__appkit-wallet@2.0.0-wagmi-3.0.patch
+
 importers:
 
   .:
@@ -148,6 +153,9 @@ importers:
         specifier: 5.0.15
         version: 5.0.15(@types/react@19.3.0)(react@19.3.0)(use-sync-external-store@1.4.0(react@19.3.0))
     devDependencies:
+      '@reown/appkit-wallet':
+        specifier: 2.0.0-wagmi-3.0
+        version: 2.0.0-wagmi-3.0(patch_hash=ea9bbb3f2ea257ab6bf58c340b095db786789f3b99809fdcaffea39eaa1590e2)(typescript@5.9.3)
       '@tailwindcss/postcss':
         specifier: 4.3.3
         version: 4.3.3
@@ -6289,7 +6297,7 @@ snapshots:
       '@reown/appkit-polyfills': 2.0.0-wagmi-3.0
       '@reown/appkit-scaffold-ui': 2.0.0-wagmi-3.0(@solana/kit@5.5.1(typescript@5.9.3))(@solana/sysvars@5.5.1(typescript@5.9.3))(@types/react@19.3.0)(react@19.3.0)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.3.0))(valtio@2.1.7(@types/react@19.3.0)(react@19.3.0))(zod@4.6.6)
       '@reown/appkit-utils': 2.0.0-wagmi-3.0(@solana/kit@5.5.1(typescript@5.9.3))(@solana/sysvars@5.5.1(typescript@5.9.3))(@types/react@19.3.0)(react@19.3.0)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.3.0))(valtio@2.1.7(@types/react@19.3.0)(react@19.3.0))(zod@4.6.6)
-      '@reown/appkit-wallet': 2.0.0-wagmi-3.0(typescript@5.9.3)
+      '@reown/appkit-wallet': 2.0.0-wagmi-3.0(patch_hash=ea9bbb3f2ea257ab6bf58c340b095db786789f3b99809fdcaffea39eaa1590e2)(typescript@5.9.3)
       '@wagmi/connectors': 8.2.0(@coinbase/wallet-sdk@4.3.6(@types/react@19.3.0)(react@19.3.0)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.3.0))(zod@4.6.6))(@safe-global/safe-apps-provider@0.18.6(typescript@5.9.3)(zod@4.6.6))(@safe-global/safe-apps-sdk@9.1.0(typescript@5.9.3)(zod@4.6.6))(@wagmi/core@3.6.5(@tanstack/query-core@5.104.2)(@types/react@19.3.0)(react@19.3.0)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.3.0))(viem@2.57.4(typescript@5.9.3)(zod@4.6.6)))(typescript@5.9.3)(viem@2.57.4(typescript@5.9.3)(zod@4.6.6))
       '@wagmi/core': 3.6.5(@tanstack/query-core@5.104.2)(@types/react@19.3.0)(react@19.3.0)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.3.0))(viem@2.57.4(typescript@5.9.3)(zod@4.6.6))
       '@walletconnect/universal-provider': 2.23.7(typescript@5.9.3)(zod@4.6.6)
@@ -6357,7 +6365,7 @@ snapshots:
   '@reown/appkit-controllers@2.0.0-wagmi-3.0(@types/react@19.3.0)(react@19.3.0)(typescript@5.9.3)(zod@4.6.6)':
     dependencies:
       '@reown/appkit-common': 2.0.0-wagmi-3.0(typescript@5.9.3)(zod@4.6.6)
-      '@reown/appkit-wallet': 2.0.0-wagmi-3.0(typescript@5.9.3)
+      '@reown/appkit-wallet': 2.0.0-wagmi-3.0(patch_hash=ea9bbb3f2ea257ab6bf58c340b095db786789f3b99809fdcaffea39eaa1590e2)(typescript@5.9.3)
       '@walletconnect/universal-provider': 2.23.7(typescript@5.9.3)(zod@4.6.6)
       valtio: 2.1.7(@types/react@19.3.0)(react@19.3.0)
       viem: 2.57.4(typescript@5.9.3)(zod@4.6.6)
@@ -6444,7 +6452,7 @@ snapshots:
       '@reown/appkit-pay': 2.0.0-wagmi-3.0(@solana/kit@5.5.1(typescript@5.9.3))(@solana/sysvars@5.5.1(typescript@5.9.3))(@types/react@19.3.0)(react@19.3.0)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.3.0))(zod@4.6.6)
       '@reown/appkit-ui': 2.0.0-wagmi-3.0(@types/react@19.3.0)(react@19.3.0)(typescript@5.9.3)(zod@4.6.6)
       '@reown/appkit-utils': 2.0.0-wagmi-3.0(@solana/kit@5.5.1(typescript@5.9.3))(@solana/sysvars@5.5.1(typescript@5.9.3))(@types/react@19.3.0)(react@19.3.0)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.3.0))(valtio@2.1.7(@types/react@19.3.0)(react@19.3.0))(zod@4.6.6)
-      '@reown/appkit-wallet': 2.0.0-wagmi-3.0(typescript@5.9.3)
+      '@reown/appkit-wallet': 2.0.0-wagmi-3.0(patch_hash=ea9bbb3f2ea257ab6bf58c340b095db786789f3b99809fdcaffea39eaa1590e2)(typescript@5.9.3)
       lit: 3.3.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -6488,7 +6496,7 @@ snapshots:
       '@phosphor-icons/webcomponents': 2.1.5
       '@reown/appkit-common': 2.0.0-wagmi-3.0(typescript@5.9.3)(zod@4.6.6)
       '@reown/appkit-controllers': 2.0.0-wagmi-3.0(@types/react@19.3.0)(react@19.3.0)(typescript@5.9.3)(zod@4.6.6)
-      '@reown/appkit-wallet': 2.0.0-wagmi-3.0(typescript@5.9.3)
+      '@reown/appkit-wallet': 2.0.0-wagmi-3.0(patch_hash=ea9bbb3f2ea257ab6bf58c340b095db786789f3b99809fdcaffea39eaa1590e2)(typescript@5.9.3)
       lit: 3.3.0
       qrcode: 1.5.3
     transitivePeerDependencies:
@@ -6524,7 +6532,7 @@ snapshots:
       '@reown/appkit-common': 2.0.0-wagmi-3.0(typescript@5.9.3)(zod@4.6.6)
       '@reown/appkit-controllers': 2.0.0-wagmi-3.0(@types/react@19.3.0)(react@19.3.0)(typescript@5.9.3)(zod@4.6.6)
       '@reown/appkit-polyfills': 2.0.0-wagmi-3.0
-      '@reown/appkit-wallet': 2.0.0-wagmi-3.0(typescript@5.9.3)
+      '@reown/appkit-wallet': 2.0.0-wagmi-3.0(patch_hash=ea9bbb3f2ea257ab6bf58c340b095db786789f3b99809fdcaffea39eaa1590e2)(typescript@5.9.3)
       '@wallet-standard/wallet': 1.1.0
       '@walletconnect/logger': 3.0.2
       '@walletconnect/universal-provider': 2.23.7(typescript@5.9.3)(zod@4.6.6)
@@ -6575,7 +6583,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@reown/appkit-wallet@2.0.0-wagmi-3.0(typescript@5.9.3)':
+  '@reown/appkit-wallet@2.0.0-wagmi-3.0(patch_hash=ea9bbb3f2ea257ab6bf58c340b095db786789f3b99809fdcaffea39eaa1590e2)(typescript@5.9.3)':
     dependencies:
       '@reown/appkit-common': 2.0.0-wagmi-3.0(typescript@5.9.3)(zod@3.22.4)
       '@reown/appkit-polyfills': 2.0.0-wagmi-3.0
@@ -6595,7 +6603,7 @@ snapshots:
       '@reown/appkit-scaffold-ui': 2.0.0-wagmi-3.0(@solana/kit@5.5.1(typescript@5.9.3))(@solana/sysvars@5.5.1(typescript@5.9.3))(@types/react@19.3.0)(react@19.3.0)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.3.0))(valtio@2.1.7(@types/react@19.3.0)(react@19.3.0))(zod@4.6.6)
       '@reown/appkit-ui': 2.0.0-wagmi-3.0(@types/react@19.3.0)(react@19.3.0)(typescript@5.9.3)(zod@4.6.6)
       '@reown/appkit-utils': 2.0.0-wagmi-3.0(@solana/kit@5.5.1(typescript@5.9.3))(@solana/sysvars@5.5.1(typescript@5.9.3))(@types/react@19.3.0)(react@19.3.0)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.3.0))(valtio@2.1.7(@types/react@19.3.0)(react@19.3.0))(zod@4.6.6)
-      '@reown/appkit-wallet': 2.0.0-wagmi-3.0(typescript@5.9.3)
+      '@reown/appkit-wallet': 2.0.0-wagmi-3.0(patch_hash=ea9bbb3f2ea257ab6bf58c340b095db786789f3b99809fdcaffea39eaa1590e2)(typescript@5.9.3)
       '@walletconnect/universal-provider': 2.23.7(typescript@5.9.3)(zod@4.6.6)
       bs58: 6.0.0
       semver: 7.7.2
