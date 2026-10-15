@@ -55,13 +55,13 @@ The core web app and API are deployed, with settlement on Monad Testnet:
 - Merchant setup, versioned products, campaign publication and management, referral links and graphs, checkout, buyer delivery, receipts, refunds and claims in the web app.
 - Merchant campaign invitations with opted-in recipients, current reward terms, an acceptance inbox and confirmed link participation. Accepting an invitation does not create a link; the distributor approves that transaction separately.
 - An immutable settlement contract with separate reward and buyer-payment ledgers, 1–5 commission levels, refunds, finalization, pull claims and future policy versions with 24 hours' notice.
-- A 6-decimal testnet demo token (`SpokeDemoUSD`, not a stablecoin and not redeemable), generated contract ABIs, shared reward math and schemas for all 190 client methods.
-- A PostgreSQL API implementing 136 core client methods for wallet sessions, immutable product versions, campaign publication, graph exploration, receipts, six earnings buckets, merchant vaults, reports and privacy-aware distributor records. Four optional methods support separate mainnet wallet funding; another 50 designed methods return an explicit unavailable error.
+- A 6-decimal testnet demo token (`SpokeDemoUSD`, not a stablecoin and not redeemable), generated contract ABIs, shared reward math and schemas for all 194 client methods.
+- A PostgreSQL API implementing 140 core client methods for wallet sessions, immutable product versions, campaign publication, graph exploration, receipts, six earnings buckets, merchant vaults, reports and privacy-aware distributor records. Four optional methods support separate mainnet wallet funding; another 50 designed methods return an explicit unavailable error.
 - Partner Passports with settlement-month contribution history, receipt evidence and campaign network positions. Public associations require full evidence consent; claimable and previously claimed reward balances stay owner-only.
 - Public Network Activity with a 30-day growth chart, paginated events, receipt/path links and indexing freshness. Expanded graph branches refresh with each snapshot, including removal after canonical replay.
 - Envio HyperIndex settlement and SDUSD event indexing, canonical replay and reorganization checks. HyperSync supplies history; native RPC supplies live events with TLS verification and bounded log ranges.
-- Cached Nansen context for four demonstration distributors, labelled as supported mainnet history. These new wallets have no observed history; page views do not purchase provider queries, and insights never determine payouts.
-- Passkey accounts and signing sessions with Mera, plus private campaign notes protected by a separate PRF namespace. Notes are encrypted locally and never sent to the API or blockchain.
+- Merchant-triggered Partner Intelligence using Nansen transaction history, first native-gas funding and Monad wallet relationships. Source timestamps, transaction evidence, sampling and unavailable endpoints are explicit; private profiles are protected and refreshes have durable credit limits. External examples are not Spoke partners, and research never determines payouts.
+- Passkey-first accounts and signing sessions with Mera, preserving campaign/referral context through sign-in. Private campaign notebooks use a separate PRF namespace, ciphertext-only synchronization, revision conflict protection and encrypted backups. Plaintext never leaves the browser through the notes API.
 - Email sign-in through Reown's one-time codes and embedded EOA wallets, using the same signed backend session as external wallets. No browser wallet extension is required.
 - Private product uploads and buyer-only delivery that checks sale state directly onchain, plus a bounded testnet gas station with durable transaction retries.
 - A typed public read SDK, request and response validation, contract invariants and an actual frontend-client-to-API-to-contract settlement journey.
@@ -85,7 +85,7 @@ Sign in as a merchant and open [Distributors](https://usespoke.xyz/distributors)
 
 Only shared fields appear; hidden values are never treated as zero. Pending and refunded sales do not count as settled performance. A sale can credit several people, so candidate columns must not be added together. Monetary totals appear only when complete receipt evidence establishes one token denomination.
 
-**Review wallet context** opens separate, cached research for a public wallet. Its networks, source and age are disclosed. It never affects directory ranking or rewards, and a page view does not buy a provider refresh. Private and pseudonymous profiles cannot be used to retrieve external wallet context. Demo mode labels all sample records.
+**Research a public wallet** accepts a public distributor or an external example address. Research shows the latest 100 transactions in a 30-day window, supported networks, first observed native-gas funding and Monad wallet relationships, with source links and cache timestamps. A sampled window is not an all-time total; first funding is not account creation age. Merchant-triggered refreshes require a supported free provider plan, reserve at most three credits and enforce lifetime/daily/per-merchant limits. Page views read the cache. Private and pseudonymous profiles cannot be used to retrieve external wallet context. Research never affects ranking or rewards. Demo labels sample records.
 
 ## Invite distributors to a campaign
 
@@ -93,13 +93,15 @@ Open **Sell → Partners → Invite distributor**, enter a registered wallet, ch
 
 The distributor opens **Earn → Invitations**, reviews the original and current terms, then accepts or declines. They can accept now and create their link later. Joining requires a separate transaction approved by the invited wallet. **Sent invitations** shows **Joined** only after the link is confirmed and indexed. Pending invitations can be withdrawn; expired or withdrawn invitations cannot be accepted. Invitations do not restrict the deployed campaign contract's open participation model or create rewards by themselves.
 
-## Private campaign notes
+## Private partnership workspace
 
-Sign in with a passkey, open a campaign and choose **Open private notes**. Write an outreach plan, then **Encrypt & save** and confirm the same passkey. Saving locks the notebook; reopening it requires that passkey again. Each campaign has separate notes.
+Sign in with your original Spoke passkey and open **Earn → Private workspace** or a campaign’s private notebook. Unlock with the same passkey, write an outreach plan, then choose **Encrypt & sync**. The browser encrypts before saving locally and uploading; the server stores only the encrypted envelope and scope metadata. Saving locks the notebook.
 
-Mera evaluates `SHA-256("spoke.campaign-notes.v1")` as a dedicated WebAuthn PRF salt. HKDF-SHA-256 derives a non-extractable AES-256-GCM key, bound to the account, chain, campaign and credential. Every save generates a new nonce. This namespace does non-account work; it does not change the existing wallet derivation or signing session.
+Mera evaluates `SHA-256("spoke.campaign-notes.v1")` as a dedicated WebAuthn PRF salt. HKDF-SHA-256 derives a non-extractable AES-256-GCM key bound to the account, chain, campaign and credential. Every save uses a fresh nonce. Account derivation and existing local-note encryption stay unchanged.
 
-Only ciphertext and the metadata needed to reopen it persist in this browser. Unlocked text stays in page memory until locked, navigation, sign-out or the five-minute limit. This is local storage, not cloud sync: keep both the browser data and the same passkey. Clearing browser data loses the notes, and a wallet recovery phrase cannot restore this separate namespace.
+Existing local notes remain usable. Open them in their original browser and sync explicitly. Conflicting local and server revisions require a choice; the app never silently merges or overwrites them. Failed synchronization retains the local encrypted copy. Export an encrypted backup before replacing a conflicting copy.
+
+Unlocked text stays in memory until lock, navigation, sign-out or the five-minute limit. Cross-device access depends on the **same original passkey** being available through a provider with PRF support. A different passkey or wallet recovery phrase cannot recover the encryption key. Automated tests cover ciphertext restoration with a controlled PRF; physical cross-device passkey restoration remains unverified. Read the [workspace guide](https://docs.usespoke.xyz/guides/private-workspace).
 
 ## Architecture
 
@@ -198,7 +200,9 @@ pnpm --filter @enochid/spoke-sdk release:check
 
 `pnpm abi` regenerates the shared contract ABIs. Database and chain integration tests require the dedicated test services and environment variables defined in [CI](.github/workflows/ci.yml); a test run without those services does not cover the full journey.
 
-The latest application release passed **678 application tests and 33 contract tests**, plus formatting, lint, typechecks, ABI parity, indexer generation, production builds and isolated SDK installation. See the [verified CI run](https://github.com/Enoch208/spoke/actions/runs/38479115431). Browser checks covered desktop and narrow mobile layouts. Controlled testnet wallets exercised purchase, refund, finalization, claims and invitation-to-join journeys; these are demonstration transactions, not customer revenue.
+The 15 October implementation passed **717 application tests across 76 files** using real disposable PostgreSQL and Anvil services, plus typechecks, lint, formatting and a production build. The unchanged settlement contracts passed **33 Foundry tests** at the baseline. The full suite includes client/API/contract settlement, canonical replay and reorgs, invitation-to-join, privacy, Nansen budgets, workspace conflict protection and cryptographic restoration. Check the [current CI runs](https://github.com/Enoch208/spoke/actions/workflows/ci.yml) for validation of the latest commit.
+
+Desktop and mobile browser checks cover the public Passport, Network Activity and sign-in interface. Physical passkey creation, cross-device PRF restoration and email OTP completion are separate human-operated checks; automated tests do not establish those capabilities on every device. Recorded testnet transactions are scripted demonstrations, not customer revenue. See the [evidence matrix](docs/evidence.md).
 
 ## Network
 

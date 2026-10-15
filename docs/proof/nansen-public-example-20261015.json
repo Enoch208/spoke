@@ -1,0 +1,172 @@
+{
+  "example": "Public external wallet; not a Spoke distributor",
+  "address": "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
+  "status": "reprocessed_original_provider_response",
+  "capturedAt": "2026-10-15T13:41:55.377824Z",
+  "insights": {
+    "status": "available",
+    "source": "Nansen",
+    "fetchedAt": "2026-10-15T13:41:55.377824Z",
+    "labels": ["washy.eth [0xd8da6b]"],
+    "networks": ["base", "arbitrum", "bsc", "ethereum", "polygon", "optimism", "robinhood"],
+    "scopeNote": "Public history on Nansen-supported mainnet networks for the same address; excludes Spoke's Monad Testnet settlement record. This is context for review, never a payout input, discovery ranking or trust score. Activity covers 2026-09-15T13:39:57.662Z through 2026-10-15T13:39:57.662Z; only the latest 100 transactions were sampled, so the total is unavailable. No history in this window does not establish a new or safe wallet.",
+    "activitySummary": {
+      "transactions": null,
+      "lastActiveAt": "2026-10-15T13:28:11.000Z"
+    },
+    "reviewSignals": [
+      {
+        "label": "washy.eth [0xd8da6b]",
+        "reason": "Returned by Nansen for this address in public transfer history. Review the label's context before collaboration."
+      }
+    ],
+    "research": {
+      "window": {
+        "from": "2026-09-15T13:39:57.662Z",
+        "to": "2026-10-15T13:39:57.662Z"
+      },
+      "sampledTransactions": 100,
+      "truncated": true,
+      "transactions": [
+        {
+          "chain": "base",
+          "transactionHash": "0x0d81529a667179a60371bfd47429d9410c5a9b595c32f7a1b4ed49743b5d1c38",
+          "timestamp": "2026-10-15T13:28:11.000Z"
+        },
+        {
+          "chain": "arbitrum",
+          "transactionHash": "0x82b30e8603f87f743cf756788e3fe02b8117503c4d03a3ed9de83f0f22b02663",
+          "timestamp": "2026-10-15T13:26:56.000Z"
+        },
+        {
+          "chain": "bsc",
+          "transactionHash": "0xc1350098b399a26c7d14933068814455de8a91b062b34036743729dd5ae3d0b6",
+          "timestamp": "2026-10-15T11:18:40.000Z"
+        },
+        {
+          "chain": "ethereum",
+          "transactionHash": "0x68aad196d3a018aad46aef6ce2ae0c50709c58c426c57ae04fa9ea78c77b466b",
+          "timestamp": "2026-10-15T03:01:59.000Z"
+        },
+        {
+          "chain": "ethereum",
+          "transactionHash": "0x01dd6e0f5064027945015a11c1c6aa071f8385b25eb18ea92b78ea69c36f2015",
+          "timestamp": "2026-10-15T03:01:47.000Z"
+        },
+        {
+          "chain": "ethereum",
+          "transactionHash": "0xff3e4634b4ad45dda69ee51ed903631291ef6f60eec11d258f04882e99ccd276",
+          "timestamp": "2026-10-14T12:28:47.000Z"
+        },
+        {
+          "chain": "ethereum",
+          "transactionHash": "0xbd28e7b183114f6fa1d6f70a19fc9af59f4f4980d0a512afa8085338ff3d1457",
+          "timestamp": "2026-10-14T03:01:11.000Z"
+        },
+        {
+          "chain": "ethereum",
+          "transactionHash": "0x64c6409f2efd0a8c946ac306fe96ec14e1fac2fbcfcd6d7c300e296be028a014",
+          "timestamp": "2026-10-14T02:57:47.000Z"
+        },
+        {
+          "chain": "ethereum",
+          "transactionHash": "0xa0cf8d5eb943ac50442b4fb99a96e76932722af8322c2e2f294fbf06fff7f978",
+          "timestamp": "2026-10-13T14:59:59.000Z"
+        },
+        {
+          "chain": "ethereum",
+          "transactionHash": "0xb44da11ba552ee49369fd1a44fe35f2a71fdd2d1dc0de1619c0a9910a794eaae",
+          "timestamp": "2026-10-13T12:36:35.000Z"
+        },
+        {
+          "chain": "ethereum",
+          "transactionHash": "0x4de41d4870d868187251282429f4b537a6b05ddb0d58726149f4e72c177478cb",
+          "timestamp": "2026-10-13T07:25:11.000Z"
+        },
+        {
+          "chain": "bsc",
+          "transactionHash": "0x08c8c50684bf07efd52994b9c19831e3fb52c3a8cb000aa52d3fac648720069d",
+          "timestamp": "2026-10-13T06:40:23.000Z"
+        },
+        {
+          "chain": "bsc",
+          "transactionHash": "0x25778fea02f8f7fad8ead7857a62858d9fc801943e0a40b23c5a43362d5cea0c",
+          "timestamp": "2026-10-13T03:37:40.000Z"
+        },
+        {
+          "chain": "bsc",
+          "transactionHash": "0x552439069b70b58a4c86236fdfb489fcc117de492254169d59907e7e2aac0d0d",
+          "timestamp": "2026-10-13T03:37:37.000Z"
+        },
+        {
+          "chain": "bsc",
+          "transactionHash": "0x4841c7a31bc7e23a8bf749e6190d46c5effc413080cc7cf02b586059b351eac2",
+          "timestamp": "2026-10-13T03:29:00.000Z"
+        },
+        {
+          "chain": "ethereum",
+          "transactionHash": "0xe8e02f1f7cf0d80894b488745bb3dcc23e41c0a9aea76cba9ff76957a922c6cf",
+          "timestamp": "2026-10-13T03:01:11.000Z"
+        },
+        {
+          "chain": "polygon",
+          "transactionHash": "0xba3830102d898ae5d8736324dc33f726f2b4f4fc2d20c11b3b9a3a5aa111bb78",
+          "timestamp": "2026-10-12T20:24:56.000Z"
+        },
+        {
+          "chain": "base",
+          "transactionHash": "0x52fcccc037ecb31689da74f6f870e4ab26d635cb340b115575fc82d0b1323c84",
+          "timestamp": "2026-10-12T20:09:01.000Z"
+        },
+        {
+          "chain": "ethereum",
+          "transactionHash": "0x7e87b614a5f35b6a7fa2b35ceada71ece6fb8675ee8a742afe23e55cbef27dab",
+          "timestamp": "2026-10-12T14:29:23.000Z"
+        },
+        {
+          "chain": "ethereum",
+          "transactionHash": "0xceeb94e38a9b58e0b6addb1e5316908f9a1d6980cc8a21608dac8f2912b9f31f",
+          "timestamp": "2026-10-12T12:29:23.000Z"
+        }
+      ],
+      "firstFunding": {
+        "chain": "ethereum",
+        "transactionHash": "0x9b629147b75dc0b275d478fa34d97c5d4a26926457540b15a5ce871df36c23fd",
+        "timestamp": "2015-09-28T08:24:43.000Z",
+        "address": "0x1db3439a222c519ab44bb1144fc28167b4fa6ee6",
+        "label": "vitalikbuterin.eth"
+      },
+      "relationships": [
+        {
+          "chain": "monad",
+          "transactionHash": "0x200e2325df1ed9b74a35955f25ecb5811b17f6048191c11f1fd830b017770c77",
+          "timestamp": "2025-11-24T11:35:40.000Z",
+          "address": "0xdf747918e617c105acd245e6936a9d2e84d932bb",
+          "label": "",
+          "relation": "First Funder"
+        }
+      ],
+      "relationshipChain": "monad",
+      "endpoints": [
+        {
+          "endpoint": "transactions",
+          "state": "available",
+          "fetchedAt": "2026-10-15T13:41:55.377824Z",
+          "sourceUrl": "https://docs.nansen.ai/api/profiler/address-transactions"
+        },
+        {
+          "endpoint": "first-funder",
+          "state": "available",
+          "fetchedAt": "2026-10-15T13:39:57.662Z",
+          "sourceUrl": "https://docs.nansen.ai/api/profiler/address-first-funder"
+        },
+        {
+          "endpoint": "related-wallets",
+          "state": "available",
+          "fetchedAt": "2026-10-15T13:39:57.662Z",
+          "sourceUrl": "https://docs.nansen.ai/api/profiler/address-related-wallets"
+        }
+      ]
+    }
+  }
+}

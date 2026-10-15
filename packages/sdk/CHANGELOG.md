@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.3 — 2026-10-15
+
+Bundle the updated public response schemas for Partner Passport contribution history, campaign positions, privacy-filtered owner rewards, and Network Activity growth and indexing checkpoints. The same 32 credential-free read methods remain available; authenticated partner research and encrypted workspace writes are outside this SDK.
+
 ## 0.1.2 — 2026-10-13
 
 Publish the SDK on npm as `@enochid/spoke-sdk`, with matching installation and import examples. This replaces the `@spoke/sdk` name used by the earlier GitHub-only archives; change the dependency and import path when upgrading. Runtime behavior and the API contract are unchanged.

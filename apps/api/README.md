@@ -19,7 +19,7 @@ Use a private RPC endpoint for production. `RPC_REQUESTS_PER_SECOND` defaults to
 
 ## Contract
 
-The shared `@spoke/protocol` package exports `clientMethodSchemas`, `clientRoutes`, `ClientInput<M>` and `ClientOutput<M>`. These define all 189 client methods: 135 core methods, four optional mainnet funding methods and 50 designed methods. Designed methods reject live calls with `FEATURE_NOT_AVAILABLE`. `/v1/system/endpoints` lists the HTTP transport, authentication and availability.
+The shared `@spoke/protocol` package exports `clientMethodSchemas`, `clientRoutes`, `ClientInput<M>` and `ClientOutput<M>`. These define all 194 client methods: 140 core methods, four optional mainnet funding methods and 50 designed methods. Designed methods reject live calls with `FEATURE_NOT_AVAILABLE`. `/v1/system/endpoints` lists the HTTP transport, authentication and availability.
 
 Successful responses contain `requestId`, `timestamp`, `schemaVersion`, `chainId`, `contractAddress`, `blockNumber`, `indexingStatus` and `data`. Every canonical successful method response is validated against its shared output schema. Errors contain a typed `error.code`, `message`, `retryable` and `requestId`. Amounts are integer base-unit strings.
 
@@ -33,7 +33,15 @@ Uploads accept one file with bounded size. Images are decoded, stripped of metad
 
 `GAS_STATION_PRIVATE_KEY` enables a Monad Testnet-only native MON drip for low-balance passkey accounts. Signed transfers are durably recorded before broadcast; ambiguous retries resend the same transaction. Account, device, network and daily station budgets limit use. This wallet never pays commissions.
 
-Nansen is server-side, cached and limited to configured demonstration addresses. `NANSEN_CREDIT_BUDGET` is a durable conservative lifetime ceiling; `NANSEN_REFRESH_ON_START=false` prevents page views or restarts from purchasing new queries. Refresh explicitly with `pnpm --filter @spoke/api exec tsx --env-file-if-exists=.env src/refresh-insights.ts`. Insights describe the address's supported mainnet history, never testnet revenue or payout eligibility. No history is limited context, not a safety verdict.
+Nansen Partner Intelligence is server-side and merchant-triggered. `GET /merchant/distributors/:address/insights` reads cached context; `POST` explicitly researches a public wallet through transactions, first-funder and Monad related-wallet endpoints. Private/pseudonymous registered accounts are refused. A free-plan account preflight and durable lifetime/daily/per-merchant limits precede any provider queries. A refresh reserves three credits; uncertain outcomes are not automatically retried. Cache lifetime is 24 hours. The legacy configured-address refresh remains available to operators but is not a page-view operation. Keep `NANSEN_REFRESH_ON_START=false`.
+
+External research describes supported mainnet history, never testnet revenue, rankings or payout eligibility. Source timestamps, sampled windows and per-endpoint failure states are retained. A first-funder event is not a verified wallet creation date.
+
+## Encrypted workspace
+
+Passkey sessions can list, get and save their own notebooks through `workspace.list`, `workspace.get` and `workspace.save`. The API accepts a strict encrypted envelope, binds it to the session address, configured chain, campaign and registered credential, and rejects extra/plaintext fields. PUT requests require CSRF, a matching expected revision and a fresh revision for changed ciphertext. Exact retries are idempotent. Account-scoped locks serialize conflicting writes; there are at most 100 notebooks and 20 writes per minute. Ciphertext uses the existing generic record store, without a destructive migration.
+
+Only the browser performs PRF/HKDF/AES operations. The backend never receives the encryption key or decrypted note text. Scope and timestamps remain visible to the service; encryption does not conceal all metadata.
 
 ## Mainnet wallet funding
 

@@ -58,18 +58,16 @@ describe.skipIf(!url)("encrypted workspace boundary and concurrency", () => {
     for (const wallet of [address, other]) {
       await database.store.reserve("wallet", wallet, wallet);
       await database.store.put("account", wallet, wallet, { accountKind: "passkey" });
-      await database.store.db
-        .insert(sessions)
-        .values({
-          hash: digest(wallet),
-          id: randomUUID(),
-          accountId: wallet,
-          address: wallet,
-          csrfHash: digest("csrf"),
-          method: "passkey",
-          deviceLabel: "test",
-          expiresAt: new Date(Date.now() + 60000),
-        });
+      await database.store.db.insert(sessions).values({
+        hash: digest(wallet),
+        id: randomUUID(),
+        accountId: wallet,
+        address: wallet,
+        csrfHash: digest("csrf"),
+        method: "passkey",
+        deviceLabel: "test",
+        expiresAt: new Date(Date.now() + 60000),
+      });
     }
     await database.store.put("passkey", digest(credentialId), address, {
       credentialId,

@@ -3,6 +3,7 @@
 import { Award01Icon, ViewOffIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import Link from "next/link";
+import { PartnerPassport } from "@/components/public/profile/partner-passport";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { ProductPage, QueryState } from "@/components/product/page";
@@ -20,7 +21,7 @@ import { RecordTiles } from "./record-tiles";
 
 export function ReputationPage() {
   const open = useUiStore((state) => state.open);
-  const profile = useClientQuery("reputation.mine", {});
+  const profile = useClientQuery("reputation.mine", {}, { refetchInterval: 20_000 });
   const me = useClientQuery("account.me", {});
   const refunded = useClientQuery("earnings.byConversion", { state: "refunded", limit: 100 });
   const data = profile.data;
@@ -77,6 +78,7 @@ export function ReputationPage() {
             ) : (
               <Diversity profile={data} />
             )}
+            <PartnerPassport profile={data} owner />
             <Receipts receipts={receipts} />
             <MerchantsSee profile={data} address={me.data?.address ?? null} />
             <div className="grid gap-6 lg:grid-cols-[1fr_2fr]">

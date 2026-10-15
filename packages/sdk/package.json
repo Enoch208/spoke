@@ -28,7 +28,7 @@
     "@spoke/protocol": "workspace:*",
     "tsup": "8.5.1"
   },
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Validated, credential-free TypeScript client for the Spoke public read API.",
   "license": "MIT",
   "homepage": "https://docs.usespoke.xyz/developers/sdk",

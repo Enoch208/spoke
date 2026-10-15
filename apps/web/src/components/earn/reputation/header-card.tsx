@@ -21,7 +21,8 @@ export function HeaderCard({
   const { mode } = useClientContext();
   const open = useUiStore((state) => state.open);
   const handle = me?.handle ?? profile.handle;
-  const listed = profile.visibility !== "private" && handle !== null;
+  const identity = handle ?? (profile.visibility === "public" ? profile.subject : null);
+  const listed = profile.visibility !== "private" && identity !== null;
   const initials = (handle ?? me?.displayName ?? "")
     .replace(/^demo-/, "")
     .slice(0, 2)
@@ -44,15 +45,15 @@ export function HeaderCard({
         <Button size="sm" variant="secondary" onClick={() => open("M-36", {})}>
           {copy.header.change}
         </Button>
-        {listed && handle ? (
+        {listed && identity ? (
           <Button asChild size="sm" variant="secondary">
-            <Link href={routeTo.profile(handle)}>{copy.header.viewProfile}</Link>
+            <Link href={routeTo.profile(identity)}>{copy.header.viewProfile}</Link>
           </Button>
         ) : null}
-        {listed && handle && mode === "live" && publicEnv.NEXT_PUBLIC_API_URL ? (
+        {listed && identity && mode === "live" && publicEnv.NEXT_PUBLIC_API_URL ? (
           <Button asChild size="sm" variant="ghost">
             <a
-              href={`${publicEnv.NEXT_PUBLIC_API_URL}/v1/distributors/${encodeURIComponent(handle)}/profile`}
+              href={`${publicEnv.NEXT_PUBLIC_API_URL}/v1/distributors/${encodeURIComponent(identity)}/profile`}
               target="_blank"
               rel="noreferrer"
             >

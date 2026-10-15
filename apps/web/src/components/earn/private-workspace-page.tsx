@@ -16,6 +16,8 @@ export function PrivateWorkspacePage() {
   const eligible =
     mode === "live" && session.status === "signedIn" && session.accountKind === "passkey";
   const query = useClientQuery("workspace.list", {}, { enabled: eligible, staleTime: 0 });
+  const items =
+    query.data?.items.filter((item) => item.address === session.address?.toLowerCase()) ?? [];
   return (
     <ProductPage
       title="Private workspace"
@@ -56,9 +58,9 @@ export function PrivateWorkspacePage() {
         >
           <Card className="space-y-4">
             <h2 className="font-display text-h4">Synced notebooks</h2>
-            {query.data?.items.length ? (
+            {items.length ? (
               <ul className="divide-hairline divide-y">
-                {query.data.items.map((item) => (
+                {items.map((item) => (
                   <li
                     key={`${String(item.chainId)}:${item.campaignId}`}
                     className="flex flex-wrap items-center justify-between gap-3 py-4"
