@@ -38,11 +38,10 @@ export const checkoutCopy = {
   reserved: "Reserved",
   reservedCaption: "reserved at purchase",
   fullPath: "This sale would allocate {split} across the {count} eligible contributors.",
-  fullPathOne: "This sale would allocate 100 to the one eligible contributor.",
+  fullPathOne: required.splitPreviewOne,
   shortRenormalize:
     "Only {count} eligible people are in this path. The campaign’s short-path rule changes the split to {split}.",
-  shortRenormalizeOne:
-    "Only one eligible person is in this path. The campaign’s short-path rule changes the split to 100.",
+  shortRenormalizeOne: required.shortPathOne,
   shortReturn:
     "Only {count} eligible people are in this path. The campaign pays them {split} and returns {unallocated} to the merchant’s reward budget.",
   outsideWindow:

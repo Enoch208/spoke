@@ -2,11 +2,11 @@ export const required = {
   depositFirst:
     "Deposit reward funds before the campaign begins. Existing obligations cannot be withdrawn.",
   splitPreview: "This sale would allocate {split} across the {levelsWord} eligible contributors.",
-  splitPreviewOne: "This sale would allocate 100 to the one eligible contributor.",
+  splitPreviewOne: "This sale would allocate 100% of the reward to the one eligible contributor.",
   shortPath:
     "Only {countWord} eligible people are in this path. The campaign’s short-path rule changes the split to {split}.",
   shortPathOne:
-    "Only one eligible person is in this path. The campaign’s short-path rule changes the split to 100.",
+    "Only one eligible person is in this path. The campaign’s short-path rule changes the split to 100%.",
   shortPathReturned:
     "The remaining {returnedPercent} of the commission ({returnedAmount}) stays in the merchant’s reward budget.",
   pendingSale: "Purchase observed onchain. Rewards are reserved, not yet withdrawable.",
